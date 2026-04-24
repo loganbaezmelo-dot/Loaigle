@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Loaigle</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1 class="logo">Loaigle</h1>
+
+    <div class="search-box">
+        <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="Search with Loaigle..."
+            onkeydown="if(event.key==='Enter') search()"
+        >
+        <button onclick="search()">Search</button>
+    </div>
+
+    <div id="summary" class="summary"></div>
+    <div id="results"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
