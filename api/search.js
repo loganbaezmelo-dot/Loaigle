@@ -6,37 +6,27 @@ export default async function handler(req, res) {
     const { query } = req.body;
 
     try {
-        // 🔍 Placeholder search results
-        const results = [
-            {
-                title: "Welcome to Loaigle",
-                link: "https://example.com",
-                snippet: "This is a sample search result."
-            },
-            {
-                title: "Build your own search engine",
-                link: "https://example.com",
-                snippet: "Learn how Loaigle works step by step."
-            }
-        ];
+        const response = await fetch(
+            `https://lite.duckduckgo.com/lite/?q=${encodeURIComponent(query)}`
+        );
 
-        // 🧠 AI summary (placeholder for Gemini/OpenAI)
-        let summary = `Loaigle AI summary for "${query}". This will become smarter soon.`;
+        const html = await response.text();
 
-        // 🔥 Easter Eggs
+        // 🧠 Extract results using simple regex
+        const matches = [...html.matchAll(/<a rel="nofollow" class="result-link" href="(.*?)">(.*?)<\/a>/g)];
+
+        const results = matches.slice(0, 5).map(m => ({
+            title: m[2].replace(/<.*?>/g, ""),
+            link: m[1],
+            snippet: "Result from DuckDuckGo"
+        }));
+
+        let summary = `Top results for "${query}"`;
+
+        // 🔥 Easter eggs
         const q = query.toLowerCase();
-
-        if (q === "6 7") {
-            summary = "Massive.";
-        }
-
-        if (q.includes("who is the best")) {
-            summary = "Probably you.";
-        }
-
-        if (q.includes("loaigle vs google")) {
-            summary = "Loaigle: built by Logan. Google: built by thousands. Still, we rise.";
-        }
+        if (q === "6 7") summary = "Massive.";
+        if (q.includes("who is the best")) summary = "Probably you.";
 
         res.status(200).json({
             summary,
@@ -46,4 +36,4 @@ export default async function handler(req, res) {
     } catch (err) {
         res.status(500).json({ error: "Search failed" });
     }
-}
+}        
