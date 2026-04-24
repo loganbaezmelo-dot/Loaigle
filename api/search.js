@@ -7,26 +7,47 @@ export default async function handler(req, res) {
 
     try {
         const response = await fetch(
-            `https://lite.duckduckgo.com/lite/?q=${encodeURIComponent(query)}`
+            `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`
         );
 
-        const html = await response.text();
+        const data = await response.json();
 
-        // 🧠 Extract results using simple regex
-        const matches = [...html.matchAll(/<a rel="nofollow" class="result-link" href="(.*?)">(.*?)<\/a>/g)];
+        // 🧠 Summary
+        const summary =
+            data.AbstractText ||
+            data.Answer ||
+            `No instant summary for "${query}".`;
 
-        const results = matches.slice(0, 5).map(m => ({
-            title: m[2].replace(/<.*?>/g, ""),
-            link: m[1],
-            snippet: "Result from DuckDuckGo"
-        }));
+        // 🔍 FIXED results handling (IMPORTANT CHANGE)
+        let results = [];
 
-        let summary = `Top results for "${query}"`;
+        if (data.RelatedTopics && Array.isArray(data.RelatedTopics)) {
+            data.RelatedTopics.forEach(item => {
+                if (item.Text && item.FirstURL) {
+                    results.push({
+                        title: item.Text,
+                        link: item.FirstURL,
+                        snippet: item.Text
+                    });
+                }
 
-        // 🔥 Easter eggs
-        const q = query.toLowerCase();
-        if (q === "6 7") summary = "Massive.";
-        if (q.includes("who is the best")) summary = "Probably you.";
+                // sometimes nested
+                if (item.Topics) {
+                    item.Topics.forEach(sub => {
+                        if (sub.Text && sub.FirstURL) {
+                            results.push({
+                                title: sub.Text,
+                                link: sub.FirstURL,
+                                snippet: sub.Text
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        // limit results
+        results = results.slice(0, 5);
 
         res.status(200).json({
             summary,
@@ -36,4 +57,4 @@ export default async function handler(req, res) {
     } catch (err) {
         res.status(500).json({ error: "Search failed" });
     }
-}        
+}
