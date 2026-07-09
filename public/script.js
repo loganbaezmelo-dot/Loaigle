@@ -61,7 +61,7 @@ async function search() {
         }
     }
 
-    // 📰 3. News Search
+    // 📰 3. News Search (Adding a cache-busting timestamp so the first click never uses stale data)
     try {
         const newsUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-US&gl=US&ceid=US:en`;
         const timestamp = new Date().getTime();
@@ -177,43 +177,45 @@ function triggerZergRush() {
         const currentResults = document.querySelectorAll(".result");
         
         if (currentResults.length > 0) {
-            // Pick a random result div that is still standing
+            // Target a random link container
             const targetIndex = Math.floor(Math.random() * currentResults.length);
             const targetDiv = currentResults[targetIndex];
             
-            // Create a falling "o" element right over it
+            // Create the attacking letter "o"
             const bug = document.createElement("span");
             bug.innerText = Math.random() > 0.5 ? "o" : "O";
             bug.style.position = "absolute";
-            bug.style.color = Math.random() > 0.5 ? "#ea4335" : "#fbbc05"; // Red or Yellow
+            bug.style.color = Math.random() > 0.5 ? "#ea4335" : "#fbbc05"; // Google Red/Yellow colors
             bug.style.fontWeight = "bold";
-            bug.style.fontSize = "20px";
-            bug.style.left = `${Math.random() * 80 + 10}%`;
-            bug.style.animation = "fall 0.5s ease-in forwards";
+            bug.style.fontSize = "24px";
+            bug.style.left = `${Math.random() * 60 + 20}%`; // Confines them over the main content area
+            bug.style.top = "-50px"; // Starts outside the container
+            bug.style.zIndex = "999";
+            bug.style.animation = "fall 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards"; // Slower, dramatic drop
             
+            targetDiv.style.position = "relative"; // Ensure the absolute coordinate system registers correctly
             targetDiv.appendChild(bug);
             
-            // Delete the result block after the bug hits it
+            // Delay the disintegration slightly so you witness the attack collision
             setTimeout(() => {
-                targetDiv.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+                targetDiv.style.transition = "opacity 0.4s ease, transform 0.4s ease";
                 targetDiv.style.opacity = "0";
-                targetDiv.style.transform = "scale(0.8)";
+                targetDiv.style.transform = "translateX(-20px) scale(0.9)"; // Slides away as it gets eaten
                 setTimeout(() => {
                     if (targetDiv.parentNode) targetDiv.remove();
-                }, 300);
-            }, 500);
+                }, 400);
+            }, 650);
             
         } else {
-            // 🚨 PANIC STATE: All links are wiped completely out of the DOM
+            // 🚨 PANIC STATE
             clearInterval(activeZergRush);
             activeZergRush = null;
             
             resultsDiv.innerHTML = "<p style='color: #ea4335; font-family: monospace; font-size: 20px; font-weight: bold;'>🚨 API not found!</p>";
             
-            // Wait exactly 1.5 seconds, then flash back to the standard empty text
             setTimeout(() => {
                 resultsDiv.innerHTML = "<p style='color: #bdc1c6;'>No results found on Loaigle.</p>";
             }, 1500);
         }
-    }, 400); // Spawns a bug and eats a link every 400ms
+    }, 500); // Spawns a new attacking drop every half-second
 }
