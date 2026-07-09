@@ -132,3 +132,27 @@ body {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+/* 📐 Permanent Tilt Effect */
+.tilt-animation {
+    transform: rotate(4.5deg);
+    transform-origin: top center;
+}
+
+/* 💃 67 Hand Gesture Wobble Effect */
+.wobble-animation {
+    animation: brainrotWobble 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes brainrotWobble {
+    0% { transform: rotate(-3deg); }
+    100% { transform: rotate(3deg); }
+}
+
+/* 👾 Zerg Rush Falling Animation */
+@keyframes fall {
+    0% { transform: translateY(-50px); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translateY(20px); opacity: 0; }
+}
+
