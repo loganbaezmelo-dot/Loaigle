@@ -1,60 +1,128 @@
+/* 🌐 Global Page Layout */
 body {
+    background-color: #171717;
+    color: #ffffff;
     font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
     text-align: center;
-    background: #0f0f0f;
-    color: white;
+    transition: transform 0.1s ease-out;
 }
 
+/* 🏷️ Logo Styling */
 .logo {
-    font-size: 56px;
-    margin-top: 120px;
-    letter-spacing: 2px;
-}
-
-.search-box {
-    margin-top: 20px;
-}
-
-.search-box input {
-    width: 320px;
-    padding: 12px;
-    border-radius: 6px;
-    border: none;
-    outline: none;
-}
-
-.search-box button {
-    padding: 12px;
-    margin-left: 5px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    background: #00ffcc;
-    color: black;
+    font-size: 60px;
+    margin-top: 80px;
+    margin-bottom: 20px;
     font-weight: bold;
 }
 
-.summary {
-    margin: 25px;
-    font-size: 18px;
-    color: #00ffcc;
+/* 🔍 Search Input and Button Container */
+.search-box {
+    margin-bottom: 30px;
 }
 
-.result {
-    margin: 20px auto;
-    width: 60%;
+.search-box input {
+    width: 350px;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: 1px solid #3c4043;
+    border-radius: 24px;
+    background-color: #202124;
+    color: white;
+    outline: none;
+    margin-right: 10px;
+}
+
+.search-box input:focus {
+    background-color: #303134;
+    border-color: #5f6368;
+}
+
+.search-box button {
+    padding: 12px 24px;
+    font-size: 16px;
+    border: none;
+    border-radius: 24px;
+    background-color: #303134;
+    color: #e8eaed;
+    cursor: pointer;
+}
+
+.search-box button:hover {
+    background-color: #3c4043;
+    border: 1px solid #5f6368;
+}
+
+/* 📦 Dictionary Box Formatting */
+#dictionary-box {
+    max-width: 650px;
+    margin: 10px auto;
+    padding: 0 15px;
     text-align: left;
 }
 
-.result a {
-    color: #4da6ff;
-    font-size: 18px;
-    text-decoration: none;
+.word-dictionary {
+    background-color: #202124;
+    border: 1px solid #3c4043;
+    border-radius: 8px;
+    padding: 16px;
 }
 
-.result p {
-    color: #ccc;
+.word-dictionary h3 {
+    color: #8ab4f8;
+    margin: 0 0 8px 0;
+    font-size: 18px;
 }
+
+.word-dictionary p {
+    color: #bdc1c6;
+    margin: 0;
+    font-size: 14px;
+}
+
+/* 📰 Search Results Feed */
+#results {
+    max-width: 650px;
+    margin: 20px auto;
+    padding: 0 15px;
+    text-align: left;
+}
+
+.result {
+    margin-bottom: 28px;
+    line-height: 1.5;
+}
+
+/* The small "Toogle News" tag above the title */
+.source-tag {
+    font-size: 12px;
+    color: #9aa0a6;
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* The main headline link */
+.result-link {
+    color: #8ab4f8;
+    font-size: 20px;
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 4px;
+}
+
+.result-link:hover {
+    text-decoration: underline;
+}
+
+/* The article description snippet */
+.result-snippet {
+    font-size: 14px;
+    color: #bdc1c6;
+    margin: 0;
+    word-wrap: break-word;
+}
+
 /* 💫 The Barrel Roll Spin Effect */
 .spin-animation {
     animation: barrelRollSpin 1s cubic-bezier(0.4, 0, 0.2, 1);
@@ -63,27 +131,4 @@ body {
 @keyframes barrelRollSpin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
-}
-
-/* Style for the secret Word Dictionary card */
-.word-dictionary {
-    background-color: #202124;
-    border: 1px solid #3c4043;
-    border-radius: 8px;
-    padding: 15px;
-    margin: 15px 0;
-    max-width: 600px;
-    font-family: Arial, sans-serif;
-}
-.word-dictionary h3 {
-    color: #8ab4f8;
-    margin-top: 0;
-}
-.word-dictionary p {
-    color: #bdc1c6;
-}
-.source-tag {
-    font-size: 12px;
-    color: #aaaec4;
-    display: block;
 }
