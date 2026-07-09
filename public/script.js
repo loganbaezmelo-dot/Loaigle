@@ -6,7 +6,7 @@ async function search() {
     const resultsDiv = document.getElementById("results");
     
     dictionaryDiv.innerHTML = "";
-    resultsDiv.innerHTML = "";
+    resultsDiv.innerHTML = "Loading results..."; // Clear instantly with a clean status placeholder
 
     // 🌀 1. Trigger the Barrel Roll Chaos if they type the secret phrases
     const triggerPhrases = [
@@ -40,7 +40,7 @@ async function search() {
         }
     }
 
-    // 📰 3. Fetch Real News Layout (Using a free RSS to JSON converter for Google News)
+    // 📰 3. Fetch Real News Layout
     try {
         const newsUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-US&gl=US&ceid=US:en`;
         const rss2json = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(newsUrl)}`;
@@ -48,28 +48,33 @@ async function search() {
         const res = await fetch(rss2json);
         const data = await res.json();
 
+        // Clear the loading indicator right before rendering
+        resultsDiv.innerHTML = "";
+
         if (data.items && data.items.length > 0) {
-            // Take top 10 articles
             const articles = data.items.slice(0, 10);
             
-            articles.forEach((item, index) => {
+            articles.forEach((item) => {
                 const div = document.createElement("div");
                 div.className = "result";
                 
-                // Track original texts and links for the scrambling mechanic
+                // FIX: Strip out raw HTML/links from the RSS description so it doesn't blend into the layout
+                const tempDiv = document.createElement("div");
+                tempDiv.innerHTML = item.description || "";
+                const cleanSnippet = tempDiv.innerText.split("...")[0] + "..."; 
+
                 div.dataset.originalTitle = item.title;
                 div.dataset.originalLink = item.link;
-                div.dataset.originalSnippet = item.description || "Click to view the full coverage on Google News.";
+                div.dataset.originalSnippet = cleanSnippet;
 
                 div.innerHTML = `
                     <span class="source-tag">Toogle News</span>
                     <a href="${item.link}" class="result-link" target="_blank">${item.title}</a>
-                    <p class="result-snippet">${div.dataset.originalSnippet}</p>
+                    <p class="result-snippet">${cleanSnippet}</p>
                 `;
                 resultsDiv.appendChild(div);
             });
 
-            // If it's a barrel roll query, unleash the hell functions
             if (isBarrelRoll) {
                 triggerChaosAnimation();
             }
@@ -84,10 +89,8 @@ async function search() {
 
 // 🎰 Matrix Scrambling & Barrel Roll Logic
 function triggerChaosAnimation() {
-    // Add the spin class to the whole page
     document.body.classList.add("spin-animation");
     
-    // Remove the spin class after 1 second so they can do it again
     setTimeout(() => {
         document.body.classList.remove("spin-animation");
     }, 1000);
@@ -103,7 +106,6 @@ function triggerChaosAnimation() {
         const origSnippet = result.dataset.originalSnippet;
         const origLink = result.dataset.originalLink;
 
-        // 1. Instantly turn links into broken gibberish text AND rewrite href attributes
         let scrambledTitle = "";
         let scrambledSnippet = "";
         for(let i=0; i<origTitle.length; i++) scrambledTitle += chars[Math.floor(Math.random() * chars.length)];
@@ -112,10 +114,8 @@ function triggerChaosAnimation() {
         linkElement.innerText = scrambledTitle;
         snippetElement.innerText = scrambledSnippet;
         
-        // Roulette: Clicking right now goes to literal gibberish URL strings
         linkElement.href = `https://${scrambledTitle.substring(0,8)}.com/error-broken-link`;
 
-        // 2. Slow terminal Matrix correction effect
         let iterations = 0;
         const interval = setInterval(() => {
             linkElement.innerText = origTitle.split("").map((letter, index) => {
@@ -132,7 +132,6 @@ function triggerChaosAnimation() {
 
             if (iterations >= Math.max(origTitle.length, origSnippet.length)) {
                 clearInterval(interval);
-                // Restore functionality fully
                 linkElement.innerText = origTitle;
                 snippetElement.innerText = origSnippet;
                 linkElement.href = origLink;
