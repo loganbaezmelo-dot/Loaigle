@@ -1,8 +1,17 @@
+// Keep track of any active Zerg Rush intervals so they don't stack up
+let activeZergRush = null;
+
 async function search() {
     // Force the browser to read the absolute latest value from the input field
     const searchInput = document.getElementById("searchInput");
     const query = searchInput.value.trim();
     if (!query) return;
+
+    // Clear any running Zerg Rush loops from previous searches
+    if (activeZergRush) {
+        clearInterval(activeZergRush);
+        activeZergRush = null;
+    }
 
     const dictionaryDiv = document.getElementById("dictionary-box");
     const resultsDiv = document.getElementById("results");
@@ -11,16 +20,27 @@ async function search() {
     dictionaryDiv.innerHTML = "";
     resultsDiv.innerHTML = "<p style='color: #bdc1c6;'>Searching Loaigle...</p>";
 
-    const triggerPhrases = [
+    // 🌀 1. Check for Triggers
+    const lowerQuery = query.toLowerCase();
+    
+    const barrelRollPhrases = [
         "do a barrel roll", "do a barrel roll please", 
         "can you do a barrel roll", "barrel roll", 
         "do a flip", "spin the screen", "make it spin"
     ];
-    const isBarrelRoll = triggerPhrases.includes(query.toLowerCase());
+    const tiltPhrases = ["askew", "tilt", "67", "wobble"];
+    const zergPhrases = ["zerg rush", "destroy my page", "virus"];
 
-    // 📖 1. Dictionary Lookup
+    const isBarrelRoll = barrelRollPhrases.includes(lowerQuery);
+    const isTilt = tiltPhrases.includes(lowerQuery);
+    const isZergRush = zergPhrases.includes(lowerQuery);
+
+    // Reset tilt/wobble from previous searches if this is a normal search
+    document.body.classList.remove("tilt-animation", "wobble-animation");
+
+    // 📖 2. Dictionary Lookup
     const isSingleWord = query.split(" ").length === 1;
-    if (isSingleWord) {
+    if (isSingleWord && !isZergRush) { // Don't show dictionary if we are destroying the page
         try {
             const dictRes = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${query}`);
             if (dictRes.ok) {
@@ -41,7 +61,7 @@ async function search() {
         }
     }
 
-    // 📰 2. News Search (Adding a cache-busting timestamp so the first click never uses stale data)
+    // 📰 3. News Search
     try {
         const newsUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-US&gl=US&ceid=US:en`;
         const timestamp = new Date().getTime();
@@ -52,7 +72,7 @@ async function search() {
         
         const data = await res.json();
 
-        // Wipe the "Searching Loaigle..." loader text
+        // Wipe the loader text
         resultsDiv.innerHTML = "";
 
         if (data.items && data.items.length > 0) {
@@ -78,8 +98,17 @@ async function search() {
                 resultsDiv.appendChild(div);
             });
 
+            // Trigger corresponding Easter Egg mechanics
             if (isBarrelRoll) {
                 triggerChaosAnimation();
+            } else if (isTilt) {
+                if (lowerQuery === "67" || lowerQuery === "wobble") {
+                    document.body.classList.add("wobble-animation");
+                } else {
+                    document.body.classList.add("tilt-animation");
+                }
+            } else if (isZergRush) {
+                triggerZergRush();
             }
 
         } else {
@@ -94,10 +123,7 @@ async function search() {
 // 🎰 Matrix Scrambling & Barrel Roll Logic
 function triggerChaosAnimation() {
     document.body.classList.add("spin-animation");
-    
-    setTimeout(() => {
-        document.body.classList.remove("spin-animation");
-    }, 1000);
+    setTimeout(() => { document.body.classList.remove("spin-animation"); }, 1000);
 
     const results = document.querySelectorAll(".result");
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
@@ -117,7 +143,6 @@ function triggerChaosAnimation() {
         
         linkElement.innerText = scrambledTitle;
         snippetElement.innerText = scrambledSnippet;
-        
         linkElement.href = `https://${scrambledTitle.substring(0,8)}.com/error-broken-link`;
 
         let iterations = 0;
@@ -142,4 +167,53 @@ function triggerChaosAnimation() {
             }
         }, 30);
     });
+}
+
+// 👾 Zerg Rush Link Destroyer Logic
+function triggerZergRush() {
+    const resultsDiv = document.getElementById("results");
+    
+    activeZergRush = setInterval(() => {
+        const currentResults = document.querySelectorAll(".result");
+        
+        if (currentResults.length > 0) {
+            // Pick a random result div that is still standing
+            const targetIndex = Math.floor(Math.random() * currentResults.length);
+            const targetDiv = currentResults[targetIndex];
+            
+            // Create a falling "o" element right over it
+            const bug = document.createElement("span");
+            bug.innerText = Math.random() > 0.5 ? "o" : "O";
+            bug.style.position = "absolute";
+            bug.style.color = Math.random() > 0.5 ? "#ea4335" : "#fbbc05"; // Red or Yellow
+            bug.style.fontWeight = "bold";
+            bug.style.fontSize = "20px";
+            bug.style.left = `${Math.random() * 80 + 10}%`;
+            bug.style.animation = "fall 0.5s ease-in forwards";
+            
+            targetDiv.appendChild(bug);
+            
+            // Delete the result block after the bug hits it
+            setTimeout(() => {
+                targetDiv.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+                targetDiv.style.opacity = "0";
+                targetDiv.style.transform = "scale(0.8)";
+                setTimeout(() => {
+                    if (targetDiv.parentNode) targetDiv.remove();
+                }, 300);
+            }, 500);
+            
+        } else {
+            // 🚨 PANIC STATE: All links are wiped completely out of the DOM
+            clearInterval(activeZergRush);
+            activeZergRush = null;
+            
+            resultsDiv.innerHTML = "<p style='color: #ea4335; font-family: monospace; font-size: 20px; font-weight: bold;'>🚨 API not found!</p>";
+            
+            // Wait exactly 1.5 seconds, then flash back to the standard empty text
+            setTimeout(() => {
+                resultsDiv.innerHTML = "<p style='color: #bdc1c6;'>No results found on Loaigle.</p>";
+            }, 1500);
+        }
+    }, 400); // Spawns a bug and eats a link every 400ms
 }
