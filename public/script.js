@@ -1,23 +1,24 @@
 async function search() {
-    const query = document.getElementById("searchInput").value.trim();
+    // Force the browser to read the absolute latest value from the input field
+    const searchInput = document.getElementById("searchInput");
+    const query = searchInput.value.trim();
     if (!query) return;
 
     const dictionaryDiv = document.getElementById("dictionary-box");
     const resultsDiv = document.getElementById("results");
     
+    // Clear the UI completely so old content can't hang
     dictionaryDiv.innerHTML = "";
-    resultsDiv.innerHTML = "Loading results..."; // Clear instantly with a clean status placeholder
+    resultsDiv.innerHTML = "<p style='color: #bdc1c6;'>Searching Loaigle...</p>";
 
-    // 🌀 1. Trigger the Barrel Roll Chaos if they type the secret phrases
     const triggerPhrases = [
         "do a barrel roll", "do a barrel roll please", 
         "can you do a barrel roll", "barrel roll", 
         "do a flip", "spin the screen", "make it spin"
     ];
-
     const isBarrelRoll = triggerPhrases.includes(query.toLowerCase());
 
-    // 📖 2. Fetch Word Dictionary box if it's a single word
+    // 📖 1. Dictionary Lookup
     const isSingleWord = query.split(" ").length === 1;
     if (isSingleWord) {
         try {
@@ -40,15 +41,18 @@ async function search() {
         }
     }
 
-    // 📰 3. Fetch Real News Layout
+    // 📰 2. News Search (Adding a cache-busting timestamp so the first click never uses stale data)
     try {
         const newsUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-US&gl=US&ceid=US:en`;
-        const rss2json = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(newsUrl)}`;
+        const timestamp = new Date().getTime();
+        const rss2json = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(newsUrl)}&_cb=${timestamp}`;
         
         const res = await fetch(rss2json);
+        if (!res.ok) throw new Error("Network response failed");
+        
         const data = await res.json();
 
-        // Clear the loading indicator right before rendering
+        // Wipe the "Searching Loaigle..." loader text
         resultsDiv.innerHTML = "";
 
         if (data.items && data.items.length > 0) {
@@ -58,7 +62,6 @@ async function search() {
                 const div = document.createElement("div");
                 div.className = "result";
                 
-                // FIX: Strip out raw HTML/links from the RSS description so it doesn't blend into the layout
                 const tempDiv = document.createElement("div");
                 tempDiv.innerHTML = item.description || "";
                 const cleanSnippet = tempDiv.innerText.split("...")[0] + "..."; 
@@ -80,10 +83,11 @@ async function search() {
             }
 
         } else {
-            resultsDiv.innerHTML = "<p>No results found on Loaigle.</p>";
+            resultsDiv.innerHTML = "<p style='color: #bdc1c6;'>No results found on Loaigle.</p>";
         }
     } catch (err) {
-        resultsDiv.innerHTML = "<p>Error fetching results. Try again!</p>";
+        console.error(err);
+        resultsDiv.innerHTML = "<p style='color: #bdc1c6;'>Error fetching results. Try clicking search again.</p>";
     }
 }
 
