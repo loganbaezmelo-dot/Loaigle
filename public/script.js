@@ -161,8 +161,16 @@ function updateThemeButtonsUI() {
     }
 }
 
-// 🚀 BOOTSTRAPPER (Safe Sandbox Extraction)
+// 🚀 BULLETPROOF BOOTSTRAPPER (Force-Wipes old Android form cache text entries)
 (function bootLoader() {
+    // Hard check to instantly blank out the search field so ghost words don't hijack boot execution loops
+    window.addEventListener("DOMContentLoaded", () => {
+        const searchInput = document.getElementById("searchInput");
+        if (searchInput) {
+            searchInput.value = ""; 
+        }
+    });
+
     const cachedHtml = localStorage.getItem("loaigle_bg_html");
     if (cachedHtml) {
         const template = document.createElement("div");
@@ -701,3 +709,4 @@ window.search = search; window.deleteFromBrowserStorage = deleteFromBrowserStora
 window.toggleSettingsMenu = toggleSettingsMenu; window.setThemeStyle = setThemeStyle; window.returnToHomeMenu = returnToHomeMenu;
 window.triggerGoogleLogin = triggerGoogleLogin; window.triggerGithubLogin = triggerGithubLogin; window.triggerSignOut = triggerSignOut; 
 window.pushConfigsToCloud = pushConfigsToCloud; window.triggerVoiceCapture = triggerVoiceCapture;
+
