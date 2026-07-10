@@ -1,10 +1,7 @@
 // Keep track of any active Zerg Rush intervals so they don't stack up
 let activeZergRush = null;
 
-// 🔐 MATRIX LAYOUT GATE CONTROLLER STATS: "login" | "guest" | "authenticated"
-let currentSystemSessionState = "login";
-
-// Locks out structural overlays while tokens resolve asynchronously on phone engines
+// Track initialized state parameters during cold reboots
 let isFirebaseInitializing = true;
 
 // The canonical master blueprint text block utilized across both viewport layouts
@@ -41,16 +38,6 @@ const masterGuideHTML = `
 
 // ⚙️ SETTINGS PANEL NAVIGATION CONTROLS
 function toggleSettingsMenu() {
-    // 🚪 ENTRANCE ESCAPE HANDSHAKE: If user is explicitly viewing as guest, bounce back to login portal cleanly
-    if (currentSystemSessionState === "guest") {
-        document.getElementById("loaigle-settings-modal").style.display = "none";
-        document.getElementById("main-app-canvas").style.display = "none";
-        document.getElementById("login-gate").style.display = "flex";
-        currentSystemSessionState = "login";
-        localStorage.removeItem('loaigle_guest_trace');
-        return;
-    }
-
     const modal = document.getElementById("loaigle-settings-modal");
     if (modal.style.display === "flex") {
         modal.style.display = "none";
@@ -160,7 +147,6 @@ function deleteFromBrowserStorage() {
     localStorage.removeItem("loaigle_bg_html");
     localStorage.removeItem("loaigle_konami_unlocked"); 
     localStorage.removeItem("loaigle_theme");
-    localStorage.removeItem("loaigle_guest_trace");
     
     const layer = document.getElementById("background-persistent-layer");
     const guide = document.getElementById("home-permanent-guide");
@@ -468,7 +454,7 @@ function showHtmlViewerLore() {
                 <div style="color: #bdc1c6; font-size: 13px; line-height: 1.6; font-family: sans-serif;">
                     <p style="margin-bottom: 15px;"><strong>1. THE ORIGIN ACCIDENT:</strong><br>This portal was birthed during a high-velocity script layout verification test. A copy of the platform's literal repository code was passed directly into the search bar. Because code syntax fails the vowel-ratio metrics of the Gibberish Roast Engine, the input was flagged as an absolute keyboard smash.</p>
                     <p style="margin-bottom: 15px;"><strong>2. THE CHAIN REACTION:</strong><br>Instead of rendering as flat string text, the engine dropped the raw source code variables directly inside a live innerHTML template. The browser compiled the structural tags instantly—manifesting an identical, operational mirror loop of the website layout inside the insult card, while the hardcoded gibberish routine automatically unleashed an active Zerg Rush script to destroy it.</p>
-                    <p style="margin-bottom: 15px;"><strong>3. THE THEME CONTROLS & DISCLAIMER ORIGIN:</strong><br>The theme-injection disclaimer was permanently written into the specs after a developer tried running a massive standalone React + Tailwind YouTube Hallucination inside the engine. The browser parsed the simulator's custom stylesheet, completely overrode Loaigle's global layout properties, and instantly hijacked the master viewport background color from dark charcoal to onyx black!</p>
+                    <p style="margin-bottom: 15px;"><strong>3. THE THEME CONTROLS & DISCLAIMER ORIGIN:</strong><br>The theme-injection disclaimer was permanently written into the specs after a developer tried running a massive standalone React + Tailwind YouTube Simulator inside the engine. The browser parsed the simulator's custom stylesheet, completely overrode Loaigle's global layout properties, and instantly hijacked the master viewport background color from dark charcoal to onyx black!</p>
                     <p><strong>4. CURRENT PRODUCTION USECASE:</strong><br>This portal now features dual-routing capability: use the interface window to safely execute and debug live single-file 'index.html' applications without interference, OR use the background engine to permanently save custom CSS code overrides into localStorage to inject custom skins, backgrounds, and custom textures natively into Loaigle's core skin style!</p>
                 </div>
                 <div style="margin-top: 20px; text-align: right;">
@@ -557,7 +543,7 @@ function triggerZergRush() {
 }
 
 // ==========================================================================
-// 📡 DEDICATED ENUM STATE-GATE MATRIX & FIREBASE PRODUCTION LAYOUT
+// 📡 LOCKED AUTH VIEW ROUTING ENGINES
 // ==========================================================================
 (function initFirebaseMatrix() {
     try {
@@ -581,50 +567,49 @@ function triggerZergRush() {
 
         auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch((e) => { console.error(e); });
 
-        // Unified rendering manager that works strictly from the Enum State tracking configurations
-        function displayActiveGate(gateMode) {
-            currentSystemSessionState = gateMode; // Direct synchronization parameter mapping
-            
+        function setPageLayoutState(isAuthenticated) {
             const loginGate = document.getElementById("login-gate");
             const appCanvas = document.getElementById("main-app-canvas");
             
-            if (gateMode === "authenticated") {
-                if (loginGate) loginGate.style.display = "none";
-                if (appCanvas) appCanvas.style.display = "block";
-            } else if (gateMode === "guest") {
+            if (isAuthenticated) {
                 if (loginGate) loginGate.style.display = "none";
                 if (appCanvas) appCanvas.style.display = "block";
             } else {
                 if (loginGate) loginGate.style.display = "flex";
                 if (appCanvas) appCanvas.style.display = "none";
+                document.getElementById("loaigle-settings-modal").style.display = "none";
             }
         }
 
-        // Intercept tokens perfectly right on landing pass redirect
+        window.forceSyncButtonsUI = function() {
+            const syncStatusP = document.getElementById('settings-sync-indicator');
+            const btnSaveCloud = document.getElementById('settings-btn-save');
+            const user = auth.currentUser;
+
+            if (user && syncStatusP) {
+                syncStatusP.innerText = `Active Account: ${user.email || 'Authorized Operator'}`;
+                syncStatusP.style.color = "#34a853";
+                if (btnSaveCloud) btnSaveCloud.style.display = "block";
+            }
+        };
+
+        // Catch redirect returns cleanly on boot loader cycles
         auth.getRedirectResult().then((result) => {
             isFirebaseInitializing = false;
             if (result && result.user) {
-                displayActiveGate("authenticated");
+                setPageLayoutState(true);
             }
         }).catch((e) => { 
             isFirebaseInitializing = false;
             showCustomAlert("⚠️ Secure Handshake Rejection: " + e.message); 
         });
 
-        // Monitors credentials parameters fluidly
+        // Monitors user authentication states securely
         auth.onAuthStateChanged(async (user) => {
-            const syncStatusP = document.getElementById('settings-sync-indicator');
-            const btnSaveCloud = document.getElementById('settings-btn-save');
-
             if (user) {
                 isFirebaseInitializing = false;
-                displayActiveGate("authenticated");
-                
-                if (syncStatusP) {
-                    syncStatusP.innerText = `Active Account: ${user.email || 'Authorized Secure Operator'}`;
-                    syncStatusP.style.color = "#34a853";
-                }
-                if (btnSaveCloud) btnSaveCloud.style.display = "block";
+                setPageLayoutState(true);
+                window.forceSyncButtonsUI();
 
                 try {
                     const userDoc = await db.collection('users').doc(user.uid).get();
@@ -636,33 +621,21 @@ function triggerZergRush() {
                     }
                 } catch (e) { console.error(e); }
             } else {
-                if (isFirebaseInitializing) {
-                    if (localStorage.getItem('loaigle_guest_trace') === 'true') {
-                        isFirebaseInitializing = false;
-                        displayActiveGate("guest");
-                    }
-                    return; 
-                }
-
-                if (currentSystemSessionState !== "guest") {
-                    displayActiveGate("login");
-                }
+                // If initializing on cold start, hold layout layers until tokens finish processing
+                if (isFirebaseInitializing) return;
+                setPageLayoutState(false);
             }
         });
 
-        // Cold boot timing watch matrix
+        // Watchdog timeout fallback parameters
         setTimeout(() => {
-            if (isFirebaseInitializing && !auth.currentUser && currentSystemSessionState !== "guest") {
+            if (isFirebaseInitializing && !auth.currentUser) {
                 isFirebaseInitializing = false;
-                if (localStorage.getItem('loaigle_guest_trace') === 'true') {
-                    displayActiveGate("guest");
-                } else {
-                    displayActiveGate("login");
-                }
+                setPageLayoutState(false);
             }
-        }, 250);
+        }, 300);
 
-        // Click routers pipeline execution passes
+        // Click Routers Pipelines
         document.addEventListener('click', (e) => {
             if (e.target && e.target.id === 'gate-btn-google') {
                 isFirebaseInitializing = true;
@@ -674,16 +647,10 @@ function triggerZergRush() {
                 auth.signInWithRedirect(githubProvider);
             }
 
-            if (e.target && e.target.id === 'gate-btn-guest') {
-                localStorage.setItem('loaigle_guest_trace', 'true');
-                displayActiveGate("guest");
-            }
-
             if (e.target && e.target.id === 'settings-btn-logout') {
                 auth.signOut().then(() => {
                     localStorage.clear();
-                    displayActiveGate("login");
-                    document.getElementById("loaigle-settings-modal").style.display = "none";
+                    setPageLayoutState(false);
                 });
             }
 
