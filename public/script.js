@@ -161,7 +161,8 @@ function updateThemeButtonsUI() {
     }
 }
 
-// 🚀 BOOTSTRAPPER (Safe Sandbox Background Injection)
+// 🚀 BOOTSTRAPPER (Safe Sandbox Background Injection Only)
+// The input element security filters have been removed from here completely to block automatic cold boot trigger faults.
 (function bootLoader() {
     const cachedHtml = localStorage.getItem("loaigle_bg_html");
     if (cachedHtml) {
@@ -285,7 +286,7 @@ function showHijackInterceptorPrompt(queryPayload, executeInjectionCallback) {
 
     document.getElementById("hijack-btn-yes").onclick = function() {
         wrapper.remove();
-        executeInjectionCallback(); // Passes down execution chain
+        executeInjectionCallback();
     };
 }
 
@@ -375,8 +376,7 @@ async function search() {
         return; 
     }
 
-    // 🔒 THE SEARCH BAR SECURITY ENGINE
-    // This logic loop can ONLY execute right now because the user typed text and triggered the search event pipeline explicitly.
+    // 🔒 THE SEARCH BAR SECURITY ENGINE (Runs strictly inside the search event boundary)
     const hasHtmlTags = /<html|<head|<body|<div|<p|<span|<a\s+href|<link|<script/i.test(lowerQuery);
     const containsCodeElements = /<script|eval\s*\(|settimeout\s*\(|setinterval\s*\(|\.onclick\s*=/i.test(lowerQuery);
     
@@ -400,8 +400,7 @@ async function search() {
     };
 
     if (isAnyCodePayload) {
-        // 🛡️ DYNAMIC PERMISSION MATRIX GATING
-        // The hardware permission detection array is completely idle until it's explicitly loaded here.
+        // 🛡️ SUB-STAGE RADAR ENGINE (Initializes strictly behind the first warning intercept validation gate)
         const executeCompile = () => {
             const attemptsHardwareAccess = /getusermedia|mediadevices|geolocation|getcurrentposition|webkitAudioContext|AudioContext|notification|permission|microphone/i.test(lowerQuery);
             
@@ -417,10 +416,10 @@ async function search() {
         if (attemptsFullHijack) {
             document.getElementById("loaigle-back-btn").style.display = "none";
             showHijackInterceptorPrompt(query, () => {
-                executeCompile(); // Triggers and loads permission radar strictly after Gate 1 is cleared
+                executeCompile(); 
             });
         } else {
-            executeCompile(); // Skips Gate 1 but still safely invokes permission validation before compilation
+            executeCompile(); 
         }
         return; 
     }
@@ -688,10 +687,16 @@ function setPageLayoutState(isAuthenticated) {
         auth.onAuthStateChanged(async (user) => {
             isFirebaseInitializing = false;
             if (user) {
-                localStorage.setItem('loaigle_validated_auth', 'true'); setPageLayoutState(true);
+                localStorage.setItem('loaigle_validated_auth', 'true'); 
+                setPageLayoutState(true);
+                
+                // 🛡️ ELEMENT SAFEGUARD CHECK (No more null crash pointer loops)
                 const syncStatusP = document.getElementById('settings-sync-indicator');
                 const btnSaveCloud = document.getElementById('settings-btn-save');
-                if (syncStatusP) { syncStatusP.innerText = `Active Account: ${user.email}`; syncStatusP.style.color = "#34a853"; }
+                if (syncStatusP) { 
+                    syncStatusP.innerText = `Active Account: ${user.email}`; 
+                    syncStatusP.style.color = "#34a853"; 
+                }
                 if (btnSaveCloud) btnSaveCloud.style.display = "block";
             } else {
                 if (localStorage.getItem('loaigle_validated_auth') === 'true') { setPageLayoutState(true); return; }
