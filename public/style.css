@@ -252,3 +252,61 @@ body {
     0% { transform: translateY(50px); opacity: 0; }
     100% { transform: translateY(0); opacity: 1; }
 }
+
+/* ⌨️ Konami Code Master Guide Styling */
+.konami-guide-container {
+    background-color: #202124;
+    border: 2px solid #34a853;
+    border-radius: 16px;
+    padding: 24px;
+    margin-top: 20px;
+    text-align: left;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+}
+
+.konami-guide-container h2 {
+    color: #34a853;
+    margin-top: 0;
+    font-size: 22px;
+    border-bottom: 1px solid #3c4043;
+    padding-bottom: 10px;
+    font-family: monospace;
+}
+
+.guide-section {
+    margin-top: 18px;
+}
+
+.guide-section h3 {
+    color: #8ab4f8;
+    font-size: 15px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.guide-section p {
+    color: #bdc1c6;
+    font-size: 13px;
+    margin: 0 0 4px 0;
+    line-height: 1.5;
+}
+
+/* 💡 Smart Hint Header Card */
+.hint-header-card {
+    background-color: #1a1111;
+    border: 1px dashed #ea4335;
+    border-radius: 12px;
+    padding: 14px 20px;
+    margin-bottom: 20px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: fadeInHint 0.3s ease-out forwards;
+}
+
+@keyframes fadeInHint {
+    0% { transform: translateY(-10px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
