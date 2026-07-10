@@ -1,7 +1,7 @@
 // Keep track of any active Zerg Rush intervals so they don't stack up
 let activeZergRush = null;
 
-// Track initialized state parameters during cold reboots
+// Tracks initialized state parameters during cold reboots
 let isFirebaseInitializing = true;
 
 // The canonical master blueprint text block utilized across both viewport layouts
@@ -543,7 +543,7 @@ function triggerZergRush() {
 }
 
 // ==========================================================================
-// 📡 LOCKED AUTH VIEW ROUTING ENGINES
+// 📡 ZERO-RACE CONDITIONAL DIRECT CONTAINER STATE MANIFEST SYSTEM
 // ==========================================================================
 (function initFirebaseMatrix() {
     try {
@@ -593,21 +593,23 @@ function triggerZergRush() {
             }
         };
 
-        // Catch redirect returns cleanly on boot loader cycles
+        // 🎰 THE COMPLETE OVERRIDE HANDSHAKE: Catching redirect tokens synchronously
         auth.getRedirectResult().then((result) => {
-            isFirebaseInitializing = false;
             if (result && result.user) {
+                isFirebaseInitializing = false; // Intentionally unlock state machine parameters
                 setPageLayoutState(true);
             }
         }).catch((e) => { 
             isFirebaseInitializing = false;
-            showCustomAlert("⚠️ Secure Handshake Rejection: " + e.message); 
+            showCustomAlert("⚠️ Handshake Rejection: " + e.message); 
         });
 
         // Monitors user authentication states securely
         auth.onAuthStateChanged(async (user) => {
+            // 🛑 CRITICAL REPAIR OVERRIDE: The exact split second Firebase fires, we officially kill the initialization state tracker
+            isFirebaseInitializing = false;
+
             if (user) {
-                isFirebaseInitializing = false;
                 setPageLayoutState(true);
                 window.forceSyncButtonsUI();
 
@@ -621,24 +623,15 @@ function triggerZergRush() {
                     }
                 } catch (e) { console.error(e); }
             } else {
-                // If initializing on cold start, hold layout layers until tokens finish processing
-                if (isFirebaseInitializing) return;
+                // If token returns false completely, pass layout state to logged-out baseline
                 setPageLayoutState(false);
             }
         });
 
-        // Watchdog timeout fallback parameters
-        setTimeout(() => {
-            if (isFirebaseInitializing && !auth.currentUser) {
-                isFirebaseInitializing = false;
-                setPageLayoutState(false);
-            }
-        }, 300);
-
         // Click Routers Pipelines
         document.addEventListener('click', (e) => {
             if (e.target && e.target.id === 'gate-btn-google') {
-                isFirebaseInitializing = true;
+                isFirebaseInitializing = true; // Lock initialization loops state ahead of redirect
                 auth.signInWithRedirect(googleProvider);
             }
 
