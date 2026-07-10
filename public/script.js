@@ -426,16 +426,15 @@ async function search() {
                 <h2 style="color: #8ab4f8; font-size: 20px; margin-bottom: 15px; border-bottom: 1px solid #3c4043; padding-bottom: 8px;">HTML Viewer:</h2>
                 <div class="rendered-payload" style="background: transparent; padding: 10px 0;">${query}</div>
                 <div style="margin-top: 30px; background-color: #202124; border: 1px solid #3c4043; padding: 16px; border-radius: 12px; text-align: center;">
-                    <button onclick="loadToBrowserStorage()" style="padding: 10px 20px; font-size: 13px; border: none; border-radius: 24px; background-color: #34a853; color: white; cursor: pointer; font-weight: bold; margin-bottom: 12px; font-family: sans-serif;">Load custom HTML in BrowserStorage</button>
+                    <button onclick="loadToBrowserStorage()" style="padding: 10px 20px; font-size: 13px; border: none; border-radius: 24px; background-color: #34a853; color: white; cursor: pointer; font-weight: bold; margin-bottom: 15px; font-family: sans-serif;">Load custom HTML in BrowserStorage</button>
                     
-                    <!-- 🛠️ OFFICIAL COMPILER BACKSTORY ACCESS MODULE -->
-                    <div style="margin-bottom: 15px;">
-                        <span style="color: #8ab4f8; font-size: 12px; font-weight: bold; cursor: pointer; font-family: monospace; text-decoration: underline;" onclick="showCustomAlert('🎮 Loaigle HTML Viewer Pro Lore\\n\\nThe HTML Viewer was not originally a planned feature. It was created accidentally during development.\\n\\nLoaigle has a Gibberish Roast Engine that detects nonsense input. During testing, the entire index.html of Loaigle was accidentally pasted into the search bar. Because the app detected HTML and rendered it using the existing HTML-rendering path, the browser parsed the markup instead of treating it as plain text.\\n\\nThe pasted page contained the full login screen, CSS, Firebase scripts, and other UI elements. As a result, Loaigle rendered a second copy of itself inside the current page, making it look like the search bar had become a live website simulator.\\n\\nInstead of removing the behavior completely, the idea was turned into the HTML Viewer Pro lore. Even if the dedicated viewer UI were removed, the underlying HTML-handling behavior is still intertwined with the search pipeline because the app is built around HTML, CSS, and JavaScript. Code-like input still reaches the HTML handling path before the Gibberish Roast Engine ultimately zerg rushes it.\\n\\nToday, this standalone sandbox interface layout is utilized to instantly test if single-file HTML frontend projects work live!')">What is this?</span>
-                    </div>
-
-                    <p style="color: #ea4335; font-size: 11px; font-weight: bold; line-height: 1.4; margin: 0; text-align: left;">
+                    <p style="color: #ea4335; font-size: 11px; font-weight: bold; line-height: 1.4; margin: 0 0 15px 0; text-align: left;">
                         ⚠️ DISCLAIMER: This is only made for an HTML that changes the theme or texture of Loaigle. If this is code that actually is a full HTML app, test it through this HTML Viewer interface and don't click the button.
                     </p>
+
+                    <div style="margin-top: 15px; padding-top: 12px; border-top: 1px solid #3c4043;">
+                        <span style="color: #8ab4f8; font-size: 12px; font-weight: bold; cursor: pointer; font-family: monospace; text-decoration: underline;" onclick="showCustomAlert('🎮 Loaigle HTML Viewer Pro Lore\\n\\nThe HTML Viewer was not originally a planned feature. It was created accidentally during development.\\n\\nLoaigle has a Gibberish Roast Engine that detects nonsense input. During testing, the entire index.html of Loaigle was accidentally pasted into the search bar. Because the app detected HTML and rendered it using the existing HTML-rendering path, the browser parsed the markup instead of treating it as plain text.\\n\\nThe pasted page contained the full login screen, CSS, Firebase scripts, and other UI elements. As a result, Loaigle rendered a second copy of itself inside the current page, making it look like the search bar had become a live website simulator.\\n\\nInstead of removing the behavior completely, the idea was turned into the HTML Viewer Pro lore. Even if the dedicated viewer UI were removed, the underlying HTML-handling behavior is still intertwined with the search pipeline because the app is built around HTML, CSS, and JavaScript. Code-like input still reaches the HTML handling path before the Gibberish Roast Engine ultimately zerg rushes it.\\n\\nToday, this standalone sandbox interface layout is utilized to instantly test if single-file HTML frontend projects work live!')">What is this?</span>
+                    </div>
                 </div>
             </div>
         `;
@@ -522,7 +521,6 @@ async function search() {
                 const dictData = await dictRes.json();
                 if (dictData && dictData[0]) {
                     const definition = dictData[0].meanings[0].definitions[0].definition;
-                    // 🛡️ API DATA STRUCTURE POINTER REPAIRED
                     const partOfSpeech = dictData[0].meanings[0].partOfSpeech;
                     dictionaryDiv.innerHTML += `
                         <div class="word-dictionary">
