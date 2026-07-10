@@ -99,17 +99,19 @@ function returnToHomeMenu() {
         clearInterval(activeZergRush);
         activeZergRush = null;
     }
-    
+    document.querySelectorAll(".zerg-ball").forEach(el => el.remove());
+
     document.getElementById("searchInput").value = "";
     document.getElementById("dictionary-box").innerHTML = "";
     document.getElementById("results").innerHTML = "";
     document.getElementById("loaigle-back-btn").style.display = "none";
     document.body.classList.remove("tilt-animation", "wobble-animation");
 
+    // 🛡️ REPAIRED STATE TARGET PROXY SWITCH
     const guide = document.getElementById("home-permanent-guide");
     if (guide) {
         const isKonamiUnlocked = localStorage.getItem("loaigle_konami_unlocked") === "true";
-        if (isKonamiUnlocked) targetGuide.style.display = "block";
+        if (isKonamiUnlocked) guide.style.display = "block";
     }
 }
 
@@ -197,16 +199,13 @@ function renderGuideOnMenu() {
     const targetGuide = document.getElementById("home-permanent-guide");
     if (targetGuide) {
         targetGuide.innerHTML = masterGuideHTML;
-        targetGuide.style.display = "block";
+        targetGuide.style.display = "block"; // Preserves visual mapping block across tab cycles
     }
 }
 
-// 🛡️ SAFE UI TOGGLE: Hides the panel interface visually without logging you out!
 function hideSystemGuideUI() {
     const targetGuide = document.getElementById("home-permanent-guide");
-    if (targetGuide) {
-        targetGuide.style.display = "none";
-    }
+    if (targetGuide) targetGuide.style.display = "none";
 }
 
 function deleteFromBrowserStorage() {
@@ -256,8 +255,8 @@ function showCustomAlert(message, callback = null) {
     };
 }
 
-// 🛡️ MOBILE STYLE INJECTIONS FOR OVERLAYS
-const commonModalStyles = "position: fixed; inset: 0; background: rgba(10,10,12,0.98); display: flex; align-items: center; justify-content: center; z-index: 99999; padding: 20px; box-sizing: border-box; font-family: sans-serif; width: 100vw; height: 100vh;";
+// 🛡️ FIXED FULL-VIEWPORT OVERLAY MATRIX STYLES FOR CROSS-PLATFORM COMPILING
+const commonModalStyles = "position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100vh; background: rgba(10,10,12,0.98); display: flex; align-items: center; justify-content: center; z-index: 99999; padding: 20px; box-sizing: border-box; font-family: sans-serif;";
 
 function showHijackInterceptorPrompt(queryPayload, executeInjectionCallback) {
     if (!isUserSearchingRightNow) return;
@@ -335,6 +334,7 @@ function showHardwarePermissionWarningPrompt(executeInjectionCallback) {
     };
 }
 
+// 🛡️ RE-ARMED COMPACT INJECTOR DIALOG CARD (Restored with "What is this?" helper pointer trigger)
 function injectEasterEggTipCard() {
     const isAlreadyUnlocked = localStorage.getItem("loaigle_konami_unlocked") === "true";
     if (isAlreadyUnlocked) return; 
@@ -343,8 +343,11 @@ function injectEasterEggTipCard() {
     if (!dictionaryDiv) return;
 
     dictionaryDiv.innerHTML = `
-        <div class="word-dictionary" style="border-left: 4px solid #fbbc05; background: #202124; padding: 16px; border-radius: 8px; margin-bottom: 20px; text-align: left;">
-            <h3 style="color: #fbbc05; margin: 0 0 6px 0; font-size: 14px; font-family: monospace; font-weight: bold;">💡 SYSTEM BLUEPRINT NOTIFICATION</h3>
+        <div class="word-dictionary" style="border-left: 4px solid #fbbc05; background: #202124; padding: 16px; border-radius: 8px; margin-bottom: 20px; text-align: left; position: relative;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+                <h3 style="color: #fbbc05; margin: 0; font-size: 14px; font-family: monospace; font-weight: bold;">💡 SYSTEM BLUEPRINT NOTIFICATION</h3>
+                <span style="color: #8ab4f8; font-size: 11px; font-weight: bold; cursor: pointer; font-family: monospace; text-decoration: underline;" onclick="showCustomAlert('ℹ️ SYSTEM NOTICE:<br><br>Loaigle includes hidden diagnostic keys engineered into the search track framework. Passing the master key combination drops a permanent interface manual block under the dashboard.')">What is this?</span>
+            </div>
             <p style="color: #e8eaed; margin: 0; font-size: 13px; line-height: 1.5; font-family: sans-serif;">
                 Want to unlock the master diagnostic manual directly on your home panel? Clear the input field and type out the complete code combination sequence: <strong style="color: #34a853; font-family: monospace;">up up down down left right left right b a</strong> and hit Enter!
             </p>
@@ -363,6 +366,7 @@ async function search() {
         clearInterval(activeZergRush);
         activeZergRush = null;
     }
+    document.querySelectorAll(".zerg-ball").forEach(el => el.remove());
 
     const dictionaryDiv = document.getElementById("dictionary-box");
     const MathDiv = document.getElementById("results");
@@ -387,8 +391,6 @@ async function search() {
     const tiltPhrases = ["askew", "tilt", "67", "wobble"];
     const zergPhrases = ["zerg rush", "destroy my page", "virus"];
     const googlePhrases = ["google", "alphabet", "sundar pichai", "google.com", "googl", "toogle"];
-    
-    // 💡 Word conditions strictly flag the tip layout card tracker profile now
     const konamiVariations = ["konami", "konami code", "unlock guide", "show guide", "manifest"];
 
     const isBarrelRoll = barrelRollPhrases.includes(lowerQuery);
@@ -399,8 +401,7 @@ async function search() {
 
     document.body.classList.remove("tilt-animation", "wobble-animation");
 
-    // 🕹️ CRITICAL FIX: ONLY the true sequential code execution path registers the key configuration
-    if (lowerQuery === "up up down down left right left right b a") {
+    if (lowerQuery === "up up down down left right left right b a" || isKonamiWord) {
         localStorage.setItem("loaigle_konami_unlocked", "true"); 
         renderGuideOnMenu(); 
         showCustomAlert("✔ CHEAT CODE ACTIVATED!<br><br>The Master Blueprint Registry has been permanently locked and anchored right onto your home menu screen beneath the search bar! 🎮🚀");
@@ -410,13 +411,12 @@ async function search() {
         return; 
     }
 
-    // 🎲 TIP PLACEMENT EVALUATOR CIRCUITS (Includes Konami word text entries!)
     const isEasterEggQuery = isBarrelRoll || isTilt || isZergRush || isKonamiWord;
     if (isEasterEggQuery || Math.random() < 0.15) {
         injectEasterEggTipCard();
     }
 
-    // 🔒 THE SEARCH BAR SECURITY ENGINE
+    // 🔒 THE SEARCH BAR SECURITY ENGINE (Regex typo completely scrubbed and re-anchored)
     const hasHtmlTags = /<html|<head|<body|<div|<p|<span|<a\s+href|<link|<script/i.test(lowerQuery);
     const containsCodeElements = /<script|eval\s*\(|settimeout\s*\(|setinterval\s*\(|\.onclick\s*=/i.test(lowerQuery);
     
@@ -564,7 +564,7 @@ async function search() {
         ];
     }
 
-    // 🧹 HARD WIPE CLEANSE FIX: Nukes the loader text block profile clean
+    // Hard clearing layout loader string node bounds
     MathDiv.innerHTML = "";
 
     const sourceTag = isGoogleSearch || lowerQuery.includes("toogle") ? "Toogle News" : "Google News";
@@ -657,28 +657,44 @@ function triggerZergRush() {
         if (currentResults.length > 0) {
             const targetIndex = Math.floor(Math.random() * currentResults.length);
             const targetDiv = currentResults[targetIndex];
+            const zergBall = document.createElement("div");
+            zergBall.className = "zerg-ball";
+            const colorSelection = Math.random() < 0.5 ? "#ea4335" : "#fbbc05";
+            zergBall.style.position = "fixed";
+            zergBall.style.width = "20px";
+            zergBall.style.height = "20px";
+            zergBall.style.borderRadius = "50%";
+            zergBall.style.border = `3px solid ${colorSelection}`;
+            zergBall.style.background = "transparent";
+            zergBall.style.zIndex = "30000";
+            zergBall.style.top = "0px";
+            zergBall.style.left = `${Math.random() * window.innerWidth}px`;
+            zergBall.style.transition = "all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
+            document.body.appendChild(zergBall);
+
             setTimeout(() => {
-                targetDiv.style.transition = "opacity 0.4s ease, transform 0.4s ease";
-                targetDiv.style.opacity = "0";
-                targetDiv.style.transform = "scale(0.9)";
-                setTimeout(() => { if (targetDiv.parentNode) targetDiv.remove(); }, 400);
-            }, 200);
+                const targetRect = targetDiv.getBoundingClientRect();
+                zergBall.style.top = `${targetRect.top + (targetRect.height / 2)}px`;
+                zergBall.style.left = `${targetRect.left + (targetRect.width / 2)}px`;
+                zergBall.style.transform = "scale(0.5)";
+                setTimeout(() => {
+                    zergBall.remove();
+                    targetDiv.style.transition = "opacity 0.4s ease, transform 0.4s ease";
+                    targetDiv.style.opacity = "0";
+                    targetDiv.style.transform = "scale(0.9)";
+                    setTimeout(() => { if (targetDiv.parentNode) targetDiv.remove(); }, 400);
+                }, 800);
+            }, 50);
         } else {
             clearInterval(activeZergRush); activeZergRush = null;
-            DefenseDiv.innerHTML = "<p style='color: #ea4335;'>🚨 API not found!</p>";
+            DefenseDiv.innerHTML = "<p style='color: #ea4335; font-family: monospace; text-align: center; margin-top: 30px; font-weight: bold;'>🚨 GG! ALL ASSETS DISSOLVED.</p>";
         }
-    }, 500);
+    }, 600);
 }
 
 function triggerGoogleLogin() {
     localStorage.setItem('loaigle_validated_auth', 'true');
     auth.signInWithRedirect(googleProvider);
-}
-
-// 🛡️ SAFE WRAP INITIALIZATION PIPELINE FOR REBOOT CHECKS
-function hideSystemGuideUI() {
-    const targetGuide = document.getElementById("home-permanent-guide");
-    if (targetGuide) targetGuide.style.display = "none";
 }
 
 function triggerGithubLogin() {
