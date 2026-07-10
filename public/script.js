@@ -55,7 +55,8 @@ async function search() {
     // 🕵️‍♂️ ULTRA-STRICT GIBBERISH DETECTION ENGINE
     function checkIsGibberish(str) {
         const words = str.split(" ");
-        const passList = ["hello", "hi", "hey", "test", "nth", "bnd", "scrs", "txt", "bit"];
+        // Added 'html', 'css', 'js', 'json' so they are completely immune to the roast algorithm!
+        const passList = ["hello", "hi", "hey", "test", "nth", "bnd", "scrs", "txt", "bit", "html", "css", "js", "json"];
         
         for (let word of words) {
             if (passList.includes(word) || word.startsWith("zerg") || word.startsWith("rush")) continue;
