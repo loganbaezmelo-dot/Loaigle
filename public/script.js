@@ -33,6 +33,27 @@ const masterGuideHTML = `
     </div>
 `;
 
+// ⚙️ SETTINGS PANEL NAVIGATION CONTROLS
+function toggleSettingsMenu() {
+    const modal = document.getElementById("loaigle-settings-modal");
+    if (modal.style.display === "flex") {
+        modal.style.display = "none";
+    } else {
+        modal.style.display = "flex";
+    }
+}
+
+// 🌓 THEME ENGINE DRIVER LAYER
+function setThemeStyle(themeMode) {
+    if (themeMode === 'light') {
+        document.body.classList.add('light-theme');
+        localStorage.setItem('loaigle_theme', 'light');
+    } else {
+        document.body.classList.remove('light-theme');
+        localStorage.setItem('loaigle_theme', 'dark');
+    }
+}
+
 // 🚀 BOOTSTRAPPER: Direct script execution block triggered immediately on engine load
 (function bootLoader() {
     const cachedHtml = localStorage.getItem("loaigle_bg_html");
@@ -43,7 +64,12 @@ const masterGuideHTML = `
         document.documentElement.appendChild(template);
     }
 
-    // Mounts the guide panel directly to the menu frame loop on initial DOM compilation
+    // Set stored user skin choice immediately on compile
+    const storedTheme = localStorage.getItem('loaigle_theme');
+    if (storedTheme === 'light') {
+        document.body.classList.add('light-theme');
+    }
+
     window.addEventListener("DOMContentLoaded", () => {
         const isKonamiUnlocked = localStorage.getItem("loaigle_konami_unlocked") === "true";
         if (isKonamiUnlocked) {
@@ -101,7 +127,7 @@ function showCustomAlert(message, callback = null) {
     if (existing) existing.remove();
 
     const alertHtml = `
-        <div id="${alertId}" style="position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 30000; padding: 20px;">
+        <div id="${alertId}" style="position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 50000; padding: 20px;">
             <div style="background: #202124; border: 1px solid #3c4043; border-radius: 16px; max-width: 400px; width: 100%; padding: 24px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: sans-serif;">
                 <p style="color: #bdc1c6; font-size: 14px; line-height: 1.5; margin-bottom: 20px;">${message}</p>
                 <button id="close-alert-btn" style="padding: 10px 30px; font-size: 14px; border: none; border-radius: 24px; background-color: #34a853; color: white; cursor: pointer; font-weight: bold;">OK</button>
@@ -276,18 +302,14 @@ async function search() {
 
     for (let i = 0; i < proxyChain.length; i++) {
         try {
-            console.log(`Connecting to Mesh Node Layer [${i + 1}]...`);
             const response = await proxyChain[i]();
             let data = response.items ? response : await response.json();
             
             if (data && data.items && data.items.length > 0) {
                 articles = data.items.slice(0, 10);
-                console.log(`Mesh Node Link Engaged! Packet stream secured via Router ${i + 1}`);
                 break;
             }
-        } catch (err) {
-            console.warn(`Mesh Node [${i + 1}] Choked. Re-routing signal...`);
-        }
+        } catch (err) { console.log("Node down"); }
     }
 
     if (articles.length === 0) {
@@ -381,7 +403,6 @@ async function search() {
     }
 }
 
-// 📖 The Secret Backstory Popup Box
 function showToogleLore(event) {
     event.preventDefault();
     showCustomAlert(
@@ -392,7 +413,6 @@ function showToogleLore(event) {
     );
 }
 
-// 🛠️ HISTORICAL LORE LOG MODAL INJECTION
 function showHtmlViewerLore() {
     const modalHtml = `
         <div id="custom-lore-modal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 20000; padding: 20px;">
@@ -416,7 +436,6 @@ function showHtmlViewerLore() {
     document.body.appendChild(div);
 }
 
-// 🎰 Matrix Scrambling & Barrel Roll Logic
 function triggerChaosAnimation() {
     document.body.classList.add("spin-animation");
     setTimeout(() => { document.body.classList.remove("spin-animation"); }, 1000);
@@ -427,7 +446,6 @@ function triggerChaosAnimation() {
     results.forEach(result => {
         const linkElement = result.querySelector(".result-link");
         const snippetElement = result.querySelector(".result-snippet");
-        
         const origTitle = result.dataset.originalTitle;
         const origSnippet = result.dataset.originalSnippet;
         const origLink = result.dataset.originalLink;
@@ -447,14 +465,12 @@ function triggerChaosAnimation() {
                 if (index < iterations) return origTitle[index];
                 return chars[Math.floor(Math.random() * chars.length)];
             }).join("");
-
             snippetElement.innerText = origSnippet.split("").map((letter, index) => {
                 if (index < iterations) return origSnippet[index];
                 return chars[Math.floor(Math.random() * chars.length)];
             }).join("");
 
             iterations += 1;
-
             if (iterations >= Math.max(origTitle.length, origSnippet.length)) {
                 clearInterval(interval);
                 linkElement.innerText = origTitle;
@@ -465,17 +481,13 @@ function triggerChaosAnimation() {
     });
 }
 
-// 👾 Zerg Rush Falling Link Destroyer Logic
 function triggerZergRush() {
     const DefenseDiv = document.getElementById("results");
-    
     activeZergRush = setInterval(() => {
         const currentResults = document.querySelectorAll(".result, .result-roast");
-        
         if (currentResults.length > 0) {
             const targetIndex = Math.floor(Math.random() * currentResults.length);
             const targetDiv = currentResults[targetIndex];
-            
             const bug = document.createElement("span");
             bug.innerText = Math.random() > 0.5 ? "o" : "O";
             bug.style.position = "absolute";
@@ -494,26 +506,19 @@ function triggerZergRush() {
                 targetDiv.style.transition = "opacity 0.4s ease, transform 0.4s ease";
                 targetDiv.style.opacity = "0";
                 targetDiv.style.transform = "translateX(-20px) scale(0.9)";
-                setTimeout(() => {
-                    if (targetDiv.parentNode) targetDiv.remove();
-                }, 400);
+                setTimeout(() => { if (targetDiv.parentNode) targetDiv.remove(); }, 400);
             }, 650);
-            
         } else {
             clearInterval(activeZergRush);
             activeZergRush = null;
-            
             DefenseDiv.innerHTML = "<p style='color: #ea4335; font-family: monospace; font-size: 20px; font-weight: bold;'>🚨 API not found!</p>";
-            
-            setTimeout(() => {
-                DefenseDiv.innerHTML = "<p style='color: #bdc1c6;'>No results found on Loaigle.</p>";
-            }, 1500);
+            setTimeout(() => { DefenseDiv.innerHTML = "<p style='color: #bdc1c6;'>No results found on Loaigle.</p>"; }, 1500);
         }
     }, 500);
 }
 
 // ==========================================================================
-// 📡 SECURE DIRECT FIREBASE SYNC MATRIX (Verified Verified Production Keys)
+// 📡 SECURE MODAL CONTROLS & FIREBASE REDIRECT AUTH MANAGEMENT
 // ==========================================================================
 (function initFirebaseMatrix() {
     try {
@@ -527,9 +532,7 @@ function triggerZergRush() {
           measurementId: "G-HXS9N4GQ7Y"
         };
 
-        if (typeof firebase === 'undefined') {
-            throw new Error("Firebase CDN drivers failed to load inside your index.html file!");
-        }
+        if (typeof firebase === 'undefined') return;
 
         firebase.initializeApp(config);
         const auth = firebase.auth();
@@ -537,42 +540,49 @@ function triggerZergRush() {
         const googleProvider = new firebase.auth.GoogleAuthProvider();
         const githubProvider = new firebase.auth.GithubAuthProvider();
 
-        const loggedOutDiv = document.getElementById('auth-logged-out');
-        const loggedInDiv = document.getElementById('auth-logged-in');
-        const userEmailSpan = document.getElementById('user-email');
-        const syncStatusP = document.getElementById('sync-status');
-        const btnGoogle = document.getElementById('btn-google');
-        const btnGithub = document.getElementById('btn-github');
-        const btnSaveCloud = document.getElementById('btn-save-cloud');
-        const btnLogout = document.getElementById('btn-logout');
+        const syncStatusP = document.getElementById('settings-sync-indicator');
+        const btnGoogle = document.getElementById('settings-btn-google');
+        const btnGithub = document.getElementById('settings-btn-github');
+        const btnSaveCloud = document.getElementById('settings-btn-save');
 
         let currentUserInstance = null;
 
-        function updateStatus(msg) {
-          if (msg) {
-            syncStatusP.innerText = msg;
-            syncStatusP.style.display = 'block';
-          } else {
-            syncStatusP.style.display = 'none';
-          }
-        }
-
         auth.getRedirectResult().then(async (result) => {
-            if (result.user) {
-                updateStatus('Redirect handshake complete! Loading records...');
-            }
-        }).catch((e) => {
-            showCustomAlert("⚠️ Redirect Handshake Failed:<br><br>" + e.message);
-        });
+            if (result.user) { console.log("Redirect handshake secured."); }
+        }).catch((e) => { showCustomAlert("⚠️ Auth Redirect Failed: " + e.message); });
 
         auth.onAuthStateChanged(async (user) => {
           currentUserInstance = user;
           if (user) {
-            userEmailSpan.innerText = user.email;
-            loggedOutDiv.style.display = 'none';
-            loggedInDiv.style.display = 'block';
-            updateStatus('Verifying cloud signature keys...');
+            syncStatusP.innerText = `Active Operator: ${user.email}`;
+            syncStatusP.style.color = "#34a853";
+            btnSaveCloud.style.display = "block";
+
+            // 🔄 CONTEXTUAL DESTRUCTION INTERFACE: Shift buttons to Disconnect configurations
+            const providerId = user.providerData[0]?.providerId;
             
+            if (providerId === 'google.com') {
+                btnGoogle.innerText = "Disconnect";
+                btnGoogle.style.background = "transparent";
+                btnGoogle.style.border = "1px solid #ea4335";
+                btnGoogle.style.color = "#ea4335";
+                
+                // Reset GitHub to vanilla state
+                btnGithub.innerText = "Connect";
+                btnGithub.style.background = "#24292e";
+                btnGithub.style.color = "#white";
+            } else if (providerId === 'github.com') {
+                btnGithub.innerText = "Disconnect";
+                btnGithub.style.background = "transparent";
+                btnGithub.style.border = "1px solid #ea4335";
+                btnGithub.style.color = "#ea4335";
+                
+                // Reset Google to vanilla state
+                btnGoogle.innerText = "Connect";
+                btnGoogle.style.background = "#ea4335";
+                btnGoogle.style.color = "white";
+            }
+
             try {
                 const userDocRef = db.collection('users').doc(user.uid);
                 const userDoc = await userDocRef.get();
@@ -584,18 +594,13 @@ function triggerZergRush() {
                   if (cloudData.email === user.email) {
                     if (cloudData.bgHtml) localStorage.setItem('loaigle_bg_html', cloudData.bgHtml);
                     if (cloudData.konamiUnlocked) localStorage.setItem('loaigle_konami_unlocked', cloudData.konamiUnlocked);
-                    
-                    updateStatus('Success: Cloud configurations injected into environment layer!');
-                    
                     if (cloudData.bgHtml && !document.getElementById('background-persistent-layer')) {
                         const template = document.createElement("div");
                         template.id = "background-persistent-layer";
                         template.innerHTML = cloudData.bgHtml;
                         document.documentElement.appendChild(template);
                     }
-                    if (cloudData.konamiUnlocked === "true") {
-                        renderGuideOnMenu();
-                    }
+                    if (cloudData.konamiUnlocked === "true") renderGuideOnMenu();
                   }
                 } else if (localBgHtml || localKonami) {
                   await userDocRef.set({
@@ -604,68 +609,65 @@ function triggerZergRush() {
                     konamiUnlocked: localKonami || "false",
                     updatedAt: new Date().toISOString()
                   });
-                  updateStatus('Cloud profile created. Local configurations backed up.');
-                } else {
-                  updateStatus('System sync active. No baseline data configs discovered.');
                 }
-            } catch (e) {
-                showCustomAlert("⚠️ Firestore Engine Fault: " + e.message);
-                updateStatus('Storage injection runtime failed.');
-            }
+            } catch (e) { console.error("Firestore error:", e); }
           } else {
-            loggedOutDiv.style.display = 'block';
-            loggedInDiv.style.display = 'none';
-            updateStatus('');
+            // No user signed in: Default buttons back to baseline Connect settings
+            syncStatusP.innerText = "Active Session: Offline";
+            syncStatusP.style.color = "#9aa0a6";
+            btnSaveCloud.style.display = "none";
+
+            btnGoogle.innerText = "Connect";
+            btnGoogle.style.background = "#ea4335";
+            btnGoogle.style.color = "white";
+            btnGoogle.style.border = "none";
+
+            btnGithub.innerText = "Connect";
+            btnGithub.style.background = "#24292e";
+            btnGithub.style.color = "white";
+            btnGithub.style.border = "1px solid #5f6368";
           }
         });
 
         btnSaveCloud.addEventListener('click', async () => {
           if (!currentUserInstance) return;
-          const localBgHtml = localStorage.getItem('loaigle_bg_html') || "";
-          const localKonami = localStorage.getItem('loaigle_konami_unlocked') || "false";
-          
-          updateStatus('Pushing system environments to cloud storage...');
           try {
             await db.collection('users').doc(currentUserInstance.uid).set({
               email: currentUserInstance.email,
-              bgHtml: localBgHtml,
-              konamiUnlocked: localKonami,
+              bgHtml: localStorage.getItem('loaigle_bg_html') || "",
+              konamiUnlocked: localStorage.getItem('loaigle_konami_unlocked') || "false",
               updatedAt: new Date().toISOString()
             }, { merge: true });
-            updateStatus('Configuration saved permanently to cloud database grid!');
-          } catch (e) {
-            showCustomAlert("⚠️ Upload Rejection: " + e.message);
-            updateStatus('Cloud transaction failed.');
-          }
+            showCustomAlert("Configuration saved permanently to cloud database grid! 🎰🏁");
+          } catch (e) { showCustomAlert("⚠️ Upload Rejection: " + e.message); }
         });
 
+        // Toggle Actions: If logged in click means Disconnect, else trigger authentication router
         btnGoogle.addEventListener('click', () => {
-          updateStatus('Routing to Google Net gateway...');
-          auth.signInWithRedirect(googleProvider).catch((e) => {
-              showCustomAlert("⚠️ Google Redirect Error:<br><br>" + e.message);
-          });
+            if (auth.currentUser && auth.currentUser.providerData[0]?.providerId === 'google.com') {
+                auth.signOut().then(() => {
+                    localStorage.removeItem('loaigle_bg_html');
+                    localStorage.removeItem('loaigle_konami_unlocked');
+                    window.location.reload();
+                });
+            } else {
+                auth.signInWithRedirect(googleProvider);
+            }
         });
 
         btnGithub.addEventListener('click', () => {
-          updateStatus('Routing to GitHub Node gateway...');
-          auth.signInWithRedirect(githubProvider).catch((e) => {
-              showCustomAlert("⚠️ GitHub Redirect Error:<br><br>" + e.message);
-          });
+            if (auth.currentUser && auth.currentUser.providerData[0]?.providerId === 'github.com') {
+                auth.signOut().then(() => {
+                    localStorage.removeItem('loaigle_bg_html');
+                    localStorage.removeItem('loaigle_konami_unlocked');
+                    window.location.reload();
+                });
+            } else {
+                auth.signInWithRedirect(githubProvider);
+            }
         });
 
-        btnLogout.addEventListener('click', () => {
-          auth.signOut().then(() => {
-            localStorage.removeItem('loaigle_bg_html');
-            localStorage.removeItem('loaigle_konami_unlocked');
-            window.location.reload();
-          });
-        });
-
-    } catch (globalError) {
-        setTimeout(() => {
-            showCustomAlert("🚨 SYSTEM ENGINE CRASH LOG:<br><br>" + globalError.message);
-        }, 500);
-    }
+    } catch (globalError) { console.error(globalError); }
 })();
 
 // ⚡ LATE WINDOW LINKAGE: Re-expose triggers cleanly to native index view scopes
@@ -674,3 +676,5 @@ window.deleteFromBrowserStorage = deleteFromBrowserStorage;
 window.loadToBrowserStorage = loadToBrowserStorage;
 window.showHtmlViewerLore = showHtmlViewerLore;
 window.showToogleLore = showToogleLore;
+window.toggleSettingsMenu = toggleSettingsMenu;
+window.setThemeStyle = setThemeStyle;
