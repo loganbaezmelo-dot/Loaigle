@@ -1,27 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Loaigle</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <h1 class="logo">Loaigle</h1>
+    <div class="logo">Loaigle</div>
 
     <div class="search-box">
-        <input 
-            type="text" 
-            id="searchInput" 
-            placeholder="Search with Loaigle..."
-            onkeydown="if(event.key==='Enter') search()"
-        >
+        <input type="text" id="searchInput" placeholder="Search with Loaigle..." onkeydown="if(event.key === 'Enter') search()">
         <button onclick="search()">Search</button>
     </div>
 
-    <!-- Container for the dictionary definition box -->
     <div id="dictionary-box"></div>
     <div id="results"></div>
 
     <script src="script.js"></script>
+
 </body>
 </html>
