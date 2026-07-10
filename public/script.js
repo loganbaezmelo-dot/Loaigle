@@ -7,6 +7,9 @@ let isFirebaseInitializing = true;
 // Shared configuration parameters initialized globally
 let auth, db, googleProvider, githubProvider;
 
+// Global security flag to prevent any automatic modal loops on cold boot
+let isUserSearchingRightNow = false;
+
 // The canonical master blueprint text block utilized across both viewport layouts
 const masterGuideHTML = `
     <div class="konami-guide-container" id="loaigle-system-guide">
@@ -162,7 +165,6 @@ function updateThemeButtonsUI() {
 }
 
 // 🚀 BOOTSTRAPPER (Safe Sandbox Background Injection Only)
-// The input element security filters have been removed from here completely to block automatic cold boot trigger faults.
 (function bootLoader() {
     const cachedHtml = localStorage.getItem("loaigle_bg_html");
     if (cachedHtml) {
@@ -256,6 +258,9 @@ function showCustomAlert(message, callback = null) {
 const commonModalStyles = "position: fixed; inset: 0; background: rgba(10,10,12,0.98); display: flex; align-items: center; justify-content: center; z-index: 99999; padding: 20px; box-sizing: border-box; font-family: sans-serif; width: 100vw; height: 100vh;";
 
 function showHijackInterceptorPrompt(queryPayload, executeInjectionCallback) {
+    // HARD BOUNDARY BLOCK: If the user isn't physically running a search input track right now, kill the prompt deployment instantly.
+    if (!isUserSearchingRightNow) return;
+
     const promptId = "loaigle-hijack-interceptor";
     const existing = document.getElementById(promptId);
     if (existing) existing.remove();
@@ -281,6 +286,7 @@ function showHijackInterceptorPrompt(queryPayload, executeInjectionCallback) {
 
     document.getElementById("hijack-btn-no").onclick = function() {
         wrapper.remove();
+        isUserSearchingRightNow = false;
         window.returnToHomeMenu();
     };
 
@@ -291,6 +297,9 @@ function showHijackInterceptorPrompt(queryPayload, executeInjectionCallback) {
 }
 
 function showHardwarePermissionWarningPrompt(executeInjectionCallback) {
+    // HARD BOUNDARY BLOCK
+    if (!isUserSearchingRightNow) return;
+
     const promptId = "loaigle-hardware-interceptor";
     const existing = document.getElementById(promptId);
     if (existing) existing.remove();
@@ -316,6 +325,7 @@ function showHardwarePermissionWarningPrompt(executeInjectionCallback) {
 
     document.getElementById("hw-btn-no").onclick = function() {
         wrapper.remove();
+        isUserSearchingRightNow = false;
         window.returnToHomeMenu();
     };
 
@@ -326,9 +336,12 @@ function showHardwarePermissionWarningPrompt(executeInjectionCallback) {
 }
 
 async function search() {
+    // Flip the active user submission circuit switch instantly
+    isUserSearchingRightNow = true;
+
     const searchInput = document.getElementById("searchInput");
     const query = searchInput.value.trim();
-    if (!query) return;
+    if (!query) { isUserSearchingRightNow = false; return; }
 
     if (activeZergRush) {
         clearInterval(activeZergRush);
@@ -373,10 +386,11 @@ async function search() {
         showCustomAlert("✔ CHEAT CODE ACTIVATED!<br><br>The Master Blueprint Registry has been permanently locked and anchored right onto your home menu screen beneath the search bar! 🎮🚀");
         searchInput.value = ""; 
         MathDiv.innerHTML = ""; 
+        isUserSearchingRightNow = false;
         return; 
     }
 
-    // 🔒 THE SEARCH BAR SECURITY ENGINE (Runs strictly inside the search event boundary)
+    // 🔒 THE SEARCH BAR SECURITY ENGINE
     const hasHtmlTags = /<html|<head|<body|<div|<p|<span|<a\s+href|<link|<script/i.test(lowerQuery);
     const containsCodeElements = /<script|eval\s*\(|settimeout\s*\(|setinterval\s*\(|\.onclick\s*=/i.test(lowerQuery);
     
@@ -397,10 +411,10 @@ async function search() {
                 </div>
             </div>
         `;
+        isUserSearchingRightNow = false; // Reset security tracking switch state upon compiling completion
     };
 
     if (isAnyCodePayload) {
-        // 🛡️ SUB-STAGE RADAR ENGINE (Initializes strictly behind the first warning intercept validation gate)
         const executeCompile = () => {
             const attemptsHardwareAccess = /getusermedia|mediadevices|geolocation|getcurrentposition|webkitAudioContext|AudioContext|notification|permission|microphone/i.test(lowerQuery);
             
@@ -423,6 +437,8 @@ async function search() {
         }
         return; 
     }
+
+    isUserSearchingRightNow = false; // Terminate gate track for standard searches
 
     function checkIsGibberish(str) {
         const words = str.split(" ");
@@ -690,7 +706,6 @@ function setPageLayoutState(isAuthenticated) {
                 localStorage.setItem('loaigle_validated_auth', 'true'); 
                 setPageLayoutState(true);
                 
-                // 🛡️ ELEMENT SAFEGUARD CHECK (No more null crash pointer loops)
                 const syncStatusP = document.getElementById('settings-sync-indicator');
                 const btnSaveCloud = document.getElementById('settings-btn-save');
                 if (syncStatusP) { 
