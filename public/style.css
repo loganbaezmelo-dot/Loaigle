@@ -12,7 +12,7 @@ body {
 /* 🏷️ Logo Styling */
 .logo {
     font-size: 60px;
-    margin-top: 80px;
+    margin-top: 60px;
     margin-bottom: 20px;
     font-weight: bold;
 }
@@ -20,18 +20,25 @@ body {
 /* 🔍 Search Input and Button Container */
 .search-box {
     margin-bottom: 30px;
+    padding: 0 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .search-box input {
-    width: 350px;
-    padding: 12px 20px;
+    width: 100%;
+    max-width: 450px;
+    padding: 14px 20px;
     font-size: 16px;
     border: 1px solid #3c4043;
     border-radius: 24px;
     background-color: #202124;
     color: white;
     outline: none;
-    margin-right: 10px;
+    box-sizing: border-box;
 }
 
 .search-box input:focus {
@@ -40,7 +47,7 @@ body {
 }
 
 .search-box button {
-    padding: 12px 24px;
+    padding: 14px 28px;
     font-size: 16px;
     border: none;
     border-radius: 24px;
@@ -58,8 +65,9 @@ body {
 #dictionary-box {
     max-width: 650px;
     margin: 10px auto;
-    padding: 0 15px;
+    padding: 0 20px;
     text-align: left;
+    box-sizing: border-box;
 }
 
 .word-dictionary {
@@ -85,16 +93,18 @@ body {
 #results {
     max-width: 650px;
     margin: 20px auto;
-    padding: 0 15px;
+    padding: 0 20px;
     text-align: left;
+    box-sizing: border-box;
 }
 
-.result {
+.result, .result-roast {
     margin-bottom: 28px;
     line-height: 1.5;
+    position: relative; /* Lock the falling bugs relative to each card block */
 }
 
-/* The small "Toogle News" tag above the title */
+/* The small source tag above the title */
 .source-tag {
     font-size: 12px;
     color: #9aa0a6;
@@ -105,10 +115,11 @@ body {
 /* The main headline link */
 .result-link {
     color: #8ab4f8;
-    font-size: 20px;
+    font-size: 18px;
     text-decoration: none;
     display: inline-block;
     margin-bottom: 4px;
+    word-break: break-word;
 }
 
 .result-link:hover {
@@ -165,5 +176,40 @@ body {
     100% { 
         transform: translateY(180px); 
         opacity: 0; 
+    }
+}
+
+/* 📱 📲 SPECIFIC MOBILE LAYOUT OVERRIDES */
+@media (max-width: 600px) {
+    .logo {
+        font-size: 45px;
+        margin-top: 40px;
+        margin-bottom: 15px;
+    }
+
+    .search-box {
+        flex-direction: column;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .search-box input {
+        max-width: 100%;
+        font-size: 16px; /* 16px prevents iOS/Android browsers from zooming automatically when clicked */
+        padding: 16px;
+    }
+
+    .search-box button {
+        width: 100%;
+        max-width: 200px;
+        padding: 14px;
+    }
+
+    .result-link {
+        font-size: 16px; /* Cleans up title size on tight mobile glass displays */
+    }
+
+    .result-snippet {
+        font-size: 13px;
     }
 }
