@@ -39,7 +39,7 @@ async function search() {
     // 🕵️‍♂️ ULTRA-STRICT GIBBERISH DETECTION ENGINE
     function checkIsGibberish(str) {
         const words = str.split(" ");
-        const passList = ["hello", "hi", "hey", "test", "nth", "bnd", "scrs", "txt", "bit"];
+        const passList = ["hello", "hi", "hey", "test", "nth", "bnd", "scrs", "txt", "bit", "zergy"];
         
         for (let word of words) {
             if (passList.includes(word)) continue;
@@ -64,7 +64,7 @@ async function search() {
 
     const isGibberish = checkIsGibberish(lowerQuery);
 
-    // If it's absolute keyboard smash, deploy the automated Roast Engine
+    // If it's absolute keyboard smash, deploy the automated Roast Engine (No auto-correct allowed!)
     if (isGibberish) {
         resultsDiv.innerHTML = `
             <div class="result result-roast" style="margin-top: 20px;">
@@ -74,9 +74,8 @@ async function search() {
                 </p>
             </div>
         `;
-        // Execute immediate self-destruction via Zerg Rush
         triggerZergRush();
-        return; // Halt all network requests completely!
+        return; 
     }
 
     // 📖 1. Dictionary Lookup (Only for clean single words)
@@ -102,8 +101,30 @@ async function search() {
         }
     }
 
-    // 📰 2. News Search (Optimized path routing for regular long sentences)
-    const newsUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-US&gl=US&ceid=US:en`;
+    // 🧠 SILENT SILENT SPELL-CHECK MATRIX
+    // This cleans up common typos like "zergy rushu" -> "zerg rush" before hitting the server
+    function autoCorrectQuery(str) {
+        let corrected = str;
+        const typoMap = {
+            "zergy": "zerg",
+            "rushu": "rush",
+            "googl": "google",
+            "toogle": "google",
+            "searchh": "search",
+            "helloo": "hello"
+        };
+        
+        Object.keys(typoMap).forEach(typo => {
+            const regex = new RegExp(`\\b${typo}\\b`, "gi");
+            corrected = corrected.replace(regex, typoMap[typo]);
+        });
+        return corrected;
+    }
+
+    const serverQuery = autoCorrectQuery(lowerQuery);
+
+    // 📰 2. News Search 
+    const newsUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(serverQuery)}&hl=en-US&gl=US&ceid=US:en`;
     const timestamp = new Date().getTime();
     let articles = [];
 
@@ -153,9 +174,9 @@ async function search() {
     resultsDiv.innerHTML = "";
 
     // 📰 3. Render Results
-    const sourceTag = isGoogleSearch ? "Toogle News" : "Google News";
+    const sourceTag = isGoogleSearch || lowerQuery.includes("toogle") ? "Toogle News" : "Google News";
 
-    if (isGoogleSearch) {
+    if (isGoogleSearch || lowerQuery.includes("toogle")) {
         const fakeDiv = document.createElement("div");
         fakeDiv.className = "result";
         fakeDiv.style.borderLeft = "3px solid #ea4335";
@@ -189,7 +210,8 @@ async function search() {
         resultsDiv.appendChild(div);
     });
 
-    if (isBarrelRoll) {
+    // Fire triggers on original input query concepts
+    if (isBarrelRoll || serverQuery.includes("barrel roll")) {
         triggerChaosAnimation();
     } else if (isTilt) {
         if (lowerQuery === "67" || lowerQuery === "wobble") {
@@ -197,7 +219,7 @@ async function search() {
         } else {
             document.body.classList.add("tilt-animation");
         }
-    } else if (isZergRush) {
+    } else if (isZergRush || serverQuery.includes("zerg rush")) {
         triggerZergRush();
     }
 }
@@ -267,7 +289,6 @@ function triggerZergRush() {
     const resultsDiv = document.getElementById("results");
     
     activeZergRush = setInterval(() => {
-        // Targets regular results AND the new result-roast block perfectly
         const currentResults = document.querySelectorAll(".result, .result-roast");
         
         if (currentResults.length > 0) {
