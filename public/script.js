@@ -41,7 +41,6 @@ function toggleSettingsMenu() {
     } else {
         modal.style.display = "flex";
         updateThemeButtonsUI();
-        // Force sync button display elements anytime panel opens
         if (window.forceSyncButtonsUI) window.forceSyncButtonsUI();
     }
 }
@@ -143,7 +142,6 @@ function renderGuideOnMenu() {
     }
 }
 
-// 🛠️ RESET OPERATION
 function deleteFromBrowserStorage() {
     localStorage.removeItem("loaigle_bg_html");
     localStorage.removeItem("loaigle_konami_unlocked"); 
@@ -437,6 +435,121 @@ async function search() {
     }
 }
 
+function showToogleLore(event) {
+    event.preventDefault();
+    showCustomAlert(
+        "📜 THE LORE OF TOOGLE:\n\n" +
+        "This was not an intentional tech feature. While the lead engineer was rapidly deploying code from a tiny, chaotic mobile interface, their thumb struck the 'T' key instead of the 'G' key.\n\n" +
+        "Vercel built it instantly. The internet witnessed it. The blinding white layout collapsed under its power. Instead of fixing the mistake silently, it was immortalized forever into the source code as a feature.\n\n" +
+        "Long live Toogle News! 💀😭"
+    );
+}
+
+function showHtmlViewerLore() {
+    const modalHtml = `
+        <div id="custom-lore-modal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 20000; padding: 20px;">
+            <div style="background: #202124; border: 1px solid #3c4043; border-radius: 16px; max-width: 500px; width: 100%; padding: 24px; max-height: 80vh; overflow-y: auto; text-align: left; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                <h3 style="color: #8ab4f8; margin-top: 0; font-size: 20px; border-bottom: 1px solid #3c4043; padding-bottom: 10px; font-weight: bold; font-family: sans-serif;">🛠️ LOAIGLE HTML VIEWER PRO STATUS LOG:</h3>
+                <div style="color: #bdc1c6; font-size: 13px; line-height: 1.6; font-family: sans-serif;">
+                    <p style="margin-bottom: 15px;"><strong>1. THE ORIGIN ACCIDENT:</strong><br>This portal was birthed during a high-velocity script layout verification test. A copy of the platform's literal repository code was passed directly into the search bar. Because code syntax fails the vowel-ratio metrics of the Gibberish Roast Engine, the input was flagged as an absolute keyboard smash.</p>
+                    <p style="margin-bottom: 15px;"><strong>2. THE CHAIN REACTION:</strong><br>Instead of rendering as flat string text, the engine dropped the raw source code variables directly inside a live innerHTML template. The browser compiled the structural tags instantly—manifesting an identical, operational mirror loop of the website layout inside the insult card, while the hardcoded gibberish routine automatically unleashed an active Zerg Rush script to destroy it.</p>
+                    <p style="margin-bottom: 15px;"><strong>3. THE THEME CONTROLS & DISCLAIMER ORIGIN:</strong><br>The theme-injection disclaimer was permanently written into the specs after a developer tried running a massive standalone React + Tailwind YouTube Simulator inside the engine. The browser parsed the simulator's custom stylesheet, completely overrode Loaigle's global layout properties, and instantly hijacked the master viewport background color from dark charcoal to onyx black!</p>
+                    <p><strong>4. CURRENT PRODUCTION USECASE:</strong><br>This portal now features dual-routing capability: use the interface window to safely execute and debug live single-file 'index.html' applications without interference, OR use the background engine to permanently save custom CSS code overrides into localStorage to inject custom skins, backgrounds, and custom textures natively into Loaigle's core skin style!</p>
+                </div>
+                <div style="margin-top: 20px; text-align: right;">
+                    <button onclick="document.getElementById('custom-lore-modal').remove()" style="padding: 10px 24px; font-size: 14px; border: none; border-radius: 24px; background-color: #ea4335; color: white; cursor: pointer; font-weight: bold;">OK</button>
+                </div>
+            </div>
+        </div>
+    `;
+    const div = document.createElement("div");
+    div.id = "lore-modal-container";
+    div.innerHTML = modalHtml;
+    document.body.appendChild(div);
+}
+
+function triggerChaosAnimation() {
+    document.body.classList.add("spin-animation");
+    setTimeout(() => { document.body.classList.remove("spin-animation"); }, 1000);
+
+    const results = document.querySelectorAll(".result");
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+
+    results.forEach(result => {
+        const linkElement = result.querySelector(".result-link");
+        const snippetElement = result.querySelector(".result-snippet");
+        const origTitle = result.dataset.originalTitle;
+        const origSnippet = result.dataset.originalSnippet;
+        const origLink = result.dataset.originalLink;
+
+        let scrambledTitle = "";
+        let scrambledSnippet = "";
+        for(let i=0; i<origTitle.length; i++) scrambledTitle += chars[Math.floor(Math.random() * chars.length)];
+        for(let i=0; i<origSnippet.length; i++) scrambledSnippet += chars[Math.floor(Math.random() * chars.length)];
+        
+        linkElement.innerText = scrambledTitle;
+        snippetElement.innerText = scrambledSnippet;
+        linkElement.href = `https://${scrambledTitle.substring(0,8)}.com/error-broken-link`;
+
+        let iterations = 0;
+        const interval = setInterval(() => {
+            linkElement.innerText = origTitle.split("").map((letter, index) => {
+                if (index < iterations) return origTitle[index];
+                return chars[Math.floor(Math.random() * chars.length)];
+            }).join("");
+            snippetElement.innerText = origSnippet.split("").map((letter, index) => {
+                if (index < iterations) return origSnippet[index];
+                return chars[Math.floor(Math.random() * chars.length)];
+            }).join("");
+
+            iterations += 1;
+            if (iterations >= Math.max(origTitle.length, origSnippet.length)) {
+                clearInterval(interval);
+                linkElement.innerText = origTitle;
+                snippetElement.innerText = origSnippet;
+                linkElement.href = origLink;
+            }
+        }, 30);
+    });
+}
+
+// 👾 Zerg Rush Falling Link Destroyer Logic
+function triggerZergRush() {
+    const DefenseDiv = document.getElementById("results");
+    activeZergRush = setInterval(() => {
+        const currentResults = document.querySelectorAll(".result, .result-roast");
+        if (currentResults.length > 0) {
+            const targetIndex = Math.floor(Math.random() * currentResults.length);
+            const targetDiv = currentResults[targetIndex];
+            const bug = document.createElement("span");
+            bug.innerText = Math.random() > 0.5 ? "o" : "O";
+            bug.style.position = "absolute";
+            bug.style.color = Math.random() > 0.5 ? "#ea4335" : "#fbbc05";
+            bug.style.fontWeight = "bold";
+            bug.style.fontSize = "24px";
+            bug.style.left = `${Math.random() * 60 + 20}%`;
+            bug.style.top = "-50px";
+            bug.style.zIndex = "999";
+            bug.style.animation = "fall 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards";
+            
+            targetDiv.style.position = "relative";
+            targetDiv.appendChild(bug);
+            
+            setTimeout(() => {
+                targetDiv.style.transition = "opacity 0.4s ease, transform 0.4s ease";
+                targetDiv.style.opacity = "0";
+                targetDiv.style.transform = "translateX(-20px) scale(0.9)";
+                setTimeout(() => { if (targetDiv.parentNode) targetDiv.remove(); }, 400);
+            }, 650);
+        } else {
+            clearInterval(activeZergRush);
+            activeZergRush = null;
+            DefenseDiv.innerHTML = "<p style='color: #ea4335; font-family: monospace; font-size: 20px; font-weight: bold;'>🚨 API not found!</p>";
+            setTimeout(() => { DefenseDiv.innerHTML = "<p style='color: #bdc1c6;'>No results found on Loaigle.</p>"; }, 1500);
+        }
+    }, 500);
+}
+
 // ==========================================================================
 // 📡 SECURE MODAL CONTROLS & FIREBASE REDIRECT AUTH MANAGEMENT
 // ==========================================================================
@@ -462,7 +575,7 @@ async function search() {
 
         let currentUserInstance = null;
 
-        // 🛠️ BULLETPROOF BUTTON RENDERER: Forces text replacement synchronously upon call parameters
+        // 🛠️ SAFE PROPERTY UI OVERRIDER: Updates element values directly without replacing nodes
         window.forceSyncButtonsUI = function() {
             const syncStatusP = document.getElementById('settings-sync-indicator');
             const btnGoogle = document.getElementById('settings-btn-google');
