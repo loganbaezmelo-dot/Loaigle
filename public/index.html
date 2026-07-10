@@ -36,9 +36,12 @@
 
             <div style="margin-bottom: 25px;">
                 <h4 style="color: #bdc1c6; margin: 0 0 10px 0; font-size: 14px;">🎨 Interface Skins</h4>
-                <div style="display: flex; gap: 10px;">
-                    <button onclick="setThemeStyle('dark')" style="flex: 1; background: #303134; color: #fff; border: 1px solid #5f6368; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold;">Onyx Dark</button>
-                    <button onclick="setThemeStyle('light')" style="flex: 1; background: #f8f9fa; color: #202124; border: 1px solid #dadce0; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold;">Classic Light</button>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <div style="display: flex; gap: 10px;">
+                        <button id="theme-btn-dark" onclick="setThemeStyle('dark')" style="flex: 1; background: #303134; color: #fff; border: 1px solid #5f6368; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-family: monospace;">Onyx Dark</button>
+                        <button id="theme-btn-light" onclick="setThemeStyle('light')" style="flex: 1; background: #303134; color: #fff; border: 1px solid #3c4043; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-family: monospace;">Classic Light</button>
+                    </div>
+                    <button id="theme-btn-auto" onclick="setThemeStyle('auto')" style="background: #303134; color: #fff; border: 1px solid #3c4043; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-family: monospace; text-align: center;">🔄 System Auto Sync</button>
                 </div>
             </div>
 
@@ -56,7 +59,7 @@
                     <button id="settings-btn-github" style="padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; border: 1px solid #5f6368; background: #24292e; color: white;">Connect</button>
                 </div>
                 
-                <button id="settings-btn-save" style="display: none; background: #34a853; color: #fff; border: none; padding: 12px 15px; width: 100%; border-radius: 24px; cursor: pointer; font-weight: bold; margin-top: 10px; text-align: center;">Push Local Configs to Cloud Matrix</button>
+                <button id="settings-btn-save" style="display: none; background: #34a853; color: #fff; border: none; padding: 12px 15px; width: 100%; border-radius: 24px; cursor: pointer; font-weight: bold; margin-top: 10px; text-align: center; font-family: monospace;">Push Local Configs to Cloud Matrix</button>
             </div>
 
         </div>
