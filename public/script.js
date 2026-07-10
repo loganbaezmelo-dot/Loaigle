@@ -497,7 +497,7 @@ async function search() {
 }
 
 // ==========================================================================
-// 📡 ZERO-RACE CONDITIONAL DIRECT CONTAINER STATE MANIFEST SYSTEM
+// 📡 FIXED COMPILATION STATE ENGINE WITH STORAGE HANDSHAKE MARKERS
 // ==========================================================================
 (function initFirebaseMatrix() {
     try {
@@ -547,7 +547,6 @@ async function search() {
             }
         };
 
-        // THE COMPLETE OVERRIDE HANDSHAKE: Catching redirect tokens synchronously
         auth.getRedirectResult().then((result) => {
             if (result && result.user) {
                 localStorage.setItem('loaigle_validated_auth', 'true');
@@ -559,7 +558,6 @@ async function search() {
             showCustomAlert("⚠️ Handshake Rejection: " + e.message); 
         });
 
-        // Monitors user authentication states securely
         auth.onAuthStateChanged(async (user) => {
             isFirebaseInitializing = false;
 
@@ -578,7 +576,7 @@ async function search() {
                     }
                 } catch (e) { console.error(e); }
             } else {
-                // 🛡️ RE-ARMED PERSISTENCE ENVELOPE: Only drop to login if local validation tracker is absent
+                // 🛡️ RE-ARMED PERSISTENCE ENVELOPE: Restored flag layout protection check
                 if (localStorage.getItem('loaigle_validated_auth') === 'true') {
                     setPageLayoutState(true);
                     window.forceSyncButtonsUI();
@@ -588,7 +586,6 @@ async function search() {
             }
         });
 
-        // Click Routers Pipelines
         document.addEventListener('click', (e) => {
             if (e.target && e.target.id === 'gate-btn-google') {
                 localStorage.setItem('loaigle_validated_auth', 'true');
