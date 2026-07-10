@@ -15,7 +15,7 @@ const masterGuideHTML = `
     <div class="konami-guide-container" id="loaigle-system-guide">
         <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #3c4043; padding-bottom: 10px; margin-bottom: 15px;">
             <h2 style="color: #34a853; margin: 0; font-size: 20px; font-family: monospace;">🎮 LOAIGLE SYSTEM MANIFEST</h2>
-            <button onclick="deleteFromBrowserStorage()" style="background: #ef4444; color: white; border: none; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer;">Hide Guide</button>
+            <button onclick="hideSystemGuideUI()" style="background: #303134; color: #9aa0a6; border: 1px solid #3c4043; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer;">Hide Guide</button>
         </div>
         
         <div class="guide-section">
@@ -107,7 +107,10 @@ function returnToHomeMenu() {
     document.body.classList.remove("tilt-animation", "wobble-animation");
 
     const guide = document.getElementById("home-permanent-guide");
-    if (guide) guide.style.display = "block";
+    if (guide) {
+        const isKonamiUnlocked = localStorage.getItem("loaigle_konami_unlocked") === "true";
+        if (isKonamiUnlocked) targetGuide.style.display = "block";
+    }
 }
 
 // 🌓 THEME TRANSLATION ENGINE
@@ -195,6 +198,14 @@ function renderGuideOnMenu() {
     if (targetGuide) {
         targetGuide.innerHTML = masterGuideHTML;
         targetGuide.style.display = "block";
+    }
+}
+
+// 🛡️ SAFE UI TOGGLE: Hides the panel interface visually without logging you out!
+function hideSystemGuideUI() {
+    const targetGuide = document.getElementById("home-permanent-guide");
+    if (targetGuide) {
+        targetGuide.style.display = "none";
     }
 }
 
@@ -324,11 +335,9 @@ function showHardwarePermissionWarningPrompt(executeInjectionCallback) {
     };
 }
 
-// 🕹️ THE SMART HINT BOX INJECTOR ENGINE (Auto-Suppresses if guide is already unlocked in storage)
 function injectEasterEggTipCard() {
-    // Check if the system manifest guide is already present on the interface template canvas
     const isAlreadyUnlocked = localStorage.getItem("loaigle_konami_unlocked") === "true";
-    if (isAlreadyUnlocked) return; // Terminate execution instantly if guide is unlocked!
+    if (isAlreadyUnlocked) return; 
 
     const dictionaryDiv = document.getElementById("dictionary-box");
     if (!dictionaryDiv) return;
@@ -378,6 +387,8 @@ async function search() {
     const tiltPhrases = ["askew", "tilt", "67", "wobble"];
     const zergPhrases = ["zerg rush", "destroy my page", "virus"];
     const googlePhrases = ["google", "alphabet", "sundar pichai", "google.com", "googl", "toogle"];
+    
+    // 💡 Word conditions strictly flag the tip layout card tracker profile now
     const konamiVariations = ["konami", "konami code", "unlock guide", "show guide", "manifest"];
 
     const isBarrelRoll = barrelRollPhrases.includes(lowerQuery);
@@ -388,7 +399,8 @@ async function search() {
 
     document.body.classList.remove("tilt-animation", "wobble-animation");
 
-    if (lowerQuery === "up up down down left right left right b a" || isKonamiWord) {
+    // 🕹️ CRITICAL FIX: ONLY the true sequential code execution path registers the key configuration
+    if (lowerQuery === "up up down down left right left right b a") {
         localStorage.setItem("loaigle_konami_unlocked", "true"); 
         renderGuideOnMenu(); 
         showCustomAlert("✔ CHEAT CODE ACTIVATED!<br><br>The Master Blueprint Registry has been permanently locked and anchored right onto your home menu screen beneath the search bar! 🎮🚀");
@@ -398,8 +410,8 @@ async function search() {
         return; 
     }
 
-    // 🎲 TIP PLACEMENT EVALUATOR CIRCUITS
-    const isEasterEggQuery = isBarrelRoll || isTilt || isZergRush;
+    // 🎲 TIP PLACEMENT EVALUATOR CIRCUITS (Includes Konami word text entries!)
+    const isEasterEggQuery = isBarrelRoll || isTilt || isZergRush || isKonamiWord;
     if (isEasterEggQuery || Math.random() < 0.15) {
         injectEasterEggTipCard();
     }
@@ -552,6 +564,7 @@ async function search() {
         ];
     }
 
+    // 🧹 HARD WIPE CLEANSE FIX: Nukes the loader text block profile clean
     MathDiv.innerHTML = "";
 
     const sourceTag = isGoogleSearch || lowerQuery.includes("toogle") ? "Toogle News" : "Google News";
@@ -662,6 +675,12 @@ function triggerGoogleLogin() {
     auth.signInWithRedirect(googleProvider);
 }
 
+// 🛡️ SAFE WRAP INITIALIZATION PIPELINE FOR REBOOT CHECKS
+function hideSystemGuideUI() {
+    const targetGuide = document.getElementById("home-permanent-guide");
+    if (targetGuide) targetGuide.style.display = "none";
+}
+
 function triggerGithubLogin() {
     localStorage.setItem('loaigle_validated_auth', 'true');
     auth.signInWithRedirect(githubProvider);
@@ -739,4 +758,4 @@ function setPageLayoutState(isAuthenticated) {
 window.search = search; window.deleteFromBrowserStorage = deleteFromBrowserStorage; window.loadToBrowserStorage = loadToBrowserStorage;
 window.toggleSettingsMenu = toggleSettingsMenu; window.setThemeStyle = setThemeStyle; window.returnToHomeMenu = returnToHomeMenu;
 window.triggerGoogleLogin = triggerGoogleLogin; window.triggerGithubLogin = triggerGithubLogin; window.triggerSignOut = triggerSignOut; 
-window.pushConfigsToCloud = pushConfigsToCloud; window.triggerVoiceCapture = triggerVoiceCapture;
+window.pushConfigsToCloud = pushConfigsToCloud; window.triggerVoiceCapture = triggerVoiceCapture; window.hideSystemGuideUI = hideSystemGuideUI;
