@@ -50,7 +50,8 @@ function triggerVoiceCapture() {
     recognition.lang = "en-US";
     recognition.interimResults = false;
 
-    micBtn.style.color = "#ea4335"; // Turn red indicating recording state
+    micBtn.style.color = "#ea4335"; 
+    micBtn.style.background = "#3c4043";
     micBtn.innerText = "🛑";
 
     recognition.start();
@@ -58,19 +59,22 @@ function triggerVoiceCapture() {
     recognition.onresult = function(event) {
         const spokenText = event.results[0][0].transcript;
         searchInput.value = spokenText;
-        micBtn.style.color = "#9aa0a6";
+        micBtn.style.color = "#bdc1c6";
+        micBtn.style.background = "#303134";
         micBtn.innerText = "🎙️";
-        search(); // Automatically execute search pass!
+        search(); 
     };
 
     recognition.onerror = function(e) {
         console.error(e);
-        micBtn.style.color = "#9aa0a6";
+        micBtn.style.color = "#bdc1c6";
+        micBtn.style.background = "#303134";
         micBtn.innerText = "🎙️";
     };
 
     recognition.onend = function() {
-        micBtn.style.color = "#9aa0a6";
+        micBtn.style.color = "#bdc1c6";
+        micBtn.style.background = "#303134";
         micBtn.innerText = "🎙️";
     };
 }
@@ -157,13 +161,14 @@ function updateThemeButtonsUI() {
     }
 }
 
-// 🚀 BOOTSTRAPPER
+// 🚀 BOOTSTRAPPER (Safe Sandbox Extraction)
 (function bootLoader() {
     const cachedHtml = localStorage.getItem("loaigle_bg_html");
     if (cachedHtml) {
         const template = document.createElement("div");
         template.id = "background-persistent-layer";
         template.innerHTML = cachedHtml;
+        document.body.appendChild(template);
     }
 
     applyThemeLayer();
@@ -246,22 +251,24 @@ function showCustomAlert(message, callback = null) {
     };
 }
 
-// 🛡️ GATEWAY 1 INTERCEPTOR DIALOGUE: Prompts choice blocks before full layout hijacking
+// 🛡️ MOBILE STYLE INJECTIONS FOR OVERLAYS
+const commonModalStyles = "position: fixed; inset: 0; background: rgba(10,10,12,0.98); display: flex; align-items: center; justify-content: center; z-index: 99999; padding: 20px; box-sizing: border-box; font-family: sans-serif; width: 100vw; height: 100vh;";
+
 function showHijackInterceptorPrompt(queryPayload, executeInjectionCallback) {
     const promptId = "loaigle-hijack-interceptor";
     const existing = document.getElementById(promptId);
     if (existing) existing.remove();
 
     const promptHtml = `
-        <div id="${promptId}" style="position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 90000; padding: 20px; font-family: monospace;">
-            <div style="background: #202124; border: 2px solid #ea4335; border-radius: 16px; max-width: 450px; width: 100%; padding: 28px; text-align: left; box-shadow: 0 10px 40px rgba(0,0,0,0.6); color: #fff;">
-                <h3 style="color: #ea4335; margin-top: 0; font-size: 18px; margin-bottom: 15px;">⚠️ SECURE RUNTIME SHIELD INTERCEPT</h3>
+        <div id="${promptId}" style="${commonModalStyles}">
+            <div style="background: #202124; border: 2px solid #ea4335; border-radius: 16px; max-width: 90%; width: 380px; padding: 24px; text-align: left; box-shadow: 0 10px 40px rgba(0,0,0,0.6); color: #fff; box-sizing: border-box;">
+                <h3 style="color: #ea4335; margin-top: 0; font-size: 18px; margin-bottom: 15px; font-family: monospace;">⚠️ RUNTIME INTERCEPT</h3>
                 <p style="color: #bdc1c6; font-size: 13px; line-height: 1.6; margin-bottom: 24px;">
-                    This HTML code is trying to cover the entire page of Loaigle, please confirm if you want to inject this code temporarily. To bring back Loaigle you will have to refresh the page.
+                    This HTML code is trying to cover the entire page of Loaigle, please confirm if you want to inject this code temporarily.
                 </p>
                 <div style="display: flex; gap: 12px; justify-content: flex-end;">
-                    <button id="hijack-btn-no" style="padding: 10px 24px; font-size: 13px; border: 1px solid #5f6368; border-radius: 20px; background: #303134; color: #fff; cursor: pointer; font-weight: bold;">No</button>
-                    <button id="hijack-btn-yes" style="padding: 10px 24px; font-size: 13px; border: none; border-radius: 20px; background: #ea4335; color: #fff; cursor: pointer; font-weight: bold;">Yes</button>
+                    <button id="hijack-btn-no" style="padding: 10px 20px; font-size: 13px; border: 1px solid #5f6368; border-radius: 20px; background: #303134; color: #fff; cursor: pointer; font-weight: bold;">No</button>
+                    <button id="hijack-btn-yes" style="padding: 10px 20px; font-size: 13px; border: none; border-radius: 20px; background: #ea4335; color: #fff; cursor: pointer; font-weight: bold;">Yes</button>
                 </div>
             </div>
         </div>
@@ -273,7 +280,6 @@ function showHijackInterceptorPrompt(queryPayload, executeInjectionCallback) {
 
     document.getElementById("hijack-btn-no").onclick = function() {
         wrapper.remove();
-        document.getElementById("searchInput").value = "";
         window.returnToHomeMenu();
     };
 
@@ -283,22 +289,21 @@ function showHijackInterceptorPrompt(queryPayload, executeInjectionCallback) {
     };
 }
 
-// 🛡️ GATEWAY 2 INTERCEPTOR DIALOGUE: Fires strictly upon unauthorized hardware permission probe traces
 function showHardwarePermissionWarningPrompt(executeInjectionCallback) {
     const promptId = "loaigle-hardware-interceptor";
     const existing = document.getElementById(promptId);
     if (existing) existing.remove();
 
     const promptHtml = `
-        <div id="${promptId}" style="position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; z-index: 95000; padding: 20px; font-family: monospace;">
-            <div style="background: #202124; border: 2px solid #fbbc05; border-radius: 16px; max-width: 450px; width: 100%; padding: 28px; text-align: left; box-shadow: 0 10px 40px rgba(0,0,0,0.7); color: #fff;">
-                <h3 style="color: #fbbc05; margin-top: 0; font-size: 18px; margin-bottom: 15px;">⚠️ CRITICAL PRIVACY EXPLOIT RADAR</h3>
+        <div id="${promptId}" style="${commonModalStyles}">
+            <div style="background: #202124; border: 2px solid #fbbc05; border-radius: 16px; max-width: 90%; width: 380px; padding: 24px; text-align: left; box-shadow: 0 10px 40px rgba(0,0,0,0.7); color: #fff; box-sizing: border-box;">
+                <h3 style="color: #fbbc05; margin-top: 0; font-size: 17px; margin-bottom: 15px; font-family: monospace;">⚠️ PRIVACY EXPLOIT RADAR</h3>
                 <p style="color: #bdc1c6; font-size: 13px; line-height: 1.6; margin-bottom: 24px;">
                     This code is trying to use permissions you set up on Loaigle. Are you sure you wanna use it?
                 </p>
                 <div style="display: flex; gap: 12px; justify-content: flex-end;">
-                    <button id="hw-btn-no" style="padding: 10px 24px; font-size: 13px; border: 1px solid #5f6368; border-radius: 20px; background: #303134; color: #fff; cursor: pointer; font-weight: bold;">No</button>
-                    <button id="hw-btn-yes" style="padding: 10px 24px; font-size: 13px; border: none; border-radius: 20px; background: #fbbc05; color: #000; cursor: pointer; font-weight: bold;">Yes</button>
+                    <button id="hw-btn-no" style="padding: 10px 20px; font-size: 13px; border: 1px solid #5f6368; border-radius: 20px; background: #303134; color: #fff; cursor: pointer; font-weight: bold;">No</button>
+                    <button id="hw-btn-yes" style="padding: 10px 20px; font-size: 13px; border: none; border-radius: 20px; background: #fbbc05; color: #000; cursor: pointer; font-weight: bold;">Yes</button>
                 </div>
             </div>
         </div>
@@ -310,7 +315,6 @@ function showHardwarePermissionWarningPrompt(executeInjectionCallback) {
 
     document.getElementById("hw-btn-no").onclick = function() {
         wrapper.remove();
-        document.getElementById("searchInput").value = "";
         window.returnToHomeMenu();
     };
 
@@ -371,14 +375,14 @@ async function search() {
         return; 
     }
 
-    // 🛡️ ARMED SECURITY SHIELD PERIMETER (Secure 1,000 character length threshold limit check)
-    const hasHtmlTags = /<(!doctype|html|head|body|div|p|span|a|link|script)/i.test(lowerQuery);
-    const containsCodeElements = /<script|function\s*\(|eval\(|setTimeout\(|setInterval\(|\.onclick/i.test(lowerQuery);
+    // 🛡️ RE-ARMED CRITERIA
+    const hasHtmlTags = /<html|<head|<body|<div|<p|<span|<a\s+href|<link|<script/i.test(lowerQuery);
+    const containsCodeElements = /<script|eval\s*\(|settimeout\s*\(|setinterval\s*\(|\.onclick\s*=/i.test(lowerQuery);
     
-    // 🚨 HARDWARE PRIVACY PERMISSION BREACH RADAR TRACER STRING SELECTION
+    const attemptsFullHijack = /position\s*:\s*(fixed|absolute)|width\s*:\s*100(vw|%)|height\s*:\s*100(vh|%)|inset\s*:\s*0|background\s*:\s*#|<html|<body/i.test(lowerQuery) || lowerQuery.length > 1000;
     const attemptsHardwareAccess = /getusermedia|mediadevices|geolocation|getcurrentposition|webkitAudioContext|AudioContext|notification|permission|microphone/i.test(lowerQuery);
 
-    const attemptsFullHijack = hasHtmlTags || containsCodeElements || lowerQuery.length > 1000;
+    const isAnyCodePayload = hasHtmlTags || containsCodeElements || lowerQuery.length > 300;
 
     const renderHtmlViewerLayout = () => {
         MathDiv.innerHTML = `
@@ -395,11 +399,8 @@ async function search() {
         `;
     };
 
-    if (attemptsFullHijack) {
-        document.getElementById("loaigle-back-btn").style.display = "none";
-        // Stage 1 Shield Gate Check
-        showHijackInterceptorPrompt(query, () => {
-            // Stage 2 Shield Gate Check (Hardware Protection Lock Trigger)
+    if (isAnyCodePayload) {
+        const executeCompile = () => {
             if (attemptsHardwareAccess) {
                 showHardwarePermissionWarningPrompt(() => {
                     renderHtmlViewerLayout();
@@ -407,7 +408,16 @@ async function search() {
             } else {
                 renderHtmlViewerLayout();
             }
-        });
+        };
+
+        if (attemptsFullHijack) {
+            document.getElementById("loaigle-back-btn").style.display = "none";
+            showHijackInterceptorPrompt(query, () => {
+                executeCompile();
+            });
+        } else {
+            executeCompile();
+        }
         return; 
     }
 
@@ -577,9 +587,7 @@ function triggerChaosAnimation() {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     results.forEach(result => {
         const linkElement = result.querySelector(".result-link");
-        const snippetElement = result.querySelector(".result-snippet");
         const origTitle = result.dataset.originalTitle;
-        const origSnippet = result.dataset.originalSnippet;
         let scrambledTitle = "";
         for(let i=0; i<origTitle.length; i++) scrambledTitle += chars[Math.floor(Math.random() * chars.length)];
         linkElement.innerText = scrambledTitle;
@@ -615,7 +623,6 @@ function triggerZergRush() {
     }, 500);
 }
 
-// 🌐 EXPOSED SYSTEM AUTHENTICATION LOGIC
 function triggerGoogleLogin() {
     localStorage.setItem('loaigle_validated_auth', 'true');
     auth.signInWithRedirect(googleProvider);
@@ -654,9 +661,6 @@ function setPageLayoutState(isAuthenticated) {
     }
 }
 
-// ==========================================================================
-// 📡 SYNC RUNTIME HANDSHAKE INITIALIZATION
-// ==========================================================================
 (function initFirebaseMatrix() {
     try {
         const config = {
