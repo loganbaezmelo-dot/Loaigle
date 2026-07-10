@@ -55,7 +55,6 @@ async function search() {
     // 🕵️‍♂️ ULTRA-STRICT GIBBERISH DETECTION ENGINE
     function checkIsGibberish(str) {
         const words = str.split(" ");
-        // Added 'html', 'css', 'js', 'json' so they are completely immune to the roast algorithm!
         const passList = ["hello", "hi", "hey", "test", "nth", "bnd", "scrs", "txt", "bit", "html", "css", "js", "json"];
         
         for (let word of words) {
@@ -260,13 +259,17 @@ function showToogleLore(event) {
     );
 }
 
-// 🛠️ NEW FEATURE LORE: THE BIRTH OF THE VIEWPORT PORTAL
+// 🛠️ OVERHAULED FEATURE LORE: SOFTWARE ACCIDENT DOCUMENTATION & SANDBOX PURPOSE
 function showHtmlViewerLore() {
     alert(
-        "🛠️ THE ACCIDENTAL HTML VIEWER PORTAL:\n\n" +
-        "During a routine structural test, the lead developer pasted a copy of the entire repository source code directly into the main query input.\n\n" +
-        "Because the input payload contained explicit syntax like '<!DOCTYPE html>', the rendering block glitched completely out of context. Instead of registering as text, the browser executed the elements, manifesting an identical, parallel website loop directly inside the results card!\n\n" +
-        "Instead of patching the safety vulnerability, management immediately certified it as an advanced development tool. Welcome to the feature! 💀😭"
+        "🛠️ LOAIGLE HTML VIEWER PRO STATUS LOG:\n\n" +
+        "1. THE ORIGIN ACCIDENT:\n" +
+        "This portal was birthed during a high-velocity script layout verification test. A copy of the platform's literal repository code was passed directly into the search bar. Because code syntax fails the vowel-ratio metrics of the Gibberish Roast Engine, the input was flagged as an absolute keyboard smash.\n\n" +
+        "2. THE CHAIN REACTION:\n" +
+        "Instead of rendering as flat string text, the engine dropped the raw source code variables directly inside a live innerHTML template. The browser compiled the structural tags instantly—manifesting an identical, operational mirror loop of the website layout inside the insult card, while the hardcoded gibberish routine automatically unleashed an active Zerg Rush script to destroy it.\n\n" +
+        "3. CURRENT PRODUCTION USECASE:\n" +
+        "Rather than nerfing this high-velocity processing anomaly, management has converted it into an official unnerfed Sandbox Suite. This dedicated environment is intentionally engineered for testing micro-applications, components, and entire scripts compiled cleanly inside a single standalone 'index.html' document at 100% processing power!\n\n" +
+        "Enjoy your unnerfed workspace! 💀😭💻🏁"
     );
 }
 
@@ -321,7 +324,7 @@ function triggerChaosAnimation() {
 
 // 👾 Zerg Rush Link Destroyer Logic
 function triggerZergRush() {
-    const resultsDiv = document.getElementById("results");
+    const DefenseDiv = document.getElementById("results");
     
     activeZergRush = setInterval(() => {
         const currentResults = document.querySelectorAll(".result, .result-roast");
@@ -357,10 +360,10 @@ function triggerZergRush() {
             clearInterval(activeZergRush);
             activeZergRush = null;
             
-            resultsDiv.innerHTML = "<p style='color: #ea4335; font-family: monospace; font-size: 20px; font-weight: bold;'>🚨 API not found!</p>";
+            DefenseDiv.innerHTML = "<p style='color: #ea4335; font-family: monospace; font-size: 20px; font-weight: bold;'>🚨 API not found!</p>";
             
             setTimeout(() => {
-                resultsDiv.innerHTML = "<p style='color: #bdc1c6;'>No results found on Loaigle.</p>";
+                DefenseDiv.innerHTML = "<p style='color: #bdc1c6;'>No results found on Loaigle.</p>";
             }, 1500);
         }
     }, 500);
