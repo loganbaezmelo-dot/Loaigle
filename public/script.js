@@ -36,24 +36,27 @@ async function search() {
 
     document.body.classList.remove("tilt-animation", "wobble-animation");
 
-    // 🕵️‍♂️ FIXED GIBBERISH DETECTION ENGINE
+    // 🕵️‍♂️ ULTRA-STRICT GIBBERISH DETECTION ENGINE
     function checkIsGibberish(str) {
         const words = str.split(" ");
-        
-        // List of common short text shortcuts/words to completely ignore from the test
         const passList = ["hello", "hi", "hey", "test", "nth", "bnd", "scrs", "txt", "bit"];
         
         for (let word of words) {
             if (passList.includes(word)) continue;
             
-            if (word.length >= 5) {
+            // Check 1: Check for repeated patterns/spam laughing (3 identical characters in a row like aaa)
+            if (/(.)\1\1/.test(word)) return true; 
+            
+            // Check 2: Mostly consonants with weird clustering keys (e.g., jw, wj, hx)
+            if (word.length >= 6 && (word.match(/[bcdfghjklmnpqrstvwxz]/gi) || []).length > word.length * 0.7) {
+                if (!/[aeiouy]{2,}/i.test(word) && /jw|wj|hx|q|z/i.test(word)) return true;
+            }
+            
+            // Check 3: Unbroken consonant walls lowered to 4 (Catches "hahajww" because of "hjww")
+            if (word.length >= 4) {
                 const vowels = (word.match(/[aeiouy]/gi) || []).length;
-                
-                // If it's long and has zero vowels, it's definitely a keyboard smash
                 if (vowels === 0) return true;
-                
-                // Only flag if there are 6 or more consonants in an unbroken row
-                if (/[bcdfghjklmnpqrstvwxz]{6,}/i.test(word)) return true;
+                if (/[bcdfghjklmnpqrstvwxz]{4,}/i.test(word)) return true;
             }
         }
         return false;
@@ -264,7 +267,7 @@ function triggerZergRush() {
     const resultsDiv = document.getElementById("results");
     
     activeZergRush = setInterval(() => {
-        // Targets whatever is in the results block (results OR roast box)
+        // Targets regular results AND the new result-roast block perfectly
         const currentResults = document.querySelectorAll(".result, .result-roast");
         
         if (currentResults.length > 0) {
