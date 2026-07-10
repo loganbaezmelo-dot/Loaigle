@@ -40,17 +40,65 @@ function toggleSettingsMenu() {
         modal.style.display = "none";
     } else {
         modal.style.display = "flex";
+        updateThemeButtonsUI();
     }
 }
 
-// 🌓 THEME ENGINE DRIVER LAYER
+// 🌓 ULTIMATE REAL-TIME THEME TRANSLATION ENGINE
 function setThemeStyle(themeMode) {
-    if (themeMode === 'light') {
+    localStorage.setItem('loaigle_theme', themeMode);
+    applyThemeLayer();
+    updateThemeButtonsUI();
+}
+
+function applyThemeLayer() {
+    const currentMode = localStorage.getItem('loaigle_theme') || 'auto';
+    
+    if (currentMode === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
         document.body.classList.add('light-theme');
-        localStorage.setItem('loaigle_theme', 'light');
-    } else {
+    } else if (currentMode === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
         document.body.classList.remove('light-theme');
-        localStorage.setItem('loaigle_theme', 'dark');
+    } else if (currentMode === 'auto') {
+        // 📲 HARDWARE INJECTION: Query phone's operating system layout constraints directly
+        const phonePrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (phonePrefersDark) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.body.classList.remove('light-theme');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            document.body.classList.add('light-theme');
+        }
+    }
+}
+
+// Visual Indicator Active Mapping Tracker
+function updateThemeButtonsUI() {
+    const currentMode = localStorage.getItem('loaigle_theme') || 'auto';
+    const btnDark = document.getElementById('theme-btn-dark');
+    const btnLight = document.getElementById('theme-btn-light');
+    const btnAuto = document.getElementById('theme-btn-auto');
+    
+    if (!btnDark || !btnLight || !btnAuto) return;
+
+    // Reset styles
+    [btnDark, btnLight, btnAuto].forEach(btn => {
+        btn.style.border = "1px solid #3c4043";
+        btn.style.background = "#303134";
+        btn.style.color = "#fff";
+    });
+
+    // Highlight active layout switch selection parameters
+    if (currentMode === 'dark') {
+        btnDark.style.border = "1px solid #8ab4f8";
+        btnDark.style.background = "#384966";
+    } else if (currentMode === 'light') {
+        btnLight.style.border = "1px solid #8ab4f8";
+        btnLight.style.background = "#384966";
+    } else if (currentMode === 'auto') {
+        btnAuto.style.border = "1px solid #8ab4f8";
+        btnAuto.style.background = "#384966";
     }
 }
 
@@ -64,11 +112,15 @@ function setThemeStyle(themeMode) {
         document.documentElement.appendChild(template);
     }
 
-    // Set stored user skin choice immediately on compile
-    const storedTheme = localStorage.getItem('loaigle_theme');
-    if (storedTheme === 'light') {
-        document.body.classList.add('light-theme');
-    }
+    // Fire the compiler theme resolver instantly on initial load sequence
+    applyThemeLayer();
+
+    // Dynamically listen for changes if the device switches theme parameters live!
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+        if (localStorage.getItem('loaigle_theme') === 'auto' || !localStorage.getItem('loaigle_theme')) {
+            applyThemeLayer();
+        }
+    });
 
     window.addEventListener("DOMContentLoaded", () => {
         const isKonamiUnlocked = localStorage.getItem("loaigle_konami_unlocked") === "true";
@@ -100,6 +152,7 @@ function renderGuideOnMenu() {
 function deleteFromBrowserStorage() {
     localStorage.removeItem("loaigle_bg_html");
     localStorage.removeItem("loaigle_konami_unlocked"); 
+    localStorage.removeItem("loaigle_theme");
     
     const layer = document.getElementById("background-persistent-layer");
     const guide = document.getElementById("home-permanent-guide");
@@ -558,7 +611,6 @@ function triggerZergRush() {
             syncStatusP.style.color = "#34a853";
             btnSaveCloud.style.display = "block";
 
-            // 🔄 CONTEXTUAL DESTRUCTION INTERFACE: Shift buttons to Disconnect configurations
             const providerId = user.providerData[0]?.providerId;
             
             if (providerId === 'google.com') {
@@ -567,20 +619,20 @@ function triggerZergRush() {
                 btnGoogle.style.border = "1px solid #ea4335";
                 btnGoogle.style.color = "#ea4335";
                 
-                // Reset GitHub to vanilla state
                 btnGithub.innerText = "Connect";
                 btnGithub.style.background = "#24292e";
-                btnGithub.style.color = "#white";
+                btnGithub.style.color = "white";
+                btnGithub.style.border = "1px solid #5f6368";
             } else if (providerId === 'github.com') {
                 btnGithub.innerText = "Disconnect";
                 btnGithub.style.background = "transparent";
                 btnGithub.style.border = "1px solid #ea4335";
                 btnGithub.style.color = "#ea4335";
                 
-                // Reset Google to vanilla state
                 btnGoogle.innerText = "Connect";
                 btnGoogle.style.background = "#ea4335";
                 btnGoogle.style.color = "white";
+                btnGoogle.style.border = "none";
             }
 
             try {
@@ -612,7 +664,6 @@ function triggerZergRush() {
                 }
             } catch (e) { console.error("Firestore error:", e); }
           } else {
-            // No user signed in: Default buttons back to baseline Connect settings
             syncStatusP.innerText = "Active Session: Offline";
             syncStatusP.style.color = "#9aa0a6";
             btnSaveCloud.style.display = "none";
@@ -642,7 +693,6 @@ function triggerZergRush() {
           } catch (e) { showCustomAlert("⚠️ Upload Rejection: " + e.message); }
         });
 
-        // Toggle Actions: If logged in click means Disconnect, else trigger authentication router
         btnGoogle.addEventListener('click', () => {
             if (auth.currentUser && auth.currentUser.providerData[0]?.providerId === 'google.com') {
                 auth.signOut().then(() => {
