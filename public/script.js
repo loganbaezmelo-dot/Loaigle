@@ -573,7 +573,6 @@ function triggerZergRush() {
 
         auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch((e) => { console.error(e); });
 
-        // 🛠️ DYNAMIC LOOKUP METHOD: Grabs selectors freshly during state alterations
         window.forceSyncButtonsUI = function() {
             const syncStatusP = document.getElementById('settings-sync-indicator');
             const btnGoogle = document.getElementById('settings-btn-google');
@@ -639,8 +638,22 @@ function triggerZergRush() {
                 const userDoc = await userDocRef.get();
                 if (userDoc.exists) {
                   const cloudData = userDoc.data();
-                  if (cloudData.bgHtml) localStorage.setItem('loaigle_bg_html', cloudData.bgHtml);
-                  if (cloudData.konamiUnlocked) localStorage.setItem('loaigle_konami_unlocked', cloudData.konamiUnlocked);
+                  
+                  // Only write and mount if they are completely different to break the reload lock loop!
+                  let stateChanged = false;
+                  if (cloudData.bgHtml && localStorage.getItem('loaigle_bg_html') !== cloudData.bgHtml) {
+                      localStorage.setItem('loaigle_bg_html', cloudData.bgHtml);
+                      stateChanged = true;
+                  }
+                  if (cloudData.konamiUnlocked && localStorage.getItem('loaigle_konami_unlocked') !== cloudData.konamiUnlocked) {
+                      localStorage.setItem('loaigle_konami_unlocked', cloudData.konamiUnlocked);
+                      stateChanged = true;
+                  }
+                  
+                  // Only reload the frame layout graph if the local environment context actually updated!
+                  if (stateChanged) {
+                      window.location.reload();
+                  }
                 }
             } catch (e) { console.error(e); }
           }
@@ -652,7 +665,6 @@ function triggerZergRush() {
             }
         }).catch((e) => { console.error(e.message); });
 
-        // Dynamic click routers attached freshly on call execution passes
         document.addEventListener('click', (e) => {
             if (e.target && e.target.id === 'settings-btn-save') {
                 if (!auth.currentUser) return;
