@@ -38,7 +38,7 @@ const masterGuideHTML = `
 function triggerVoiceCapture() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
-        showCustomAlert("❌ Audio Exception: Speech Recognition API is not supported on this specific mobile browser browser framework.");
+        showCustomAlert("❌ Audio Exception: Speech Recognition API is not supported on this specific mobile browser framework.");
         return;
     }
 
@@ -90,7 +90,7 @@ function toggleSettingsMenu() {
     }
 }
 
-// ↩️ INTERACTIVE BACK CONTROLLER: Returns layout smoothly to menu home view parameters
+// ↩️ INTERACTIVE BACK CONTROLLER
 function returnToHomeMenu() {
     if (activeZergRush) {
         clearInterval(activeZergRush);
@@ -107,7 +107,7 @@ function returnToHomeMenu() {
     if (guide) guide.style.display = "block";
 }
 
-// 🌓 ULTIMATE REAL-TIME THEME TRANSLATION ENGINE
+// 🌓 THEME TRANSLATION ENGINE
 function setThemeStyle(themeMode) {
     localStorage.setItem('loaigle_theme', themeMode);
     applyThemeLayer();
@@ -161,16 +161,8 @@ function updateThemeButtonsUI() {
     }
 }
 
-// 🚀 BULLETPROOF BOOTSTRAPPER (Force-Wipes old Android form cache text entries)
+// 🚀 BOOTSTRAPPER (Safe Sandbox Background Injection)
 (function bootLoader() {
-    // Hard check to instantly blank out the search field so ghost words don't hijack boot execution loops
-    window.addEventListener("DOMContentLoaded", () => {
-        const searchInput = document.getElementById("searchInput");
-        if (searchInput) {
-            searchInput.value = ""; 
-        }
-    });
-
     const cachedHtml = localStorage.getItem("loaigle_bg_html");
     if (cachedHtml) {
         const template = document.createElement("div");
@@ -293,7 +285,7 @@ function showHijackInterceptorPrompt(queryPayload, executeInjectionCallback) {
 
     document.getElementById("hijack-btn-yes").onclick = function() {
         wrapper.remove();
-        executeInjectionCallback();
+        executeInjectionCallback(); // Passes down execution chain
     };
 }
 
@@ -383,12 +375,12 @@ async function search() {
         return; 
     }
 
-    // 🛡️ RE-ARMED CRITERIA
+    // 🔒 THE SEARCH BAR SECURITY ENGINE
+    // This logic loop can ONLY execute right now because the user typed text and triggered the search event pipeline explicitly.
     const hasHtmlTags = /<html|<head|<body|<div|<p|<span|<a\s+href|<link|<script/i.test(lowerQuery);
     const containsCodeElements = /<script|eval\s*\(|settimeout\s*\(|setinterval\s*\(|\.onclick\s*=/i.test(lowerQuery);
     
     const attemptsFullHijack = /position\s*:\s*(fixed|absolute)|width\s*:\s*100(vw|%)|height\s*:\s*100(vh|%)|inset\s*:\s*0|background\s*:\s*#|<html|<body/i.test(lowerQuery) || lowerQuery.length > 1000;
-    const attemptsHardwareAccess = /getusermedia|mediadevices|geolocation|getcurrentposition|webkitAudioContext|AudioContext|notification|permission|microphone/i.test(lowerQuery);
 
     const isAnyCodePayload = hasHtmlTags || containsCodeElements || lowerQuery.length > 300;
 
@@ -408,7 +400,11 @@ async function search() {
     };
 
     if (isAnyCodePayload) {
+        // 🛡️ DYNAMIC PERMISSION MATRIX GATING
+        // The hardware permission detection array is completely idle until it's explicitly loaded here.
         const executeCompile = () => {
+            const attemptsHardwareAccess = /getusermedia|mediadevices|geolocation|getcurrentposition|webkitAudioContext|AudioContext|notification|permission|microphone/i.test(lowerQuery);
+            
             if (attemptsHardwareAccess) {
                 showHardwarePermissionWarningPrompt(() => {
                     renderHtmlViewerLayout();
@@ -421,10 +417,10 @@ async function search() {
         if (attemptsFullHijack) {
             document.getElementById("loaigle-back-btn").style.display = "none";
             showHijackInterceptorPrompt(query, () => {
-                executeCompile();
+                executeCompile(); // Triggers and loads permission radar strictly after Gate 1 is cleared
             });
         } else {
-            executeCompile();
+            executeCompile(); // Skips Gate 1 but still safely invokes permission validation before compilation
         }
         return; 
     }
@@ -709,4 +705,3 @@ window.search = search; window.deleteFromBrowserStorage = deleteFromBrowserStora
 window.toggleSettingsMenu = toggleSettingsMenu; window.setThemeStyle = setThemeStyle; window.returnToHomeMenu = returnToHomeMenu;
 window.triggerGoogleLogin = triggerGoogleLogin; window.triggerGithubLogin = triggerGithubLogin; window.triggerSignOut = triggerSignOut; 
 window.pushConfigsToCloud = pushConfigsToCloud; window.triggerVoiceCapture = triggerVoiceCapture;
-
