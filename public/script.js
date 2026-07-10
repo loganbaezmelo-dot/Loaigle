@@ -1,6 +1,9 @@
 // Keep track of any active Zerg Rush intervals so they don't stack up
 let activeZergRush = null;
 
+// Track if current instance session is running under unauthenticated Guest criteria
+let isGuestModeActive = false;
+
 // The canonical master blueprint text block utilized across both viewport layouts
 const masterGuideHTML = `
     <div class="konami-guide-container" id="loaigle-system-guide">
@@ -35,13 +38,20 @@ const masterGuideHTML = `
 
 // ⚙️ SETTINGS PANEL NAVIGATION CONTROLS
 function toggleSettingsMenu() {
+    // 🚪 COUNTER-MEASURE PROTOCOL: If guest attempts view access parameter modification, intercept and return to lock screen
+    if (isGuestModeActive) {
+        document.getElementById("loaigle-settings-modal").style.display = "none";
+        document.getElementById("main-app-canvas").style.display = "none";
+        document.getElementById("login-gate").style.display = "flex";
+        return;
+    }
+
     const modal = document.getElementById("loaigle-settings-modal");
     if (modal.style.display === "flex") {
         modal.style.display = "none";
     } else {
         modal.style.display = "flex";
         updateThemeButtonsUI();
-        if (window.forceSyncButtonsUI) window.forceSyncButtonsUI();
     }
 }
 
@@ -434,6 +444,7 @@ async function search() {
     }
 }
 
+// Matrix Scrambling & Animations
 function showToogleLore(event) {
     event.preventDefault();
     showCustomAlert(
@@ -444,52 +455,24 @@ function showToogleLore(event) {
     );
 }
 
-function showHtmlViewerLore() {
-    const modalHtml = `
-        <div id="custom-lore-modal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 20000; padding: 20px;">
-            <div style="background: #202124; border: 1px solid #3c4043; border-radius: 16px; max-width: 500px; width: 100%; padding: 24px; max-height: 80vh; overflow-y: auto; text-align: left; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-                <h3 style="color: #8ab4f8; margin-top: 0; font-size: 20px; border-bottom: 1px solid #3c4043; padding-bottom: 10px; font-weight: bold; font-family: sans-serif;">🛠️ LOAIGLE HTML VIEWER PRO STATUS LOG:</h3>
-                <div style="color: #bdc1c6; font-size: 13px; line-height: 1.6; font-family: sans-serif;">
-                    <p style="margin-bottom: 15px;"><strong>1. THE ORIGIN ACCIDENT:</strong><br>This portal was birthed during a high-velocity script layout verification test. A copy of the platform's literal repository code was passed directly into the search bar. Because code syntax fails the vowel-ratio metrics of the Gibberish Roast Engine, the input was flagged as an absolute keyboard smash.</p>
-                    <p style="margin-bottom: 15px;"><strong>2. THE CHAIN REACTION:</strong><br>Instead of rendering as flat string text, the engine dropped the raw source code variables directly inside a live innerHTML template. The browser compiled the structural tags instantly—manifesting an identical, operational mirror loop of the website layout inside the insult card, while the hardcoded gibberish routine automatically unleashed an active Zerg Rush script to destroy it.</p>
-                    <p style="margin-bottom: 15px;"><strong>3. THE THEME CONTROLS & DISCLAIMER ORIGIN:</strong><br>The theme-injection disclaimer was permanently written into the specs after a developer tried running a massive standalone React + Tailwind YouTube Hallucination inside the engine. The browser parsed the simulator's custom stylesheet, completely overrode Loaigle's global layout properties, and instantly hijacked the master viewport background color from dark charcoal to onyx black!</p>
-                    <p><strong>4. CURRENT PRODUCTION USECASE:</strong><br>This portal now features dual-routing capability: use the interface window to safely execute and debug live single-file 'index.html' applications without interference, OR use the background engine to permanently save custom CSS code overrides into localStorage to inject custom skins, backgrounds, and custom textures natively into Loaigle's core skin style!</p>
-                </div>
-                <div style="margin-top: 20px; text-align: right;">
-                    <button onclick="document.getElementById('custom-lore-modal').remove()" style="padding: 10px 24px; font-size: 14px; border: none; border-radius: 24px; background-color: #ea4335; color: white; cursor: pointer; font-weight: bold;">OK</button>
-                </div>
-            </div>
-        </div>
-    `;
-    const div = document.createElement("div");
-    div.id = "lore-modal-container";
-    div.innerHTML = modalHtml;
-    document.body.appendChild(div);
-}
-
 function triggerChaosAnimation() {
     document.body.classList.add("spin-animation");
     setTimeout(() => { document.body.classList.remove("spin-animation"); }, 1000);
-
     const results = document.querySelectorAll(".result");
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
-
     results.forEach(result => {
         const linkElement = result.querySelector(".result-link");
         const snippetElement = result.querySelector(".result-snippet");
         const origTitle = result.dataset.originalTitle;
         const origSnippet = result.dataset.originalSnippet;
         const origLink = result.dataset.originalLink;
-
         let scrambledTitle = "";
         let scrambledSnippet = "";
         for(let i=0; i<origTitle.length; i++) scrambledTitle += chars[Math.floor(Math.random() * chars.length)];
         for(let i=0; i<origSnippet.length; i++) scrambledSnippet += chars[Math.floor(Math.random() * chars.length)];
-        
         linkElement.innerText = scrambledTitle;
         snippetElement.innerText = scrambledSnippet;
         linkElement.href = `https://${scrambledTitle.substring(0,8)}.com/error-broken-link`;
-
         let iterations = 0;
         const interval = setInterval(() => {
             linkElement.innerText = origTitle.split("").map((letter, index) => {
@@ -500,7 +483,6 @@ function triggerChaosAnimation() {
                 if (index < iterations) return origSnippet[index];
                 return chars[Math.floor(Math.random() * chars.length)];
             }).join("");
-
             iterations += 1;
             if (iterations >= Math.max(origTitle.length, origSnippet.length)) {
                 clearInterval(interval);
@@ -529,10 +511,8 @@ function triggerZergRush() {
             bug.style.top = "-50px";
             bug.style.zIndex = "999";
             bug.style.animation = "fall 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards";
-            
             targetDiv.style.position = "relative";
             targetDiv.appendChild(bug);
-            
             setTimeout(() => {
                 targetDiv.style.transition = "opacity 0.4s ease, transform 0.4s ease";
                 targetDiv.style.opacity = "0";
@@ -549,7 +529,7 @@ function triggerZergRush() {
 }
 
 // ==========================================================================
-// 📡 SECURE MODAL CONTROLS & FIREBASE REDIRECT AUTH MANAGEMENT
+// 📡 DEDICATED STATE-GATE MATRIX & FIREBASE INITIALIZATION ENGINE
 // ==========================================================================
 (function initFirebaseMatrix() {
     try {
@@ -573,104 +553,85 @@ function triggerZergRush() {
 
         auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch((e) => { console.error(e); });
 
-        // 🛠️ ACTIVE REAL-TIME WATCHDOG WATCH: Hard-scans auth parameters on active interval loops
-        window.forceSyncButtonsUI = function() {
-            const syncStatusP = document.getElementById('settings-sync-indicator');
-            const btnGoogle = document.getElementById('settings-btn-google');
-            const btnGithub = document.getElementById('settings-btn-github');
-            const btnSaveCloud = document.getElementById('settings-btn-save');
-            const user = auth.currentUser;
-
-            if (!btnGoogle || !btnGithub || !syncStatusP) return;
-
-            if (user && (user.email || user.displayName || user.uid)) {
-                syncStatusP.innerText = `Active Operator: ${user.email || user.displayName || 'Authorized User'}`;
-                syncStatusP.style.color = "#34a853";
-                if (btnSaveCloud) btnSaveCloud.style.display = "block";
-
-                const isGoogleLinked = user.providerData && user.providerData.some(p => p.providerId === 'google.com');
-                const isGithubLinked = user.providerData && user.providerData.some(p => p.providerId === 'github.com');
-                const fallbackGoogle = user.email && user.email.includes('@gmail.com');
-
-                if (isGoogleLinked || fallbackGoogle) {
-                    btnGoogle.innerText = "Disconnect";
-                    btnGoogle.style.background = "transparent";
-                    btnGoogle.style.border = "1px solid #ea4335";
-                    btnGoogle.style.color = "#ea4335";
-                    
-                    btnGithub.innerText = "Connect";
-                    btnGithub.style.background = "#24292e";
-                    btnGithub.style.color = "white";
-                    btnGithub.style.border = "1px solid #5f6368";
-                } else if (isGithubLinked) {
-                    btnGithub.innerText = "Disconnect";
-                    btnGithub.style.background = "transparent";
-                    btnGithub.style.border = "1px solid #ea4335";
-                    btnGithub.style.color = "#ea4335";
-                    
-                    btnGoogle.innerText = "Connect";
-                    btnGoogle.style.background = "#ea4335";
-                    btnGoogle.style.color = "white";
-                    btnGoogle.style.border = "none";
-                }
+        // Helper layout switcher mechanism
+        function displayActiveGate(gateMode) {
+            const loginGate = document.getElementById("login-gate");
+            const appCanvas = document.getElementById("main-app-canvas");
+            
+            if (gateMode === "app") {
+                if (loginGate) loginGate.style.display = "none";
+                if (appCanvas) appCanvas.style.display = "block";
+                isGuestModeActive = false;
+            } else if (gateMode === "guest") {
+                if (loginGate) loginGate.style.display = "none";
+                if (appCanvas) appCanvas.style.display = "block";
+                isGuestModeActive = true;
             } else {
-                syncStatusP.innerText = "Active Session: Offline";
-                syncStatusP.style.color = "#9aa0a6";
-                if (btnSaveCloud) btnSaveCloud.style.display = "none";
-
-                btnGoogle.innerText = "Connect";
-                btnGoogle.style.background = "#ea4335";
-                btnGoogle.style.color = "white";
-                btnGoogle.style.border = "none";
-
-                btnGithub.innerText = "Connect";
-                btnGithub.style.background = "#24292e";
-                btnGithub.style.color = "white";
-                btnGithub.style.border = "1px solid #5f6368";
+                if (loginGate) loginGate.style.display = "flex";
+                if (appCanvas) appCanvas.style.display = "none";
+                isGuestModeActive = false;
             }
-        };
-
-        // Continuous monitoring pulse to capture user data immediately when it drops
-        setInterval(() => {
-            if (auth.currentUser) window.forceSyncButtonsUI();
-        }, 1000);
-
-        auth.onAuthStateChanged(async (user) => {
-          window.forceSyncButtonsUI();
-          
-          if (user) {
-            try {
-                const userDocRef = db.collection('users').doc(user.uid);
-                const userDoc = await userDocRef.get();
-                if (userDoc.exists) {
-                  const cloudData = userDoc.data();
-                  if (cloudData.bgHtml) localStorage.setItem('loaigle_bg_html', cloudData.bgHtml);
-                  if (cloudData.konamiUnlocked) localStorage.setItem('loaigle_konami_unlocked', cloudData.konamiUnlocked);
-                  if (cloudData.konamiUnlocked === "true") renderGuideOnMenu();
-                }
-            } catch (e) { console.error(e); }
-          }
-        });
-
-        // 🎰 THE CLEAN HANDSHAKE ROUTER: Only open the window if an explicit redirect login result came back!
-        auth.getRedirectResult().then((result) => {
-            if (result && result.user) {
-                document.getElementById("loaigle-settings-modal").style.display = "flex";
-                window.forceSyncButtonsUI();
-            }
-        }).catch((e) => { console.error(e.message); });
-
-        // Storage checker loop on standard cold boots
-        if (localStorage.getItem('loaigle_force_settings_open') === 'true') {
-            localStorage.removeItem('loaigle_force_settings_open');
-            setTimeout(() => {
-                const modal = document.getElementById("loaigle-settings-modal");
-                if (modal) modal.style.display = "flex";
-                window.forceSyncButtonsUI();
-            }, 300);
         }
 
+        // Monitors verification loops cleanly
+        auth.onAuthStateChanged(async (user) => {
+            const syncStatusP = document.getElementById('settings-sync-indicator');
+            const btnSaveCloud = document.getElementById('settings-btn-save');
+
+            if (user) {
+                displayActiveGate("app");
+                if (syncStatusP) {
+                    syncStatusP.innerText = `Active Account: ${user.email || 'Authorized Secure Node'}`;
+                    syncStatusP.style.color = "#34a853";
+                }
+                if (btnSaveCloud) btnSaveCloud.style.display = "block";
+
+                try {
+                    const userDoc = await db.collection('users').doc(user.uid).get();
+                    if (userDoc.exists) {
+                        const cloudData = userDoc.data();
+                        if (cloudData.bgHtml) localStorage.setItem('loaigle_bg_html', cloudData.bgHtml);
+                        if (cloudData.konamiUnlocked) localStorage.setItem('loaigle_konami_unlocked', cloudData.konamiUnlocked);
+                        if (cloudData.konamiUnlocked === "true") renderGuideOnMenu();
+                    }
+                } catch (e) { console.error(e); }
+            } else {
+                // If not logged in and not explicitly exploring as a guest, drop user back to Portal Entrance
+                if (!isGuestModeActive) {
+                    displayActiveGate("login");
+                }
+            }
+        });
+
+        // Redirect arrival checker loop
+        auth.getRedirectResult().then((result) => {
+            if (result && result.user) {
+                displayActiveGate("app");
+            }
+        }).catch((e) => { showCustomAlert("⚠️ Secure Gateway Handshake Rejection: " + e.message); });
+
+        // Event hooks assigning
         document.addEventListener('click', (e) => {
+            if (e.target && e.target.id === 'gate-btn-google') {
+                auth.signInWithRedirect(googleProvider);
+            }
+
+            if (e.target && e.target.id === 'gate-btn-github') {
+                auth.signInWithRedirect(githubProvider);
+            }
+
+            if (e.target && e.target.id === 'gate-btn-guest') {
+                displayActiveGate("guest");
+            }
+
+            if (e.target && e.target.id === 'settings-btn-logout') {
+                auth.signOut().then(() => {
+                    localStorage.clear();
+                    displayActiveGate("login");
+                    document.getElementById("loaigle-settings-modal").style.display = "none";
+                });
+            }
+
             if (e.target && e.target.id === 'settings-btn-save') {
                 if (!auth.currentUser) return;
                 db.collection('users').doc(auth.currentUser.uid).set({
@@ -682,32 +643,6 @@ function triggerZergRush() {
                     showCustomAlert("Configuration saved permanently to cloud database grid! 🎰🏁");
                 });
             }
-
-            if (e.target && e.target.id === 'settings-btn-google') {
-                const btnGoogle = document.getElementById('settings-btn-google');
-                if (auth.currentUser && btnGoogle.innerText === "Disconnect") {
-                    auth.signOut().then(() => {
-                        localStorage.clear();
-                        window.location.reload();
-                    });
-                } else {
-                    localStorage.setItem('loaigle_force_settings_open', 'true'); // Arm trigger right before redirect
-                    auth.signInWithRedirect(googleProvider);
-                }
-            }
-
-            if (e.target && e.target.id === 'settings-btn-github') {
-                const btnGithub = document.getElementById('settings-btn-github');
-                if (auth.currentUser && btnGithub.innerText === "Disconnect") {
-                    auth.signOut().then(() => {
-                        localStorage.clear();
-                        window.location.reload();
-                    });
-                } else {
-                    localStorage.setItem('loaigle_force_settings_open', 'true'); // Arm trigger right before redirect
-                    auth.signInWithRedirect(githubProvider);
-                }
-            }
         });
 
     } catch (globalError) { console.error(globalError); }
@@ -716,7 +651,5 @@ function triggerZergRush() {
 window.search = search;
 window.deleteFromBrowserStorage = deleteFromBrowserStorage;
 window.loadToBrowserStorage = loadToBrowserStorage;
-window.showHtmlViewerLore = showHtmlViewerLore;
-window.showToogleLore = showToogleLore;
 window.toggleSettingsMenu = toggleSettingsMenu;
 window.setThemeStyle = setThemeStyle;
