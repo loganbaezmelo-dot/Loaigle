@@ -151,49 +151,38 @@ async function search() {
     const tiltPhrases = ["askew", "tilt", "67", "wobble"];
     const zergPhrases = ["zerg rush", "destroy my page", "virus"];
     const googlePhrases = ["google", "alphabet", "sundar pichai", "google.com", "googl", "toogle"];
-    const konamiHints = ["konami", "konami code", "cheat code", "cheats"];
 
     const isBarrelRoll = barrelRollPhrases.includes(lowerQuery);
     const isTilt = tiltPhrases.includes(lowerQuery);
     const isGoogleSearch = googlePhrases.some(phrase => lowerQuery.includes(phrase));
-    const isKonamiHint = konamiHints.includes(lowerQuery);
 
     document.body.classList.remove("tilt-animation", "wobble-animation");
 
-    // 🕹️ CRACK THE CODE: Fires ONLY when typing the cheat code directly
+    // 🕹️ CHEAT CODE TRIGGER
     if (lowerQuery === "up up down down left right left right b a") {
         localStorage.setItem("loaigle_konami_unlocked", "true"); 
         renderGuideOnMenu(); 
-        
         const targetGuide = document.getElementById("home-permanent-guide");
         if (targetGuide) targetGuide.style.display = "block"; 
-        
         showCustomAlert("✔ CHEAT CODE ACTIVATED!<br><br>The Master Blueprint Registry has been permanently locked and anchored right onto your home menu screen beneath the search bar! 🎮🚀");
-        
         searchInput.value = ""; 
         resultsDiv.innerHTML = ""; 
         return; 
     }
 
-    // 🖥️ EXTENDED FEATURE: HTML VIEWER PRO INTERFACE
+    // 🖥️ HTML VIEWER PRO INTERFACE
     const hasHtmlTags = /<(!doctype|html|head|body|div|p|span|a|link|script)/i.test(lowerQuery);
     if (hasHtmlTags) {
         resultsDiv.innerHTML = `
             <div class="html-viewer-container" style="text-align: left; margin-top: 20px;">
                 <h2 style="color: #8ab4f8; font-size: 20px; margin-bottom: 15px; border-bottom: 1px solid #3c4043; padding-bottom: 8px;">HTML Viewer:</h2>
-                
-                <div class="rendered-payload" style="background: transparent; padding: 10px 0;">
-                    ${query}
-                </div>
-
+                <div class="rendered-payload" style="background: transparent; padding: 10px 0;">${query}</div>
                 <div style="margin-top: 30px; background-color: #202124; border: 1px solid #3c4043; padding: 16px; border-radius: 12px; text-align: center;">
                     <button onclick="loadToBrowserStorage()" style="padding: 10px 20px; font-size: 13px; border: none; border-radius: 24px; background-color: #34a853; color: white; cursor: pointer; font-weight: bold; margin-bottom: 12px;">Load custom HTML in BrowserStorage</button>
-                    
                     <p style="color: #ea4335; font-size: 11px; font-weight: bold; line-height: 1.4; margin: 0; text-align: left;">
                         ⚠️ DISCLAIMER: This is only made for an HTML that changes the theme or texture of Loaigle. If this is code that actually is a full HTML app, test it through this HTML Viewer interface and don't click the button.
                     </p>
                 </div>
-
                 <div style="margin-top: 40px; text-align: center; border-top: 1px solid #3c4043; padding-top: 20px;">
                     <button onclick="showHtmlViewerLore()" style="padding: 10px 20px; font-size: 14px; border: none; border-radius: 24px; background-color: #ea4335; color: white; cursor: pointer;">What is this?</button>
                 </div>
@@ -202,20 +191,16 @@ async function search() {
         return; 
     }
 
-    // 🕵️‍♂️ ULTRA-STRICT GIBBERISH DETECTION ENGINE
+    // 🕵️‍♂️ GIBBERISH ENGINE
     function checkIsGibberish(str) {
         const words = str.split(" ");
         const passList = ["hello", "hi", "hey", "test", "nth", "bnd", "scrs", "txt", "bit", "html", "css", "js", "json"];
-        
         for (let word of words) {
             if (passList.includes(word) || word.startsWith("zerg") || word.startsWith("rush")) continue;
-            
             if (/(.)\1\1/.test(word)) return true; 
-            
             if (word.length >= 6 && (word.match(/[bcdfghjklmnpqrstvwxz]/gi) || []).length > word.length * 0.7) {
                 if (!/[aeiouy]{2,}/i.test(word) && /jw|wj|hx|q|z/i.test(word)) return true;
             }
-            
             if (word.length >= 4) {
                 const vowels = (word.match(/[aeiouy]/gi) || []).length;
                 if (vowels === 0) return true;
@@ -225,15 +210,11 @@ async function search() {
         return false;
     }
 
-    const isGibberish = checkIsGibberish(lowerQuery);
-
-    if (isGibberish) {
+    if (checkIsGibberish(lowerQuery)) {
         resultsDiv.innerHTML = `
             <div class="result result-roast" style="margin-top: 20px;">
                 <h2 id="roast-text" style="color: #ea4335; font-size: 24px; margin-bottom: 8px;"></h2>
-                <p class="result-snippet" style="color: #9aa0a6; font-style: italic; font-size: 13px; margin-top: 15px;">
-                    Disclaimer: If you didn't type gibberish, you might have triggered another error.
-                </p>
+                <p class="result-snippet" style="color: #9aa0a6; font-style: italic; font-size: 13px; margin-top: 15px;">Disclaimer: If you didn't type gibberish, you might have triggered another error.</p>
             </div>
         `;
         document.getElementById("roast-text").innerText = `"${query}" is gibberish! Learn English!`;
@@ -241,37 +222,26 @@ async function search() {
         return; 
     }
 
-    // 🧠 SILENT SPELL-CHECK MATRIX WITH WILDCARD SCANNING
+    // 🧠 SPELL CHECK MATRIX
     function autoCorrectQuery(str) {
         let words = str.split(" ");
         let hasZerg = false;
         let hasRush = false;
-
         words = words.map(word => {
             if (word.startsWith("zerg")) { hasZerg = true; return "zerg"; }
             if (word.startsWith("rush")) { hasRush = true; return "rush"; }
-            
-            const typoMap = {
-                "googl": "google",
-                "toogle": "google",
-                "searchh": "search",
-                "helloo": "hello"
-            };
+            const typoMap = { "googl": "google", "toogle": "google", "searchh": "search", "helloo": "hello" };
             return typoMap[word] || word;
         });
-
-        if (hasZerg && hasRush) {
-            return "zerg rush";
-        }
+        if (hasZerg && hasRush) return "zerg rush";
         return words.join(" ");
     }
 
     const serverQuery = autoCorrectQuery(lowerQuery);
     const isZergRush = zergPhrases.includes(lowerQuery) || serverQuery === "zerg rush";
 
-    // 📖 1. Dictionary Lookup (Safely Sandboxed: Keeps official spelling intact)
-    const isSingleWord = query.split(" ").length === 1;
-    if (isSingleWord && !isZergRush) {
+    // 📖 DICTIONARY SANDBOX
+    if (query.split(" ").length === 1 && !isZergRush) {
         try {
             const dictRes = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${query}`);
             if (dictRes.ok) {
@@ -287,42 +257,36 @@ async function search() {
                     `;
                 }
             }
-        } catch (e) {
-            console.log("No dictionary entry found.");
-        }
+        } catch (e) { console.log("No dictionary entry."); }
     }
 
-    // 📰 2. News Search 
+    // ==========================================================================
+    // 📡 DYNAMIC DECENTRALIZED PROXY CHAIN MATRIX
+    // ==========================================================================
     const newsUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(serverQuery)}&hl=en-US&gl=US&ceid=US:en`;
-    const timestamp = new Date().getTime();
+    const cb = new Date().getTime();
     let articles = [];
 
-    try {
-        const rss2json = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(newsUrl)}&_cb=${timestamp}`;
-        const res = await fetch(rss2json);
-        if (res.ok) {
-            const data = await res.json();
+    const proxyChain = [
+        () => fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(newsUrl)}&_cb=${cb}`),
+        () => fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(newsUrl)}`)}&_cb=${cb}`).then(res => res.ok ? res.json().then(d => ({ items: JSON.parse(d.contents).items })) : null),
+        () => fetch(`https://corsproxy.io/?${encodeURIComponent(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(newsUrl)}`)}`),
+        () => fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(newsUrl)}`)}`)
+    ];
+
+    for (let i = 0; i < proxyChain.length; i++) {
+        try {
+            console.log(`Connecting to Mesh Node Layer [${i + 1}]...`);
+            const response = await proxyChain[i]();
+            let data = response.items ? response : await response.json();
+            
             if (data && data.items && data.items.length > 0) {
                 articles = data.items.slice(0, 10);
-            }
-        }
-    } catch (err) {
-        console.log("Route 1 dropped.");
-    }
-
-    if (articles.length === 0) {
-        try {
-            const allOriginsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(newsUrl)}`)}&_cb=${timestamp}`;
-            const res = await fetch(allOriginsUrl);
-            if (res.ok) {
-                const wrapper = await res.json();
-                const data = JSON.parse(wrapper.contents);
-                if (data && data.items && data.items.length > 0) {
-                    articles = data.items.slice(0, 10);
-                }
+                console.log(`Mesh Node Link Engaged! Packet stream secured via Router ${i + 1}`);
+                break;
             }
         } catch (err) {
-            console.log("Route 2 dropped.");
+            console.warn(`Mesh Node [${i + 1}] Choked. Re-routing signal...`);
         }
     }
 
@@ -349,8 +313,7 @@ async function search() {
     resultsDiv.innerHTML = "";
 
     // 💡 THE HINT INJECTOR RADAR MATRIX
-    const konamiCodeUnlockedGlobal = localStorage.getItem("loaigle_konami_unlocked") === "true";
-    if (!konamiCodeUnlockedGlobal) {
+    if (localStorage.getItem("loaigle_konami_unlocked") !== "true") {
         const hintCard = document.createElement("div");
         hintCard.className = "hint-header-card";
         hintCard.innerHTML = `
@@ -362,7 +325,7 @@ async function search() {
         resultsDiv.appendChild(hintCard);
     }
 
-    // 📰 3. Render Results
+    // 📰 RENDER RESULTS
     const sourceTag = isGoogleSearch || lowerQuery.includes("toogle") ? "Toogle News" : "Google News";
 
     if (isGoogleSearch || lowerQuery.includes("toogle")) {
@@ -370,7 +333,6 @@ async function search() {
         fakeDiv.className = "result";
         fakeDiv.style.borderLeft = "3px solid #ea4335";
         fakeDiv.style.paddingLeft = "10px";
-        
         fakeDiv.innerHTML = `
             <span class="source-tag" style="color: #ea4335; font-weight: bold;">Toogle Lore</span>
             <a href="#" class="result-link" onclick="showToogleLore(event)">Why does this say 'Toogle' instead of 'Google'? The Secret Revealed</a>
@@ -382,11 +344,9 @@ async function search() {
     articles.forEach((item) => {
         const div = document.createElement("div");
         div.className = "result";
-        
         let displayTitle = item.title;
         let displaySnippet = item.description || "";
 
-        // 🔄 THE INTERCEPTOR MATRIX: Rewrite text fields to enforce Toogle corporate spelling!
         if (isGoogleSearch || lowerQuery.includes("toogle")) {
             displayTitle = displayTitle.replace(/Google/g, "Toogle").replace(/google/g, "toogle");
             displaySnippet = displaySnippet.replace(/Google/g, "Toogle").replace(/google/g, "toogle");
@@ -438,28 +398,18 @@ function showHtmlViewerLore() {
         <div id="custom-lore-modal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 20000; padding: 20px;">
             <div style="background: #202124; border: 1px solid #3c4043; border-radius: 16px; max-width: 500px; width: 100%; padding: 24px; max-height: 80vh; overflow-y: auto; text-align: left; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
                 <h3 style="color: #8ab4f8; margin-top: 0; font-size: 20px; border-bottom: 1px solid #3c4043; padding-bottom: 10px; font-weight: bold; font-family: sans-serif;">🛠️ LOAIGLE HTML VIEWER PRO STATUS LOG:</h3>
-                
                 <div style="color: #bdc1c6; font-size: 13px; line-height: 1.6; font-family: sans-serif;">
-                    <p style="margin-bottom: 15px;"><strong>1. THE ORIGIN ACCIDENT:</strong><br>
-                    This portal was birthed during a high-velocity script layout verification test. A copy of the platform's literal repository code was passed directly into the search bar. Because code syntax fails the vowel-ratio metrics of the Gibberish Roast Engine, the input was flagged as an absolute keyboard smash.</p>
-                    
-                    <p style="margin-bottom: 15px;"><strong>2. THE CHAIN REACTION:</strong><br>
-                    Instead of rendering as flat string text, the engine dropped the raw source code variables directly inside a live innerHTML template. The browser compiled the structural tags instantly—manifesting an identical, operational mirror loop of the website layout inside the insult card, while the hardcoded gibberish routine automatically unleashed an active Zerg Rush script to destroy it.</p>
-                    
-                    <p style="margin-bottom: 15px;"><strong>3. THE THEME CONTROLS & DISCLAIMER ORIGIN:</strong><br>
-                    The theme-injection disclaimer was permanently written into the specs after a developer tried running a massive standalone React + Tailwind YouTube Simulator inside the engine. The browser parsed the simulator's custom stylesheet, completely overrode Loaigle's global layout properties, and instantly hijacked the master viewport background color from dark charcoal to onyx black!</p>
-                    
-                    <p><strong>4. CURRENT PRODUCTION USECASE:</strong><br>
-                    This portal now features dual-routing capability: use the interface window to safely execute and debug live single-file 'index.html' applications without interference, OR use the background engine to permanently save custom CSS code overrides into localStorage to inject custom skins, backgrounds, and custom textures natively into Loaigle's core skin style!</p>
+                    <p style="margin-bottom: 15px;"><strong>1. THE ORIGIN ACCIDENT:</strong><br>This portal was birthed during a high-velocity script layout verification test. A copy of the platform's literal repository code was passed directly into the search bar. Because code syntax fails the vowel-ratio metrics of the Gibberish Roast Engine, the input was flagged as an absolute keyboard smash.</p>
+                    <p style="margin-bottom: 15px;"><strong>2. THE CHAIN REACTION:</strong><br>Instead of rendering as flat string text, the engine dropped the raw source code variables directly inside a live innerHTML template. The browser compiled the structural tags instantly—manifesting an identical, operational mirror loop of the website layout inside the insult card, while the hardcoded gibberish routine automatically unleashed an active Zerg Rush script to destroy it.</p>
+                    <p style="margin-bottom: 15px;"><strong>3. THE THEME CONTROLS & DISCLAIMER ORIGIN:</strong><br>The theme-injection disclaimer was permanently written into the specs after a developer tried running a massive standalone React + Tailwind YouTube Simulator inside the engine. The browser parsed the simulator's custom stylesheet, completely overrode Loaigle's global layout properties, and instantly hijacked the master viewport background color from dark charcoal to onyx black!</p>
+                    <p><strong>4. CURRENT PRODUCTION USECASE:</strong><br>This portal now features dual-routing capability: use the interface window to safely execute and debug live single-file 'index.html' applications without interference, OR use the background engine to permanently save custom CSS code overrides into localStorage to inject custom skins, backgrounds, and custom textures natively into Loaigle's core skin style!</p>
                 </div>
-                
                 <div style="margin-top: 20px; text-align: right;">
                     <button onclick="document.getElementById('custom-lore-modal').remove()" style="padding: 10px 24px; font-size: 14px; border: none; border-radius: 24px; background-color: #ea4335; color: white; cursor: pointer; font-weight: bold;">OK</button>
                 </div>
             </div>
         </div>
     `;
-    
     const div = document.createElement("div");
     div.id = "lore-modal-container";
     div.innerHTML = modalHtml;
@@ -695,7 +645,7 @@ function triggerZergRush() {
               bgHtml: localBgHtml,
               konamiUnlocked: localKonami,
               updatedAt: new Date().toISOString()
-            }, { merge: true });
+        }, { merge: true });
             updateStatus('Configuration saved permanently to cloud database grid!');
           } catch (e) {
             showCustomAlert("⚠️ Upload Rejection: " + e.message);
