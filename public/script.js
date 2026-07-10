@@ -573,6 +573,7 @@ function triggerZergRush() {
 
         auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch((e) => { console.error(e); });
 
+        // 🛠️ ACTIVE REAL-TIME WATCHDOG WATCH: Hard-scans auth parameters on active interval loops
         window.forceSyncButtonsUI = function() {
             const syncStatusP = document.getElementById('settings-sync-indicator');
             const btnGoogle = document.getElementById('settings-btn-google');
@@ -629,6 +630,11 @@ function triggerZergRush() {
             }
         };
 
+        // Continuous monitoring pulse to capture user data immediately when it drops
+        setInterval(() => {
+            if (auth.currentUser) window.forceSyncButtonsUI();
+        }, 1000);
+
         auth.onAuthStateChanged(async (user) => {
           window.forceSyncButtonsUI();
           
@@ -638,28 +644,23 @@ function triggerZergRush() {
                 const userDoc = await userDocRef.get();
                 if (userDoc.exists) {
                   const cloudData = userDoc.data();
-                  
-                  // Clean write variables *without* triggering destructive page refreshes
                   if (cloudData.bgHtml) localStorage.setItem('loaigle_bg_html', cloudData.bgHtml);
                   if (cloudData.konamiUnlocked) localStorage.setItem('loaigle_konami_unlocked', cloudData.konamiUnlocked);
-                  
-                  // Hydrate layouts smoothly in real-time
                   if (cloudData.konamiUnlocked === "true") renderGuideOnMenu();
                 }
             } catch (e) { console.error(e); }
           }
         });
 
-        // Forced layout state trigger the absolute exact instant redirect response registers!
+        // 🎰 THE CLEAN HANDSHAKE ROUTER: Only open the window if an explicit redirect login result came back!
         auth.getRedirectResult().then((result) => {
-            document.getElementById("loaigle-settings-modal").style.display = "flex";
-            window.forceSyncButtonsUI();
-            
-            // Back up flag state so if a fallback hits on cold start it triggers open cleanly
-            localStorage.setItem('loaigle_force_settings_open', 'true');
+            if (result && result.user) {
+                document.getElementById("loaigle-settings-modal").style.display = "flex";
+                window.forceSyncButtonsUI();
+            }
         }).catch((e) => { console.error(e.message); });
 
-        // Evaluates storage parameters on system initialization passes
+        // Storage checker loop on standard cold boots
         if (localStorage.getItem('loaigle_force_settings_open') === 'true') {
             localStorage.removeItem('loaigle_force_settings_open');
             setTimeout(() => {
@@ -690,6 +691,7 @@ function triggerZergRush() {
                         window.location.reload();
                     });
                 } else {
+                    localStorage.setItem('loaigle_force_settings_open', 'true'); // Arm trigger right before redirect
                     auth.signInWithRedirect(googleProvider);
                 }
             }
@@ -702,6 +704,7 @@ function triggerZergRush() {
                         window.location.reload();
                     });
                 } else {
+                    localStorage.setItem('loaigle_force_settings_open', 'true'); // Arm trigger right before redirect
                     auth.signInWithRedirect(githubProvider);
                 }
             }
