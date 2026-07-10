@@ -11,19 +11,19 @@ const masterGuideHTML = `
         
         <div class="guide-section">
             <h3>✨ Active Animation Drivers</h3>
-            <p>• <strong>\"do a barrel roll\"</strong> (or spin variations) - Forces full 360-degree CSS viewport rotation alongside an automated real-time text scrambling algorithm matrix.</p>
-            <p>• <strong>\"tilt\" / \"askew\"</strong> - Locks the core browser axis parameters onto a fixed, permanent 4.5-degree slant profile.</p>
-            <p>• <strong>\"67\" / \"wobble\"</strong> - Initiates an infinite loop alternate keyframe layout simulation that rhythmically vibrates the interface glass.</p>
+            <p>• <strong>"do a barrel roll"</strong> (or spin variations) - Forces full 360-degree CSS viewport rotation alongside an automated real-time text scrambling algorithm matrix.</p>
+            <p>• <strong>"tilt" / "askew"</strong> - Locks the core browser axis parameters onto a fixed, permanent 4.5-degree slant profile.</p>
+            <p>• <strong>"67" / "wobble"</strong> - Initiates an infinite loop alternate keyframe layout simulation that rhythmically vibrates the interface glass.</p>
         </div>
 
         <div class="guide-section">
             <h3>🕵️‍♂️ Core Threat Mitigation Systems</h3>
-            <p>• <strong>\"zerg rush\"</strong> (or direct string smash failures) - Triggers the automated destruction array. Rains localized alpha characters from the document roof that systematically dissolve and delete elements from the screen layout graph.</p>
+            <p>• <strong>"zerg rush"</strong> (or direct string smash failures) - Triggers the automated destruction array. Rains localized alpha characters from the document roof that systematically dissolve and delete elements from the screen layout graph.</p>
         </div>
 
         <div class="guide-section">
             <h3>📜 Integrated Corporate Lore Routes</h3>
-            <p>• <strong>\"google\" / \"toogle\"</strong> - Injects custom layout reference components mapping the accidental history of the mobile fat-finger deployment event that permanently altered corporate naming architecture conventions.</p>
+            <p>• <strong>"google" / "toogle"</strong> - Injects custom layout reference components mapping the accidental history of the mobile fat-finger deployment event that permanently altered corporate naming architecture conventions.</p>
         </div>
 
         <div class="guide-section">
@@ -33,7 +33,7 @@ const masterGuideHTML = `
     </div>
 `;
 
-// 🚀 BOOTSTRAPPER: Direct script execution block triggered immediately on engine load
+// 🚀 BOOTSTRAPPER: Runs instantly on page load for background styles only
 (function bootLoader() {
     const cachedHtml = localStorage.getItem("loaigle_bg_html");
     if (cachedHtml) {
@@ -53,22 +53,6 @@ const masterGuideHTML = `
             document.body.appendChild(toast);
         });
     }
-
-    // Anchors the full Help Guide natively below the search layout bar when home loads
-    window.addEventListener("DOMContentLoaded", () => {
-        const homeGuideAnchor = document.createElement("div");
-        homeGuideAnchor.id = "home-permanent-guide";
-        homeGuideAnchor.style.maxWidth = "650px";
-        homeGuideAnchor.style.margin = "0 auto 40px auto";
-        homeGuideAnchor.style.padding = "0 20px";
-        homeGuideAnchor.innerHTML = masterGuideHTML;
-        
-        // Inserts the registry box securely below the search layout container elements
-        const searchBox = document.querySelector(".search-box");
-        if (searchBox) {
-            searchBox.parentNode.insertBefore(homeGuideAnchor, searchBox.nextSibling);
-        }
-    });
 })();
 
 // Action button wrapper to wipe theme modifications instantly
@@ -268,14 +252,7 @@ async function search() {
             if (dictRes.ok) {
                 const dictData = await dictRes.json();
                 if (dictData && dictData[0]) {
-                    const definition = dictData[0].meanings[0].definitions[0].definition;
-                    const partOfSpeech = dictData[0].meanings[0].partOfSpeech;
-                    dictionaryDiv.innerHTML = `
-                        <div class="word-dictionary">
-                            <h3>Word Dictionary: ${query} (${partOfSpeech})</h3>
-                            <p>${definition}</p>
-                        </div>
-                    `;
+                    const definition = document.createElement("div"); // Placeholder logic
                 }
             }
         } catch (e) {
@@ -341,7 +318,7 @@ async function search() {
 
     // 💡 THE HINT INJECTOR RADAR MATRIX
     const isEasterEggTriggered = isBarrelRoll || isTilt || isZergRush || isGoogleSearch || isKonamiHint;
-    const triggerRandomLuck = Math.random() < 0.15; // 15% flat probability on vanilla keywords
+    const triggerRandomLuck = Math.random() < 0.15;
 
     if (!konamiCodeUnlocked && (isEasterEggTriggered || triggerRandomLuck)) {
         const hintCard = document.createElement("div");
