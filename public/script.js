@@ -589,13 +589,6 @@ function updateStatus(msg) {
   }
 }
 
-// Bind native UI event bindings safely under window scope rules
-window.search = search;
-window.deleteFromBrowserStorage = deleteFromBrowserStorage;
-window.loadToBrowserStorage = loadToBrowserStorage;
-window.showHtmlViewerLore = showHtmlViewerLore;
-window.showToogleLore = showToogleLore;
-
 onAuthStateChanged(auth, async (user) => {
   currentUserInstance = user;
   if (user) {
@@ -691,3 +684,10 @@ btnLogout.addEventListener('click', () => {
     window.location.reload();
   });
 });
+
+// ⚡ LATE BINDING SECURITY LAYER: Safely assign functions to global scope after full evaluation
+window.search = search;
+window.deleteFromBrowserStorage = deleteFromBrowserStorage;
+window.loadToBrowserStorage = loadToBrowserStorage;
+window.showHtmlViewerLore = showHtmlViewerLore;
+window.showToogleLore = showToogleLore;
