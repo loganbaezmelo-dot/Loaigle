@@ -452,7 +452,7 @@ function showHtmlViewerLore() {
                 <div style="color: #bdc1c6; font-size: 13px; line-height: 1.6; font-family: sans-serif;">
                     <p style="margin-bottom: 15px;"><strong>1. THE ORIGIN ACCIDENT:</strong><br>This portal was birthed during a high-velocity script layout verification test. A copy of the platform's literal repository code was passed directly into the search bar. Because code syntax fails the vowel-ratio metrics of the Gibberish Roast Engine, the input was flagged as an absolute keyboard smash.</p>
                     <p style="margin-bottom: 15px;"><strong>2. THE CHAIN REACTION:</strong><br>Instead of rendering as flat string text, the engine dropped the raw source code variables directly inside a live innerHTML template. The browser compiled the structural tags instantly—manifesting an identical, operational mirror loop of the website layout inside the insult card, while the hardcoded gibberish routine automatically unleashed an active Zerg Rush script to destroy it.</p>
-                    <p style="margin-bottom: 15px;"><strong>3. THE THEME CONTROLS & DISCLAIMER ORIGIN:</strong><br>The theme-injection disclaimer was permanently written into the specs after a developer tried running a massive standalone React + Tailwind YouTube Simulator inside the engine. The browser parsed the simulator's custom stylesheet, completely overrode Loaigle's global layout properties, and instantly hijacked the master viewport background color from dark charcoal to onyx black!</p>
+                    <p style="margin-bottom: 15px;"><strong>3. THE THEME CONTROLS & DISCLAIMER ORIGIN:</strong><br>The theme-injection disclaimer was permanently written into the specs after a developer tried running a massive standalone React + Tailwind YouTube Hallucination inside the engine. The browser parsed the simulator's custom stylesheet, completely overrode Loaigle's global layout properties, and instantly hijacked the master viewport background color from dark charcoal to onyx black!</p>
                     <p><strong>4. CURRENT PRODUCTION USECASE:</strong><br>This portal now features dual-routing capability: use the interface window to safely execute and debug live single-file 'index.html' applications without interference, OR use the background engine to permanently save custom CSS code overrides into localStorage to inject custom skins, backgrounds, and custom textures natively into Loaigle's core skin style!</p>
                 </div>
                 <div style="margin-top: 20px; text-align: right;">
@@ -639,7 +639,6 @@ function triggerZergRush() {
                 if (userDoc.exists) {
                   const cloudData = userDoc.data();
                   
-                  // Only write and mount if they are completely different to break the reload lock loop!
                   let stateChanged = false;
                   if (cloudData.bgHtml && localStorage.getItem('loaigle_bg_html') !== cloudData.bgHtml) {
                       localStorage.setItem('loaigle_bg_html', cloudData.bgHtml);
@@ -650,8 +649,9 @@ function triggerZergRush() {
                       stateChanged = true;
                   }
                   
-                  // Only reload the frame layout graph if the local environment context actually updated!
                   if (stateChanged) {
+                      // 🌟 REDIRECT SAFING PARAMETER: Tag local session before execution so menu re-opens automatically!
+                      localStorage.setItem('loaigle_force_settings_open', 'true');
                       window.location.reload();
                   }
                 }
@@ -659,11 +659,22 @@ function triggerZergRush() {
           }
         });
 
+        // ⚡ GATEWAY CAPTURE HANDSHAKE: Evaluates incoming redirect packets instantly!
         auth.getRedirectResult().then((result) => {
-            if (result && result.user) { 
-                window.forceSyncButtonsUI();
-            }
+            // Force settings menu frame layout graph to materialize open instantly upon redirect completion!
+            document.getElementById("loaigle-settings-modal").style.display = "flex";
+            window.forceSyncButtonsUI();
         }).catch((e) => { console.error(e.message); });
+
+        // Check local storage anchors on system boot loop
+        if (localStorage.getItem('loaigle_force_settings_open') === 'true') {
+            localStorage.removeItem('loaigle_force_settings_open');
+            setTimeout(() => {
+                const modal = document.getElementById("loaigle-settings-modal");
+                if (modal) modal.style.display = "flex";
+                window.forceSyncButtonsUI();
+            }, 300);
+        }
 
         document.addEventListener('click', (e) => {
             if (e.target && e.target.id === 'settings-btn-save') {
