@@ -518,7 +518,8 @@ async function search() {
                 const dictData = await dictRes.json();
                 if (dictData && dictData[0]) {
                     const definition = dictData[0].meanings[0].definitions[0].definition;
-                    const partOfSpeech = dictData[0].match[0].partOfSpeech;
+                    // 🛡️ ACCURACY FIX: Corrected API variable pointer tree setup
+                    const partOfSpeech = dictData[0].meanings[0].partOfSpeech;
                     dictionaryDiv.innerHTML += `
                         <div class="word-dictionary">
                             <h3>Word Dictionary: ${query} (${partOfSpeech})</h3>
@@ -699,6 +700,7 @@ function triggerGithubLogin() {
     auth.signInWithRedirect(githubProvider);
 }
 
+// 🛡️ SAFE DIALOG TRACK CONTROLLER
 function triggerSignOut() {
     localStorage.removeItem('loaigle_validated_auth');
     auth.signOut().then(() => { localStorage.clear(); setPageLayoutState(false); });
