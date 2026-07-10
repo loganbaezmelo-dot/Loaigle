@@ -164,6 +164,7 @@ function deleteFromBrowserStorage() {
     localStorage.removeItem("loaigle_bg_html");
     localStorage.removeItem("loaigle_konami_unlocked"); 
     localStorage.removeItem("loaigle_theme");
+    localStorage.removeItem("loaigle_validated_auth");
     
     const layer = document.getElementById("background-persistent-layer");
     const guide = document.getElementById("home-permanent-guide");
@@ -234,6 +235,10 @@ function showHijackInterceptorPrompt(queryPayload, executeInjectionCallback) {
     document.getElementById("hijack-btn-no").onclick = function() {
         document.getElementById(promptId).remove();
         document.getElementById("searchInput").value = "";
+        document.getElementById("loaigle-back-btn").style.display = "none";
+        
+        const guide = document.getElementById("home-permanent-guide");
+        if (guide) guide.style.display = "block";
     };
 
     document.getElementById("hijack-btn-yes").onclick = function() {
@@ -263,7 +268,7 @@ async function search() {
         homeMenuGuide.style.display = "none";
     }
 
-    // 💥 RE-ROUTE: Activate back arrow parameter layout indicator instantly on evaluation pass
+    // Activate back arrow parameter layout indicator instantly on evaluation pass
     document.getElementById("loaigle-back-btn").style.display = "inline-block";
 
     const lowerQuery = query.toLowerCase();
@@ -296,7 +301,6 @@ async function search() {
 
     const hasHtmlTags = /<(!doctype|html|head|body|div|p|span|a|link|script)/i.test(lowerQuery);
     if (hasHtmlTags) {
-        // 🔬 PROXIMITY SHIELD RADAR: Check if template strings attempt full browser viewport hijacking
         const attemptsFullHijack = /<body|<html|id=["']login-gate["']|id=["']main-app-canvas["']/i.test(lowerQuery) || lowerQuery.length > 1500;
         const isJustAThemeOverride = /color|background|style/i.test(lowerQuery) && !attemptsFullHijack;
 
@@ -316,9 +320,7 @@ async function search() {
         };
 
         if (attemptsFullHijack && !isJustAThemeOverride) {
-            // Force back trigger parameters to fade away since screen overrides override everything
             document.getElementById("loaigle-back-btn").style.display = "none";
-            
             showHijackInterceptorPrompt(query, () => {
                 renderHtmlViewerLayout();
             });
@@ -494,89 +496,6 @@ async function search() {
     }
 }
 
-function showToogleLore(event) {
-    event.preventDefault();
-    showCustomAlert(
-        "📜 THE LORE OF TOOGLE:\n\n" +
-        "This was not an intentional tech feature. While the lead engineer was rapidly deploying code from a tiny, chaotic mobile interface, their thumb struck the 'T' key instead of the 'G' key.\n\n" +
-        "Vercel built it instantly. The internet witnessed it. The blinding white layout collapsed under its power. Instead of fixing the mistake silently, it was immortalized forever into the source code as a feature.\n\n" +
-        "Long live Toogle News! 💀😭"
-    );
-}
-
-function triggerChaosAnimation() {
-    document.body.classList.add("spin-animation");
-    setTimeout(() => { document.body.classList.remove("spin-animation"); }, 1000);
-    const results = document.querySelectorAll(".result");
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
-    results.forEach(result => {
-        const linkElement = result.querySelector(".result-link");
-        const snippetElement = result.querySelector(".result-snippet");
-        const origTitle = result.dataset.originalTitle;
-        const origSnippet = result.dataset.originalSnippet;
-        const origLink = result.dataset.originalLink;
-        let scrambledTitle = "";
-        let scrambledSnippet = "";
-        for(let i=0; i<origTitle.length; i++) scrambledTitle += chars[Math.floor(Math.random() * chars.length)];
-        for(let i=0; i<origSnippet.length; i++) scrambledSnippet += chars[Math.floor(Math.random() * chars.length)];
-        linkElement.innerText = scrambledTitle;
-        snippetElement.innerText = scrambledSnippet;
-        linkElement.href = `https://${scrambledTitle.substring(0,8)}.com/error-broken-link`;
-        let iterations = 0;
-        const interval = setInterval(() => {
-            linkElement.innerText = origTitle.split("").map((letter, index) => {
-                if (index < iterations) return origTitle[index];
-                return chars[Math.floor(Math.random() * chars.length)];
-            }).join("");
-            snippetElement.innerText = origSnippet.split("").map((letter, index) => {
-                if (index < iterations) return origSnippet[index];
-                return chars[Math.floor(Math.random() * chars.length)];
-            }).join("");
-            iterations += 1;
-            if (iterations >= Math.max(origTitle.length, origSnippet.length)) {
-                clearInterval(interval);
-                linkElement.innerText = origTitle;
-                snippetElement.innerText = origSnippet;
-                linkElement.href = origLink;
-            }
-        }, 30);
-    });
-}
-
-function triggerZergRush() {
-    const DefenseDiv = document.getElementById("results");
-    activeZergRush = setInterval(() => {
-        const currentResults = document.querySelectorAll(".result, .result-roast");
-        if (currentResults.length > 0) {
-            const targetIndex = Math.floor(Math.random() * currentResults.length);
-            const targetDiv = currentResults[targetIndex];
-            const bug = document.createElement("span");
-            bug.innerText = Math.random() > 0.5 ? "o" : "O";
-            bug.style.position = "absolute";
-            bug.style.color = Math.random() > 0.5 ? "#ea4335" : "#fbbc05";
-            bug.style.fontWeight = "bold";
-            bug.style.fontSize = "24px";
-            bug.style.left = `${Math.random() * 60 + 20}%`;
-            bug.style.top = "-50px";
-            bug.style.zIndex = "999";
-            bug.style.animation = "fall 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards";
-            targetDiv.style.position = "relative";
-            targetDiv.appendChild(bug);
-            setTimeout(() => {
-                targetDiv.style.transition = "opacity 0.4s ease, transform 0.4s ease";
-                targetDiv.style.opacity = "0";
-                targetDiv.style.transform = "translateX(-20px) scale(0.9)";
-                setTimeout(() => { if (targetDiv.parentNode) targetDiv.remove(); }, 400);
-            }, 650);
-        } else {
-            clearInterval(activeZergRush);
-            activeZergRush = null;
-            DefenseDiv.innerHTML = "<p style='color: #ea4335; font-family: monospace; font-size: 20px; font-weight: bold;'>🚨 API not found!</p>";
-            setTimeout(() => { DefenseDiv.innerHTML = "<p style='color: #bdc1c6;'>No results found on Loaigle.</p>"; }, 1500);
-        }
-    }, 500);
-}
-
 // ==========================================================================
 // 📡 ZERO-RACE CONDITIONAL DIRECT CONTAINER STATE MANIFEST SYSTEM
 // ==========================================================================
@@ -628,8 +547,10 @@ function triggerZergRush() {
             }
         };
 
+        // THE COMPLETE OVERRIDE HANDSHAKE: Catching redirect tokens synchronously
         auth.getRedirectResult().then((result) => {
             if (result && result.user) {
+                localStorage.setItem('loaigle_validated_auth', 'true');
                 isFirebaseInitializing = false; 
                 setPageLayoutState(true);
             }
@@ -638,10 +559,12 @@ function triggerZergRush() {
             showCustomAlert("⚠️ Handshake Rejection: " + e.message); 
         });
 
+        // Monitors user authentication states securely
         auth.onAuthStateChanged(async (user) => {
             isFirebaseInitializing = false;
 
             if (user) {
+                localStorage.setItem('loaigle_validated_auth', 'true');
                 setPageLayoutState(true);
                 window.forceSyncButtonsUI();
 
@@ -655,17 +578,26 @@ function triggerZergRush() {
                     }
                 } catch (e) { console.error(e); }
             } else {
+                // 🛡️ RE-ARMED PERSISTENCE ENVELOPE: Only drop to login if local validation tracker is absent
+                if (localStorage.getItem('loaigle_validated_auth') === 'true') {
+                    setPageLayoutState(true);
+                    window.forceSyncButtonsUI();
+                    return;
+                }
                 setPageLayoutState(false);
             }
         });
 
+        // Click Routers Pipelines
         document.addEventListener('click', (e) => {
             if (e.target && e.target.id === 'gate-btn-google') {
+                localStorage.setItem('loaigle_validated_auth', 'true');
                 isFirebaseInitializing = true; 
                 auth.signInWithRedirect(googleProvider);
             }
 
             if (e.target && e.target.id === 'gate-btn-github') {
+                localStorage.setItem('loaigle_validated_auth', 'true');
                 isFirebaseInitializing = true;
                 auth.signInWithRedirect(githubProvider);
             }
