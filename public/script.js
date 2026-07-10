@@ -4,6 +4,9 @@ let activeZergRush = null;
 // Tracks initialized state parameters during cold reboots
 let isFirebaseInitializing = true;
 
+// Shared configuration parameters initialized globally
+let auth, db, googleProvider, githubProvider;
+
 // The canonical master blueprint text block utilized across both viewport layouts
 const masterGuideHTML = `
     <div class="konami-guide-container" id="loaigle-system-guide">
@@ -207,7 +210,7 @@ function showCustomAlert(message, callback = null) {
     };
 }
 
-// 🛡️ DYNAMIC INTERCEPTOR DIALOGUE
+// 🛡️ DYNAMIC INTERCEPTOR DIALOGUE: Prompts choice blocks before full layout hijacking
 function showHijackInterceptorPrompt(queryPayload, executeInjectionCallback) {
     const promptId = "loaigle-hijack-interceptor";
     const existing = document.getElementById(promptId);
@@ -268,6 +271,7 @@ async function search() {
         homeMenuGuide.style.display = "none";
     }
 
+    // Activate back arrow parameter layout indicator instantly on evaluation pass
     document.getElementById("loaigle-back-btn").style.display = "inline-block";
 
     const lowerQuery = query.toLowerCase();
@@ -495,8 +499,137 @@ async function search() {
     }
 }
 
+function showToogleLore(event) {
+    event.preventDefault();
+    showCustomAlert(
+        "📜 THE LORE OF TOOGLE:\n\n" +
+        "This was not an intentional tech feature. While the lead engineer was rapidly deploying code from a tiny, chaotic mobile interface, their thumb struck the 'T' key instead of the 'G' key.\n\n" +
+        "Vercel built it instantly. The internet witnessed it. The blinding white layout collapsed under its power. Instead of fixing the mistake silently, it was immortalized forever into the source code as a feature.\n\n" +
+        "Long live Toogle News! 💀😭"
+    );
+}
+
+function triggerChaosAnimation() {
+    document.body.classList.add("spin-animation");
+    setTimeout(() => { document.body.classList.remove("spin-animation"); }, 1000);
+    const results = document.querySelectorAll(".result");
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+    results.forEach(result => {
+        const linkElement = result.querySelector(".result-link");
+        const snippetElement = result.querySelector(".result-snippet");
+        const origTitle = result.dataset.originalTitle;
+        const origSnippet = result.dataset.originalSnippet;
+        const origLink = result.dataset.originalLink;
+        let scrambledTitle = "";
+        let scrambledSnippet = "";
+        for(let i=0; i<origTitle.length; i++) scrambledTitle += chars[Math.floor(Math.random() * chars.length)];
+        for(let i=0; i<origSnippet.length; i++) scrambledSnippet += chars[Math.floor(Math.random() * chars.length)];
+        linkElement.innerText = scrambledTitle;
+        snippetElement.innerText = scrambledSnippet;
+        linkElement.href = `https://${scrambledTitle.substring(0,8)}.com/error-broken-link`;
+        let iterations = 0;
+        const interval = setInterval(() => {
+            linkElement.innerText = origTitle.split("").map((letter, index) => {
+                if (index < iterations) return origTitle[index];
+                return chars[Math.floor(Math.random() * chars.length)];
+            }).join("");
+            snippetElement.innerText = origSnippet.split("").map((letter, index) => {
+                if (index < iterations) return origSnippet[index];
+                return chars[Math.floor(Math.random() * chars.length)];
+            }).join("");
+            iterations += 1;
+            if (iterations >= Math.max(origTitle.length, origSnippet.length)) {
+                clearInterval(interval);
+                linkElement.innerText = origTitle;
+                snippetElement.innerText = origSnippet;
+                linkElement.href = origLink;
+            }
+        }, 30);
+    });
+}
+
+function triggerZergRush() {
+    const DefenseDiv = document.getElementById("results");
+    activeZergRush = setInterval(() => {
+        const currentResults = document.querySelectorAll(".result, .result-roast");
+        if (currentResults.length > 0) {
+            const targetIndex = Math.floor(Math.random() * currentResults.length);
+            const targetDiv = currentResults[targetIndex];
+            const bug = document.createElement("span");
+            bug.innerText = Math.random() > 0.5 ? "o" : "O";
+            bug.style.position = "absolute";
+            bug.style.color = Math.random() > 0.5 ? "#ea4335" : "#fbbc05";
+            bug.style.fontWeight = "bold";
+            bug.style.fontSize = "24px";
+            bug.style.left = `${Math.random() * 60 + 20}%`;
+            bug.style.top = "-50px";
+            bug.style.zIndex = "999";
+            bug.style.animation = "fall 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards";
+            targetDiv.style.position = "relative";
+            targetDiv.appendChild(bug);
+            setTimeout(() => {
+                targetDiv.style.transition = "opacity 0.4s ease, transform 0.4s ease";
+                targetDiv.style.opacity = "0";
+                targetDiv.style.transform = "translateX(-20px) scale(0.9)";
+                setTimeout(() => { if (targetDiv.parentNode) targetDiv.remove(); }, 400);
+            }, 650);
+        } else {
+            clearInterval(activeZergRush);
+            activeZergRush = null;
+            DefenseDiv.innerHTML = "<p style='color: #ea4335; font-family: monospace; font-size: 20px; font-weight: bold;'>🚨 API not found!</p>";
+            setTimeout(() => { DefenseDiv.innerHTML = "<p style='color: #bdc1c6;'>No results found on Loaigle.</p>"; }, 1500);
+        }
+    }, 500);
+}
+
+// 🌐 EXPOSED SYSTEM MOBILE INLINE CLICK ACTIONS
+function triggerGoogleLogin() {
+    localStorage.setItem('loaigle_validated_auth', 'true');
+    isFirebaseInitializing = true;
+    auth.signInWithRedirect(googleProvider);
+}
+
+function triggerGithubLogin() {
+    localStorage.setItem('loaigle_validated_auth', 'true');
+    isFirebaseInitializing = true;
+    auth.signInWithRedirect(githubProvider);
+}
+
+function triggerSignOut() {
+    localStorage.removeItem('loaigle_validated_auth');
+    auth.signOut().then(() => {
+        localStorage.clear();
+        setPageLayoutState(false);
+    });
+}
+
+function pushConfigsToCloud() {
+    if (!auth.currentUser) return;
+    db.collection('users').doc(auth.currentUser.uid).set({
+      email: auth.currentUser.email || "",
+      bgHtml: localStorage.getItem('loaigle_bg_html') || "",
+      konamiUnlocked: localStorage.getItem('loaigle_konami_unlocked') || "false",
+      updatedAt: new Date().toISOString()
+    }, { merge: true }).then(() => {
+        showCustomAlert("Configuration saved permanently to cloud database grid! 🎰🏁");
+    });
+}
+
+function setPageLayoutState(isAuthenticated) {
+    const loginGate = document.getElementById("login-gate");
+    const appCanvas = document.getElementById("main-app-canvas");
+    if (isAuthenticated) {
+        if (loginGate) loginGate.style.display = "none";
+        if (appCanvas) appCanvas.style.display = "block";
+    } else {
+        if (loginGate) loginGate.style.display = "flex";
+        if (appCanvas) appCanvas.style.display = "none";
+        document.getElementById("loaigle-settings-modal").style.display = "none";
+    }
+}
+
 // ==========================================================================
-// 📡 ZERO-COOKIE LOCK MOBILE WHITELIST MATRIX
+// 📡 SYNC RUNTIME HANDSHAKE INITIALIZATION
 // ==========================================================================
 (function initFirebaseMatrix() {
     try {
@@ -509,44 +642,11 @@ async function search() {
           appId: "1:411313454942:web:4e0c24b33fcae74ef359cf",
           measurementId: "G-HXS9N4GQ7Y"
         };
-
         if (typeof firebase === 'undefined') return;
-
         firebase.initializeApp(config);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        const googleProvider = new firebase.auth.GoogleAuthProvider();
-        const githubProvider = new firebase.auth.GithubAuthProvider();
+        auth = firebase.auth(); db = firebase.firestore();
+        googleProvider = new firebase.auth.GoogleAuthProvider(); githubProvider = new firebase.auth.GithubAuthProvider();
 
-        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch((e) => { console.error(e); });
-
-        function setPageLayoutState(isAuthenticated) {
-            const loginGate = document.getElementById("login-gate");
-            const appCanvas = document.getElementById("main-app-canvas");
-            
-            if (isAuthenticated) {
-                if (loginGate) loginGate.style.display = "none";
-                if (appCanvas) appCanvas.style.display = "block";
-            } else {
-                if (loginGate) loginGate.style.display = "flex";
-                if (appCanvas) appCanvas.style.display = "none";
-                document.getElementById("loaigle-settings-modal").style.display = "none";
-            }
-        }
-
-        window.forceSyncButtonsUI = function() {
-            const syncStatusP = document.getElementById('settings-sync-indicator');
-            const btnSaveCloud = document.getElementById('settings-btn-save');
-            const user = auth.currentUser;
-
-            if (user && syncStatusP) {
-                syncStatusP.innerText = `Active Account: ${user.email || 'Authorized Operator'}`;
-                syncStatusP.style.color = "#34a853";
-                if (btnSaveCloud) btnSaveCloud.style.display = "block";
-            }
-        };
-
-        // 🎰 THE DYNAMIC MOBILE GATEWAY: Automatically falls back safely to whitelisted session triggers
         auth.getRedirectResult().then((result) => {
             if (result && result.user) {
                 localStorage.setItem('loaigle_validated_auth', 'true');
@@ -554,81 +654,30 @@ async function search() {
                 setPageLayoutState(true);
             }
         }).catch((e) => { 
-            // If mobile security drops cookies, read local validation fallback trace directly
-            if (localStorage.getItem('loaigle_validated_auth') === 'true') {
-                isFirebaseInitializing = false;
-                setPageLayoutState(true);
-            }
+            isFirebaseInitializing = false; 
         });
 
-        // Monitors user authentication states securely across network hops
         auth.onAuthStateChanged(async (user) => {
             isFirebaseInitializing = false;
-
             if (user) {
                 localStorage.setItem('loaigle_validated_auth', 'true');
                 setPageLayoutState(true);
-                window.forceSyncButtonsUI();
-
-                try {
-                    const userDoc = await db.collection('users').doc(user.uid).get();
-                    if (userDoc.exists) {
-                        const cloudData = userDoc.data();
-                        if (cloudData.bgHtml) localStorage.setItem('loaigle_bg_html', cloudData.bgHtml);
-                        if (cloudData.konamiUnlocked) localStorage.setItem('loaigle_konami_unlocked', cloudData.konamiUnlocked);
-                        if (cloudData.konamiUnlocked === "true") renderGuideOnMenu();
-                    }
-                } catch (e) { console.error(e); }
+                const syncStatusP = document.getElementById('settings-sync-indicator');
+                const btnSaveCloud = document.getElementById('settings-btn-save');
+                if (syncStatusP) { syncStatusP.innerText = `Active Account: ${user.email}`; syncStatusP.style.color = "#34a853"; }
+                if (btnSaveCloud) btnSaveCloud.style.display = "block";
             } else {
-                // If the tracking shield strips cookies on boot, protect view layout states smoothly
                 if (localStorage.getItem('loaigle_validated_auth') === 'true') {
                     setPageLayoutState(true);
-                    window.forceSyncButtonsUI();
                     return;
                 }
                 setPageLayoutState(false);
             }
         });
-
-        // Click Routers Pipelines
-        document.addEventListener('click', (e) => {
-            if (e.target && e.target.id === 'gate-btn-google') {
-                localStorage.setItem('loaigle_validated_auth', 'true');
-                auth.signInWithRedirect(googleProvider);
-            }
-
-            if (e.target && e.target.id === 'gate-btn-github') {
-                localStorage.setItem('loaigle_validated_auth', 'true');
-                auth.signInWithRedirect(githubProvider);
-            }
-
-            if (e.target && e.target.id === 'settings-btn-logout') {
-                localStorage.removeItem('loaigle_validated_auth');
-                auth.signOut().then(() => {
-                    localStorage.clear();
-                    setPageLayoutState(false);
-                });
-            }
-
-            if (e.target && e.target.id === 'settings-btn-save') {
-                if (!auth.currentUser) return;
-                db.collection('users').doc(auth.currentUser.uid).set({
-                  email: auth.currentUser.email || "",
-                  bgHtml: localStorage.getItem('loaigle_bg_html') || "",
-                  konamiUnlocked: localStorage.getItem('loaigle_konami_unlocked') || "false",
-                  updatedAt: new Date().toISOString()
-                }, { merge: true }).then(() => {
-                    showCustomAlert("Configuration saved permanently to cloud database grid! 🎰🏁");
-                });
-            }
-        });
-
     } catch (globalError) { console.error(globalError); }
 })();
 
-window.search = search;
-window.deleteFromBrowserStorage = deleteFromBrowserStorage;
-window.loadToBrowserStorage = loadToBrowserStorage;
-window.toggleSettingsMenu = toggleSettingsMenu;
-window.setThemeStyle = setThemeStyle;
-window.returnToHomeMenu = returnToHomeMenu;
+// Attach functions explicitly to global scope blueprints
+window.search = search; window.deleteFromBrowserStorage = deleteFromBrowserStorage; window.loadToBrowserStorage = loadToBrowserStorage;
+window.toggleSettingsMenu = toggleSettingsMenu; window.setThemeStyle = setThemeStyle; window.returnToHomeMenu = returnToHomeMenu;
+window.triggerGoogleLogin = triggerGoogleLogin; window.triggerGithubLogin = triggerGithubLogin; window.triggerSignOut = triggerSignOut; window.pushConfigsToCloud = pushConfigsToCloud;
