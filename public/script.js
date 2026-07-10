@@ -350,7 +350,7 @@ async function search() {
 
     // 💡 THE HINT INJECTOR RADAR MATRIX
     const konamiCodeUnlockedGlobal = localStorage.getItem("loaigle_konami_unlocked") === "true";
-    if (!konamiCodeUnlockedGlobal && (isEasterEggTriggered || triggerRandomLuck)) {
+    if (!konamiCodeUnlockedGlobal) {
         const hintCard = document.createElement("div");
         hintCard.className = "hint-header-card";
         hintCard.innerHTML = `
@@ -397,8 +397,8 @@ async function search() {
         const cleanSnippet = tempDiv.innerText.split("...")[0] + "..."; 
 
         div.dataset.originalTitle = displayTitle;
-        div.dataset.originalLink = item.link;
         div.dataset.originalSnippet = cleanSnippet;
+        div.dataset.originalLink = item.link;
 
         div.innerHTML = `
             <span class="source-tag">${sourceTag}</span>
@@ -515,7 +515,7 @@ function triggerChaosAnimation() {
     });
 }
 
-// 👾 Zerg Rush Link Destroyer Logic
+// 👾 Zerg Rush Falling Link Destroyer Logic
 function triggerZergRush() {
     const DefenseDiv = document.getElementById("results");
     
@@ -561,3 +561,133 @@ function triggerZergRush() {
         }
     }, 500);
 }
+
+// ==========================================================================
+// 📡 NEW: LOAIGLE BACKEND SYNC AND SECURITY CORE SECTIONS
+// ==========================================================================
+import { auth, db, googleProvider, githubProvider } from './config/firebase.js';
+import { signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+import { doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+
+const loggedOutDiv = document.getElementById('auth-logged-out');
+const loggedInDiv = document.getElementById('auth-logged-in');
+const userEmailSpan = document.getElementById('user-email');
+const syncStatusP = document.getElementById('sync-status');
+const btnGoogle = document.getElementById('btn-google');
+const btnGithub = document.getElementById('btn-github');
+const btnSaveCloud = document.getElementById('btn-save-cloud');
+const btnLogout = document.getElementById('btn-logout');
+
+let currentUserInstance = null;
+
+function updateStatus(msg) {
+  if (msg) {
+    syncStatusP.innerText = msg;
+    syncStatusP.style.display = 'block';
+  } else {
+    syncStatusP.style.display = 'none';
+  }
+}
+
+// Bind native UI event bindings safely under window scope rules
+window.search = search;
+window.deleteFromBrowserStorage = deleteFromBrowserStorage;
+window.loadToBrowserStorage = loadToBrowserStorage;
+window.showHtmlViewerLore = showHtmlViewerLore;
+window.showToogleLore = showToogleLore;
+
+onAuthStateChanged(auth, async (user) => {
+  currentUserInstance = user;
+  if (user) {
+    userEmailSpan.innerText = user.email;
+    loggedOutDiv.style.display = 'none';
+    loggedInDiv.style.display = 'block';
+    updateStatus('Verifying cloud signature keys...');
+    await syncBrowserStorage(user);
+  } else {
+    loggedOutDiv.style.display = 'block';
+    loggedInDiv.style.display = 'none';
+    updateStatus('');
+  }
+});
+
+async function syncBrowserStorage(user) {
+  try {
+    const userDocRef = doc(db, 'users', user.uid);
+    const userDoc = await getDoc(userDocRef);
+    const localBgHtml = localStorage.getItem('loaigle_bg_html');
+    const localKonami = localStorage.getItem('loaigle_konami_unlocked');
+
+    if (userDoc.exists()) {
+      const cloudData = userDoc.data();
+      if (cloudData.email === user.email) {
+        if (cloudData.bgHtml) localStorage.setItem('loaigle_bg_html', cloudData.bgHtml);
+        if (cloudData.konamiUnlocked) localStorage.setItem('loaigle_konami_unlocked', cloudData.konamiUnlocked);
+        
+        updateStatus('Success: Cloud configurations injected into environment layer!');
+        
+        if (cloudData.bgHtml && !document.getElementById('background-persistent-layer')) {
+            const template = document.createElement("div");
+            template.id = "background-persistent-layer";
+            template.innerHTML = cloudData.bgHtml;
+            document.documentElement.appendChild(template);
+        }
+        if (cloudData.konamiUnlocked === "true") {
+            renderGuideOnMenu();
+        }
+      }
+    } else if (localBgHtml || localKonami) {
+      await setDoc(userDocRef, {
+        email: user.email,
+        bgHtml: localBgHtml || "",
+        konamiUnlocked: localKonami || "false",
+        updatedAt: new Date().toISOString()
+      });
+      updateStatus('Cloud profile created. Local configurations backed up.');
+    } else {
+      updateStatus('System sync active. No baseline data configs discovered.');
+    }
+  } catch (error) {
+    console.error("Matrix synchronization error:", error);
+    updateStatus('Storage injection runtime failed.');
+  }
+}
+
+async function saveCurrentLayoutToCloud() {
+  if (!currentUserInstance) return;
+  const localBgHtml = localStorage.getItem('loaigle_bg_html') || "";
+  const localKonami = localStorage.getItem('loaigle_konami_unlocked') || "false";
+  
+  updateStatus('Pushing system environments to cloud storage...');
+  try {
+    const userDocRef = doc(db, 'users', currentUserInstance.uid);
+    await setDoc(userDocRef, {
+      email: currentUserInstance.email,
+      bgHtml: localBgHtml,
+      konamiUnlocked: localKonami,
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+    updateStatus('Configuration saved permanently to cloud database grid!');
+  } catch (e) {
+    updateStatus('Cloud transaction failed.');
+  }
+}
+
+btnGoogle.addEventListener('click', () => {
+  updateStatus('Connecting to Google Net...');
+  signInWithPopup(auth, googleProvider).catch(() => updateStatus('Authentication rejected.'));
+});
+
+btnGithub.addEventListener('click', () => {
+  updateStatus('Connecting to GitHub Node...');
+  signInWithPopup(auth, githubProvider).catch(() => updateStatus('Authentication rejected.'));
+});
+
+btnSaveCloud.addEventListener('click', saveCurrentLayoutToCloud);
+btnLogout.addEventListener('click', () => {
+  signOut(auth).then(() => {
+    localStorage.removeItem('loaigle_bg_html');
+    localStorage.removeItem('loaigle_konami_unlocked');
+    window.location.reload();
+  });
+});
