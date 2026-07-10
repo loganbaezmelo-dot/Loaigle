@@ -1,7 +1,39 @@
 // Keep track of any active Zerg Rush intervals so they don't stack up
 let activeZergRush = null;
 
-// 🚀 BOOTSTRAPPER: Run instantly on page load to inject cached themes/textures
+// Global flag to permanently mute hints once the user cracks the code matrix
+let konamiCodeUnlocked = false;
+
+// The canonical master blueprint text block utilized across both viewport layouts
+const masterGuideHTML = `
+    <div class="konami-guide-container">
+        <h2>🎮 LOAIGLE SYSTEM MANIFEST & COMMAND REGISTRY</h2>
+        
+        <div class="guide-section">
+            <h3>✨ Active Animation Drivers</h3>
+            <p>• <strong>\"do a barrel roll\"</strong> (or spin variations) - Forces full 360-degree CSS viewport rotation alongside an automated real-time text scrambling algorithm matrix.</p>
+            <p>• <strong>\"tilt\" / \"askew\"</strong> - Locks the core browser axis parameters onto a fixed, permanent 4.5-degree slant profile.</p>
+            <p>• <strong>\"67\" / \"wobble\"</strong> - Initiates an infinite loop alternate keyframe layout simulation that rhythmically vibrates the interface glass.</p>
+        </div>
+
+        <div class="guide-section">
+            <h3>🕵️‍♂️ Core Threat Mitigation Systems</h3>
+            <p>• <strong>\"zerg rush\"</strong> (or direct string smash failures) - Triggers the automated destruction array. Rains localized alpha characters from the document roof that systematically dissolve and delete elements from the screen layout graph.</p>
+        </div>
+
+        <div class="guide-section">
+            <h3>📜 Integrated Corporate Lore Routes</h3>
+            <p>• <strong>\"google\" / \"toogle\"</strong> - Injects custom layout reference components mapping the accidental history of the mobile fat-finger deployment event that permanently altered corporate naming architecture conventions.</p>
+        </div>
+
+        <div class="guide-section">
+            <h3>💻 Standalone HTML Sandbox Pro Suite</h3>
+            <p>• <strong>Raw Data Strings (&lt;html&gt;, &lt;!DOCTYPE&gt;)</strong> - Bypasses standard server proxies to manifest a 100% unnerfed components theater card. Features a client-side <code>localStorage</code> database sync utility designed explicitly to test or persistently lock custom theme templates, design styles, and skin textures directly into the system boot cycle.</p>
+        </div>
+    </div>
+`;
+
+// 🚀 BOOTSTRAPPER: Direct script execution block triggered immediately on engine load
 (function bootLoader() {
     const cachedHtml = localStorage.getItem("loaigle_bg_html");
     if (cachedHtml) {
@@ -21,6 +53,22 @@ let activeZergRush = null;
             document.body.appendChild(toast);
         });
     }
+
+    // Anchors the full Help Guide natively below the search layout bar when home loads
+    window.addEventListener("DOMContentLoaded", () => {
+        const homeGuideAnchor = document.createElement("div");
+        homeGuideAnchor.id = "home-permanent-guide";
+        homeGuideAnchor.style.maxWidth = "650px";
+        homeGuideAnchor.style.margin = "0 auto 40px auto";
+        homeGuideAnchor.style.padding = "0 20px";
+        homeGuideAnchor.innerHTML = masterGuideHTML;
+        
+        // Inserts the registry box securely below the search layout container elements
+        const searchBox = document.querySelector(".search-box");
+        if (searchBox) {
+            searchBox.parentNode.insertBefore(homeGuideAnchor, searchBox.nextSibling);
+        }
+    });
 })();
 
 // Action button wrapper to wipe theme modifications instantly
@@ -31,7 +79,6 @@ function deleteFromBrowserStorage() {
     if (layer) layer.remove();
     if (toast) toast.remove();
     
-    // Custom non-cutting alert modal
     showCustomAlert("Background HTML successfully purged. Reloading page to restore defaults! 💀😭", () => {
         window.location.reload();
     });
@@ -55,7 +102,7 @@ function showCustomAlert(message, callback = null) {
 
     const alertHtml = `
         <div id="${alertId}" style="position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 30000; padding: 20px;">
-            <div style="background: #202124; border: 1px solid #3c4043; border-radius: 16px; max-width: 400px; w-full; padding: 24px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: sans-serif;">
+            <div style="background: #202124; border: 1px solid #3c4043; border-radius: 16px; max-width: 400px; width: 100%; padding: 24px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: sans-serif;">
                 <p style="color: #bdc1c6; font-size: 14px; line-height: 1.5; margin-bottom: 20px;">${message}</p>
                 <button id="close-alert-btn" style="padding: 10px 30px; font-size: 14px; border: none; border-radius: 24px; background-color: #34a853; color: white; cursor: pointer; font-weight: bold;">OK</button>
             </div>
@@ -97,15 +144,29 @@ async function search() {
     ];
     const tiltPhrases = ["askew", "tilt", "67", "wobble"];
     const zergPhrases = ["zerg rush", "destroy my page", "virus"];
-    const googlePhrases = ["google", "alphabet", "sundar pichai", "google.com", "googl"];
+    const googlePhrases = ["google", "alphabet", "sundar pichai", "google.com", "googl", "toogle"];
+    const konamiHints = ["konami", "konami code", "cheat code", "cheats"];
 
     const isBarrelRoll = barrelRollPhrases.includes(lowerQuery);
     const isTilt = tiltPhrases.includes(lowerQuery);
     const isGoogleSearch = googlePhrases.some(phrase => lowerQuery.includes(phrase));
+    const isKonamiHint = konamiHints.includes(lowerQuery);
 
     document.body.classList.remove("tilt-animation", "wobble-animation");
 
-    // 🖥 shrink-0 ENGINE HOOK
+    // 🕹️ CRACK THE CODE: Canonical Konami Code Matching Sequence
+    if (lowerQuery === "up up down down left right left right b a") {
+        konamiCodeUnlocked = true; // Permamutes notifications instantly!
+        resultsDiv.innerHTML = `
+            <div style="margin-bottom: 25px; text-align: center;">
+                <span style="background-color: #34a853; color: white; font-size: 11px; font-weight: bold; padding: 4px 12px; border-radius: 20px; font-family: monospace; text-transform: uppercase;">✔ CHEAT CODE ACTIVATED</span>
+            </div>
+            ${masterGuideHTML}
+        `;
+        return; // Halt route logic
+    }
+
+    // 🖥️ EXTENDED FEATURE: HTML VIEWER PRO INTERFACE
     const hasHtmlTags = /<(!doctype|html|head|body|div|p|span|a|link|script)/i.test(lowerQuery);
     if (hasHtmlTags) {
         resultsDiv.innerHTML = `
@@ -278,6 +339,22 @@ async function search() {
 
     resultsDiv.innerHTML = "";
 
+    // 💡 THE HINT INJECTOR RADAR MATRIX
+    const isEasterEggTriggered = isBarrelRoll || isTilt || isZergRush || isGoogleSearch || isKonamiHint;
+    const triggerRandomLuck = Math.random() < 0.15; // 15% flat probability on vanilla keywords
+
+    if (!konamiCodeUnlocked && (isEasterEggTriggered || triggerRandomLuck)) {
+        const hintCard = document.createElement("div");
+        hintCard.className = "hint-header-card";
+        hintCard.innerHTML = `
+            <span style="font-size: 18px;">💡</span>
+            <span style="color: #ea4335; font-size: 12px; font-weight: bold; font-family: sans-serif;">
+                Tip: Type <span style="color: #8ab4f8; font-family: monospace; background: #202124; padding: 2px 6px; border-radius: 4px;">up up down down left right left right b a</span> into our search bar!
+            </span>
+        `;
+        resultsDiv.appendChild(hintCard);
+    }
+
     // 📰 3. Render Results
     const sourceTag = isGoogleSearch || lowerQuery.includes("toogle") ? "Toogle News" : "Google News";
 
@@ -339,7 +416,7 @@ function showToogleLore(event) {
     );
 }
 
-// 🛠️ COMPLETELY UNCHOPPED HISTORICAL LORE LOGS WITH MOBILE MODAL INJECTION
+// 🛠️ HISTORICAL LORE LOG MODAL INJECTION
 function showHtmlViewerLore() {
     const modalHtml = `
         <div id="custom-lore-modal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 20000; padding: 20px;">
