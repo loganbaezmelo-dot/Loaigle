@@ -61,7 +61,6 @@ function applyThemeLayer() {
         document.documentElement.setAttribute('data-theme', 'dark');
         document.body.classList.remove('light-theme');
     } else if (currentMode === 'auto') {
-        // 📲 HARDWARE INJECTION: Query phone's operating system layout constraints directly
         const phonePrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         if (phonePrefersDark) {
             document.documentElement.setAttribute('data-theme', 'dark');
@@ -73,7 +72,6 @@ function applyThemeLayer() {
     }
 }
 
-// Visual Indicator Active Mapping Tracker
 function updateThemeButtonsUI() {
     const currentMode = localStorage.getItem('loaigle_theme') || 'auto';
     const btnDark = document.getElementById('theme-btn-dark');
@@ -82,14 +80,12 @@ function updateThemeButtonsUI() {
     
     if (!btnDark || !btnLight || !btnAuto) return;
 
-    // Reset styles
     [btnDark, btnLight, btnAuto].forEach(btn => {
         btn.style.border = "1px solid #3c4043";
         btn.style.background = "#303134";
         btn.style.color = "#fff";
     });
 
-    // Highlight active layout switch selection parameters
     if (currentMode === 'dark') {
         btnDark.style.border = "1px solid #8ab4f8";
         btnDark.style.background = "#384966";
@@ -112,10 +108,8 @@ function updateThemeButtonsUI() {
         document.documentElement.appendChild(template);
     }
 
-    // Fire the compiler theme resolver instantly on initial load sequence
     applyThemeLayer();
 
-    // Dynamically listen for changes if the device switches theme parameters live!
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
         if (localStorage.getItem('loaigle_theme') === 'auto' || !localStorage.getItem('loaigle_theme')) {
             applyThemeLayer();
@@ -130,7 +124,6 @@ function updateThemeButtonsUI() {
     });
 })();
 
-// Helper function to cleanly inject the guide right beneath the homepage configuration node
 function renderGuideOnMenu() {
     const existing = document.getElementById("home-permanent-guide");
     if (existing) return; 
@@ -148,7 +141,6 @@ function renderGuideOnMenu() {
     }
 }
 
-// 🛠️ UNINTERRUPTED RESETS: Drops storage matrices and refreshes screen instantly with ZERO popups!
 function deleteFromBrowserStorage() {
     localStorage.removeItem("loaigle_bg_html");
     localStorage.removeItem("loaigle_konami_unlocked"); 
@@ -163,7 +155,6 @@ function deleteFromBrowserStorage() {
     window.location.reload();
 }
 
-// Action button wrapper to grab input and save it to localStorage securely
 function loadToBrowserStorage() {
     const searchInput = document.getElementById("searchInput");
     const currentPayload = searchInput.value.trim();
@@ -173,7 +164,6 @@ function loadToBrowserStorage() {
     }
 }
 
-// Helper function to build custom non-cutting alert boxes
 function showCustomAlert(message, callback = null) {
     const alertId = "loaigle-custom-alert";
     const existing = document.getElementById(alertId);
@@ -213,7 +203,6 @@ async function search() {
     dictionaryDiv.innerHTML = "";
     resultsDiv.innerHTML = "<p style='color: #bdc1c6;'>Searching Loaigle...</p>";
 
-    // Safely tucks the menu guide away during searches
     const homeMenuGuide = document.getElementById("home-permanent-guide");
     if (homeMenuGuide) {
         homeMenuGuide.style.display = "none";
@@ -221,7 +210,6 @@ async function search() {
 
     const lowerQuery = query.toLowerCase();
     
-    // 🌀 Easter Egg Trigger Lists
     const barrelRollPhrases = [
         "do a barrel roll", "do a barrel roll please", 
         "can you do a barrel roll", "barrel roll", 
@@ -237,7 +225,6 @@ async function search() {
 
     document.body.classList.remove("tilt-animation", "wobble-animation");
 
-    // 🕹️ CHEAT CODE TRIGGER
     if (lowerQuery === "up up down down left right left right b a") {
         localStorage.setItem("loaigle_konami_unlocked", "true"); 
         renderGuideOnMenu(); 
@@ -249,7 +236,6 @@ async function search() {
         return; 
     }
 
-    // 🖥️ HTML VIEWER PRO INTERFACE
     const hasHtmlTags = /<(!doctype|html|head|body|div|p|span|a|link|script)/i.test(lowerQuery);
     if (hasHtmlTags) {
         resultsDiv.innerHTML = `
@@ -270,7 +256,6 @@ async function search() {
         return; 
     }
 
-    // 🕵️‍♂️ GIBBERISH ENGINE
     function checkIsGibberish(str) {
         const words = str.split(" ");
         const passList = ["hello", "hi", "hey", "test", "nth", "bnd", "scrs", "txt", "bit", "html", "css", "js", "json"];
@@ -301,7 +286,6 @@ async function search() {
         return; 
     }
 
-    // 🧠 SPELL CHECK MATRIX
     function autoCorrectQuery(str) {
         let words = str.split(" ");
         let hasZerg = false;
@@ -319,7 +303,6 @@ async function search() {
     const serverQuery = autoCorrectQuery(lowerQuery);
     const isZergRush = zergPhrases.includes(lowerQuery) || serverQuery === "zerg rush";
 
-    // 📖 DICTIONARY SANDBOX
     if (query.split(" ").length === 1 && !isZergRush) {
         try {
             const dictRes = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${query}`);
@@ -339,9 +322,6 @@ async function search() {
         } catch (e) { console.log("No dictionary entry."); }
     }
 
-    // ==========================================================================
-    // 📡 DYNAMIC DECENTRALIZED PROXY CHAIN MATRIX
-    // ==========================================================================
     const newsUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(serverQuery)}&hl=en-US&gl=US&ceid=US:en`;
     const cb = new Date().getTime();
     let articles = [];
@@ -387,7 +367,6 @@ async function search() {
 
     resultsDiv.innerHTML = "";
 
-    // 💡 THE HINT INJECTOR RADAR MATRIX
     if (localStorage.getItem("loaigle_konami_unlocked") !== "true") {
         const hintCard = document.createElement("div");
         hintCard.className = "hint-header-card";
@@ -400,7 +379,6 @@ async function search() {
         resultsDiv.appendChild(hintCard);
     }
 
-    // 📰 RENDER RESULTS
     const sourceTag = isGoogleSearch || lowerQuery.includes("toogle") ? "Toogle News" : "Google News";
 
     if (isGoogleSearch || lowerQuery.includes("toogle")) {
@@ -466,6 +444,7 @@ function showToogleLore(event) {
     );
 }
 
+// 🛠️ HISTORICAL LORE LOG MODAL INJECTION
 function showHtmlViewerLore() {
     const modalHtml = `
         <div id="custom-lore-modal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 20000; padding: 20px;">
@@ -606,14 +585,16 @@ function triggerZergRush() {
 
         auth.onAuthStateChanged(async (user) => {
           currentUserInstance = user;
-          if (user) {
+          if (user && user.providerData) {
             syncStatusP.innerText = `Active Operator: ${user.email}`;
             syncStatusP.style.color = "#34a853";
             btnSaveCloud.style.display = "block";
 
-            const providerId = user.providerData[0]?.providerId;
+            // 🔍 SEARCH MATRICES: Scan all provider listings safely using '.some()' mapping parameters
+            const isGoogleLinked = user.providerData.some(p => p.providerId === 'google.com');
+            const isGithubLinked = user.providerData.some(p => p.providerId === 'github.com');
             
-            if (providerId === 'google.com') {
+            if (isGoogleLinked) {
                 btnGoogle.innerText = "Disconnect";
                 btnGoogle.style.background = "transparent";
                 btnGoogle.style.border = "1px solid #ea4335";
@@ -623,7 +604,7 @@ function triggerZergRush() {
                 btnGithub.style.background = "#24292e";
                 btnGithub.style.color = "white";
                 btnGithub.style.border = "1px solid #5f6368";
-            } else if (providerId === 'github.com') {
+            } else if (isGithubLinked) {
                 btnGithub.innerText = "Disconnect";
                 btnGithub.style.background = "transparent";
                 btnGithub.style.border = "1px solid #ea4335";
@@ -694,7 +675,7 @@ function triggerZergRush() {
         });
 
         btnGoogle.addEventListener('click', () => {
-            if (auth.currentUser && auth.currentUser.providerData[0]?.providerId === 'google.com') {
+            if (auth.currentUser && auth.currentUser.providerData.some(p => p.providerId === 'google.com')) {
                 auth.signOut().then(() => {
                     localStorage.removeItem('loaigle_bg_html');
                     localStorage.removeItem('loaigle_konami_unlocked');
@@ -706,7 +687,7 @@ function triggerZergRush() {
         });
 
         btnGithub.addEventListener('click', () => {
-            if (auth.currentUser && auth.currentUser.providerData[0]?.providerId === 'github.com') {
+            if (auth.currentUser && auth.currentUser.providerData.some(p => p.providerId === 'github.com')) {
                 auth.signOut().then(() => {
                     localStorage.removeItem('loaigle_bg_html');
                     localStorage.removeItem('loaigle_konami_unlocked');
@@ -720,7 +701,6 @@ function triggerZergRush() {
     } catch (globalError) { console.error(globalError); }
 })();
 
-// ⚡ LATE WINDOW LINKAGE: Re-expose triggers cleanly to native index view scopes
 window.search = search;
 window.deleteFromBrowserStorage = deleteFromBrowserStorage;
 window.loadToBrowserStorage = loadToBrowserStorage;
