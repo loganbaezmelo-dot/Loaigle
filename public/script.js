@@ -444,7 +444,6 @@ function showToogleLore(event) {
     );
 }
 
-// 🛠️ HISTORICAL LORE LOG MODAL INJECTION
 function showHtmlViewerLore() {
     const modalHtml = `
         <div id="custom-lore-modal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 20000; padding: 20px;">
@@ -579,42 +578,67 @@ function triggerZergRush() {
 
         let currentUserInstance = null;
 
-        auth.getRedirectResult().then(async (result) => {
-            if (result.user) { console.log("Redirect handshake secured."); }
-        }).catch((e) => { showCustomAlert("⚠️ Auth Redirect Failed: " + e.message); });
-
-        auth.onAuthStateChanged(async (user) => {
-          currentUserInstance = user;
-          if (user && user.providerData) {
-            syncStatusP.innerText = `Active Operator: ${user.email}`;
-            syncStatusP.style.color = "#34a853";
-            btnSaveCloud.style.display = "block";
-
-            // 🔍 SEARCH MATRICES: Scan all provider listings safely using '.some()' mapping parameters
-            const isGoogleLinked = user.providerData.some(p => p.providerId === 'google.com');
-            const isGithubLinked = user.providerData.some(p => p.providerId === 'github.com');
+        // Force UI buttons update instantly based on user parameters
+        function syncButtonsUI(user) {
+            if (!btnGoogle || !btnGithub) return;
             
-            if (isGoogleLinked) {
-                btnGoogle.innerText = "Disconnect";
-                btnGoogle.style.background = "transparent";
-                btnGoogle.style.border = "1px solid #ea4335";
-                btnGoogle.style.color = "#ea4335";
+            if (user && user.providerData) {
+                const isGoogleLinked = user.providerData.some(p => p.providerId === 'google.com');
+                const isGithubLinked = user.providerData.some(p => p.providerId === 'github.com');
                 
-                btnGithub.innerText = "Connect";
-                btnGithub.style.background = "#24292e";
-                btnGithub.style.color = "white";
-                btnGithub.style.border = "1px solid #5f6368";
-            } else if (isGithubLinked) {
-                btnGithub.innerText = "Disconnect";
-                btnGithub.style.background = "transparent";
-                btnGithub.style.border = "1px solid #ea4335";
-                btnGithub.style.color = "#ea4335";
-                
+                if (isGoogleLinked) {
+                    btnGoogle.innerText = "Disconnect";
+                    btnGoogle.style.background = "transparent";
+                    btnGoogle.style.border = "1px solid #ea4335";
+                    btnGoogle.style.color = "#ea4335";
+                    
+                    btnGithub.innerText = "Connect";
+                    btnGithub.style.background = "#24292e";
+                    btnGithub.style.color = "white";
+                    btnGithub.style.border = "1px solid #5f6368";
+                } else if (isGithubLinked) {
+                    btnGithub.innerText = "Disconnect";
+                    btnGithub.style.background = "transparent";
+                    btnGithub.style.border = "1px solid #ea4335";
+                    btnGithub.style.color = "#ea4335";
+                    
+                    btnGoogle.innerText = "Connect";
+                    btnGoogle.style.background = "#ea4335";
+                    btnGoogle.style.color = "white";
+                    btnGoogle.style.border = "none";
+                }
+            } else {
+                syncStatusP.innerText = "Active Session: Offline";
+                syncStatusP.style.color = "#9aa0a6";
+                btnSaveCloud.style.display = "none";
+
                 btnGoogle.innerText = "Connect";
                 btnGoogle.style.background = "#ea4335";
                 btnGoogle.style.color = "white";
                 btnGoogle.style.border = "none";
+
+                btnGithub.innerText = "Connect";
+                btnGithub.style.background = "#24292e";
+                btnGithub.style.color = "white";
+                btnGithub.style.border = "1px solid #5f6368";
             }
+        }
+
+        auth.getRedirectResult().then(async (result) => {
+            if (result && result.user) { 
+                console.log("Redirect handshake secured.");
+                syncButtonsUI(result.user);
+            }
+        }).catch((e) => { showCustomAlert("⚠️ Auth Redirect Failed: " + e.message); });
+
+        auth.onAuthStateChanged(async (user) => {
+          currentUserInstance = user;
+          syncButtonsUI(user);
+          
+          if (user && user.providerData) {
+            syncStatusP.innerText = `Active Operator: ${user.email}`;
+            syncStatusP.style.color = "#34a853";
+            btnSaveCloud.style.display = "block";
 
             try {
                 const userDocRef = db.collection('users').doc(user.uid);
@@ -644,20 +668,6 @@ function triggerZergRush() {
                   });
                 }
             } catch (e) { console.error("Firestore error:", e); }
-          } else {
-            syncStatusP.innerText = "Active Session: Offline";
-            syncStatusP.style.color = "#9aa0a6";
-            btnSaveCloud.style.display = "none";
-
-            btnGoogle.innerText = "Connect";
-            btnGoogle.style.background = "#ea4335";
-            btnGoogle.style.color = "white";
-            btnGoogle.style.border = "none";
-
-            btnGithub.innerText = "Connect";
-            btnGithub.style.background = "#24292e";
-            btnGithub.style.color = "white";
-            btnGithub.style.border = "1px solid #5f6368";
           }
         });
 
@@ -708,3 +718,4 @@ window.showHtmlViewerLore = showHtmlViewerLore;
 window.showToogleLore = showToogleLore;
 window.toggleSettingsMenu = toggleSettingsMenu;
 window.setThemeStyle = setThemeStyle;
+
