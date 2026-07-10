@@ -191,19 +191,13 @@ function updateThemeButtonsUI() {
 })();
 
 function renderGuideOnMenu() {
-    const existing = document.getElementById("home-permanent-guide");
-    if (existing) return; 
-
-    const homeGuideAnchor = document.createElement("div");
-    homeGuideAnchor.id = "home-permanent-guide";
-    homeGuideAnchor.style.maxWidth = "650px";
-    homeGuideAnchor.style.margin = "20px auto 40px auto";
-    homeGuideAnchor.style.padding = "0 20px";
-    homeGuideAnchor.innerHTML = masterGuideHTML;
-    
-    const searchBox = document.querySelector(".search-box");
-    if (searchBox) {
-        searchBox.parentNode.insertBefore(homeGuideAnchor, searchBox.nextSibling);
+    const targetGuide = document.getElementById("home-permanent-guide");
+    if (targetGuide) {
+        targetGuide.innerHTML = masterGuideHTML;
+        const isKonamiUnlocked = localStorage.getItem("loaigle_konami_unlocked") === "true";
+        if (isKonamiUnlocked) {
+            targetGuide.style.display = "block";
+        }
     }
 }
 
@@ -258,7 +252,6 @@ function showCustomAlert(message, callback = null) {
 const commonModalStyles = "position: fixed; inset: 0; background: rgba(10,10,12,0.98); display: flex; align-items: center; justify-content: center; z-index: 99999; padding: 20px; box-sizing: border-box; font-family: sans-serif; width: 100vw; height: 100vh;";
 
 function showHijackInterceptorPrompt(queryPayload, executeInjectionCallback) {
-    // HARD BOUNDARY BLOCK: If the user isn't physically running a search input track right now, kill the prompt deployment instantly.
     if (!isUserSearchingRightNow) return;
 
     const promptId = "loaigle-hijack-interceptor";
@@ -297,7 +290,6 @@ function showHijackInterceptorPrompt(queryPayload, executeInjectionCallback) {
 }
 
 function showHardwarePermissionWarningPrompt(executeInjectionCallback) {
-    // HARD BOUNDARY BLOCK
     if (!isUserSearchingRightNow) return;
 
     const promptId = "loaigle-hardware-interceptor";
@@ -336,7 +328,6 @@ function showHardwarePermissionWarningPrompt(executeInjectionCallback) {
 }
 
 async function search() {
-    // Flip the active user submission circuit switch instantly
     isUserSearchingRightNow = true;
 
     const searchInput = document.getElementById("searchInput");
@@ -352,7 +343,19 @@ async function search() {
     const MathDiv = document.getElementById("results");
     
     dictionaryDiv.innerHTML = "";
-    MathDiv.innerHTML = "<p style='color: #bdc1c6;'>Searching Loaigle...</p>";
+
+    // 🎲 SYSTEM PROBABILITY MATRIX ENGINE (15% Probability Parameter Check)
+    let searchStatusMessage = "Searching Loaigle...";
+    if (Math.random() < 0.15) {
+        const systemTips = [
+            "💡 SYSTEM HINT: Try entering 'do a barrel roll' to spin the interface matrix grid profile!",
+            "💡 LOGIC TIP: Keying in 'tilt' or 'askew' locks the browser chassis on a permanent angle axis profile.",
+            "💡 THREAT ADVISORY: Enter 'zerg rush' to release automated element-dissolving block particles!",
+            "💡 CHEAT BLUEPRINT: Master the ultimate retro Konami code sequence to un-nest the System Manifest Guide!"
+        ];
+        searchStatusMessage = systemTips[Math.floor(Math.random() * systemTips.length)];
+    }
+    MathDiv.innerHTML = `<p style='color: #bdc1c6; font-family: monospace; font-size: 13px;'>${searchStatusMessage}</p>`;
 
     const homeMenuGuide = document.getElementById("home-permanent-guide");
     if (homeMenuGuide) {
@@ -381,8 +384,6 @@ async function search() {
     if (lowerQuery === "up up down down left right left right b a") {
         localStorage.setItem("loaigle_konami_unlocked", "true"); 
         renderGuideOnMenu(); 
-        const targetGuide = document.getElementById("home-permanent-guide");
-        if (targetGuide) targetGuide.style.display = "block"; 
         showCustomAlert("✔ CHEAT CODE ACTIVATED!<br><br>The Master Blueprint Registry has been permanently locked and anchored right onto your home menu screen beneath the search bar! 🎮🚀");
         searchInput.value = ""; 
         MathDiv.innerHTML = ""; 
@@ -411,7 +412,7 @@ async function search() {
                 </div>
             </div>
         `;
-        isUserSearchingRightNow = false; // Reset security tracking switch state upon compiling completion
+        isUserSearchingRightNow = false; 
     };
 
     if (isAnyCodePayload) {
@@ -438,7 +439,7 @@ async function search() {
         return; 
     }
 
-    isUserSearchingRightNow = false; // Terminate gate track for standard searches
+    isUserSearchingRightNow = false; 
 
     function checkIsGibberish(str) {
         const words = str.split(" ");
