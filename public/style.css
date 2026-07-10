@@ -1,12 +1,39 @@
+/* 🌗 CORE THEME SYSTEM VARIABLE MATRIX */
+:root, [data-theme="dark"] {
+    --bg-color: #171717;
+    --text-color: #ffffff;
+    --card-bg: #202124;
+    --border-color: #3c4043;
+    --link-color: #8ab4f8;
+    --snippet-color: #bdc1c6;
+    --input-focus-bg: #303134;
+    --btn-bg: #303134;
+    --btn-text: #e8eaed;
+    --hint-bg: #1a1111;
+}
+
+body.light-theme, [data-theme="light"] {
+    --bg-color: #f1f3f4;
+    --text-color: #202124;
+    --card-bg: #ffffff;
+    --border-color: #dadce0;
+    --link-color: #1a0dab;
+    --snippet-color: #4d5156;
+    --input-focus-bg: #ffffff;
+    --btn-bg: #f8f9fa;
+    --btn-text: #3c4043;
+    --hint-bg: #fce8e6;
+}
+
 /* 🌐 Global Page Layout */
 body {
-    background-color: #171717;
-    color: #ffffff;
+    background-color: var(--bg-color);
+    color: var(--text-color);
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     text-align: center;
-    transition: transform 0.1s ease-out;
+    transition: transform 0.1s ease-out, background-color 0.3s ease, color 0.3s ease;
 }
 
 /* 🏷️ Logo Styling */
@@ -33,31 +60,33 @@ body {
     max-width: 450px;
     padding: 14px 20px;
     font-size: 16px;
-    border: 1px solid #3c4043;
+    border: 1px solid var(--border-color);
     border-radius: 24px;
-    background-color: #202124;
-    color: white;
+    background-color: var(--card-bg);
+    color: var(--text-color);
     outline: none;
     box-sizing: border-box;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .search-box input:focus {
-    background-color: #303134;
+    background-color: var(--input-focus-bg);
     border-color: #5f6368;
 }
 
 .search-box button {
     padding: 14px 28px;
     font-size: 16px;
-    border: none;
+    border: 1px solid var(--border-color);
     border-radius: 24px;
-    background-color: #303134;
-    color: #e8eaed;
+    background-color: var(--btn-bg);
+    color: var(--btn-text);
     cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .search-box button:hover {
-    background-color: #3c4043;
+    background-color: var(--card-bg);
     border: 1px solid #5f6368;
 }
 
@@ -71,20 +100,21 @@ body {
 }
 
 .word-dictionary {
-    background-color: #202124;
-    border: 1px solid #3c4043;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 16px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .word-dictionary h3 {
-    color: #8ab4f8;
+    color: var(--link-color);
     margin: 0 0 8px 0;
     font-size: 18px;
 }
 
 .word-dictionary p {
-    color: #bdc1c6;
+    color: var(--snippet-color);
     margin: 0;
     font-size: 14px;
 }
@@ -107,14 +137,15 @@ body {
 /* The small source tag above the title */
 .source-tag {
     font-size: 12px;
-    color: #9aa0a6;
+    color: var(--snippet-color);
     display: block;
     margin-bottom: 4px;
+    opacity: 0.8;
 }
 
 /* The main headline link */
 .result-link {
-    color: #8ab4f8;
+    color: var(--link-color);
     font-size: 18px;
     text-decoration: none;
     display: inline-block;
@@ -129,7 +160,7 @@ body {
 /* The article description snippet */
 .result-snippet {
     font-size: 14px;
-    color: #bdc1c6;
+    color: var(--snippet-color);
     margin: 0;
     word-wrap: break-word;
 }
@@ -214,12 +245,18 @@ body {
     }
 }
 
+/* 🎛️ Settings Modal Background Elements Fix */
+#loaigle-settings-modal .auth-container, 
+#loaigle-settings-modal div {
+    color: #ffffff !important; /* Keep settings text clean and readable regardless of theme */
+}
+
 /* 🍞 Background HTML Toast Notification */
 .bg-toast {
     position: fixed;
     bottom: 20px;
     left: 20px;
-    background-color: #202124;
+    background-color: var(--card-bg);
     border: 1px solid #ef4444;
     padding: 12px 20px;
     border-radius: 12px;
@@ -245,7 +282,7 @@ body {
 }
 
 .bg-toast button:hover {
-    background: #dc2626;
+    background: #getdc2626;
 }
 
 @keyframes slideUpToast {
@@ -255,20 +292,21 @@ body {
 
 /* ⌨️ Konami Code Master Guide Styling */
 .konami-guide-container {
-    background-color: #202124;
+    background-color: var(--card-bg);
     border: 2px solid #34a853;
     border-radius: 16px;
     padding: 24px;
     margin-top: 20px;
     text-align: left;
     box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .konami-guide-container h2 {
     color: #34a853;
     margin-top: 0;
     font-size: 22px;
-    border-bottom: 1px solid #3c4043;
+    border-bottom: 1px solid var(--border-color);
     padding-bottom: 10px;
     font-family: monospace;
 }
@@ -278,7 +316,7 @@ body {
 }
 
 .guide-section h3 {
-    color: #8ab4f8;
+    color: var(--link-color);
     font-size: 15px;
     margin-bottom: 6px;
     text-transform: uppercase;
@@ -286,7 +324,7 @@ body {
 }
 
 .guide-section p {
-    color: #bdc1c6;
+    color: var(--snippet-color);
     font-size: 13px;
     margin: 0 0 4px 0;
     line-height: 1.5;
@@ -294,7 +332,7 @@ body {
 
 /* 💡 Smart Hint Header Card */
 .hint-header-card {
-    background-color: #1a1111;
+    background-color: var(--hint-bg);
     border: 1px dashed #ea4335;
     border-radius: 12px;
     padding: 14px 20px;
@@ -304,6 +342,7 @@ body {
     align-items: center;
     gap: 12px;
     animation: fadeInHint 0.3s ease-out forwards;
+    transition: background-color 0.3s ease;
 }
 
 @keyframes fadeInHint {
