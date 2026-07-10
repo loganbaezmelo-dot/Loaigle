@@ -59,93 +59,116 @@ async function search() {
         }
     }
 
-    // 📰 2. News Search with Auto-Retry Protection Matrix
+    // 📰 2. Bulletproof Multi-Route News Search
     const newsUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-US&gl=US&ceid=US:en`;
-    let attempts = 0;
-    const maxAttempts = 3;
-    let data = null;
+    const timestamp = new Date().getTime();
+    let articles = [];
 
-    while (attempts < maxAttempts) {
-        try {
-            const timestamp = new Date().getTime();
-            const rss2json = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(newsUrl)}&_cb=${timestamp}`;
-            
-            const res = await fetch(rss2json);
-            if (!res.ok) throw new Error("API rate limit or connection drop");
-            
-            data = await res.json();
-            if (data && data.items) {
-                break; // Network call succeeded, break out of the retry loop!
-            }
-        } catch (err) {
-            attempts++;
-            console.log(`Loaigle Network Attempt ${attempts} failed. Retrying...`);
-            if (attempts >= maxAttempts) {
-                console.error("All auto-retries exhausted.");
-            } else {
-                // Wait 500ms before triggering the automatic silent click
-                await new Promise(resolve => setTimeout(resolve, 500));
+    // --- ROUTE 1: Primary Proxy (rss2json) ---
+    try {
+        const rss2json = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(newsUrl)}&_cb=${timestamp}`;
+        const res = await fetch(rss2json);
+        if (res.ok) {
+            const data = await res.json();
+            if (data && data.items && data.items.length > 0) {
+                articles = data.items.slice(0, 10);
             }
         }
+    } catch (err) {
+        console.log("Route 1 failed. Switching to Backup Router...");
+    }
+
+    // --- ROUTE 2: Backup Proxy (allorigins) if Route 1 failed ---
+    if (articles.length === 0) {
+        try {
+            const allOriginsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(rss2json)}` + `&_cb=${timestamp}`;
+            const res = await fetch(allOriginsUrl);
+            if (res.ok) {
+                const wrapper = await res.json();
+                const data = JSON.parse(wrapper.contents);
+                if (data && data.items && data.items.length > 0) {
+                    articles = data.items.slice(0, 10);
+                }
+            }
+        } catch (err) {
+            console.log("Route 2 failed. Activating Emergency Local Fail-safe...");
+        }
+    }
+
+    // --- ROUTE 3: Emergency Hardcoded Mock Data (Anti-Crash Guarantee) ---
+    if (articles.length === 0) {
+        articles = [
+            {
+                title: `Breaking: Internet searches for '${query}' completely break the web`,
+                link: "https://google.com",
+                description: "Loaigle servers experienced high-velocity chaos traffic due to massive search queries. Local systems successfully intercepted the crash."
+            },
+            {
+                title: "Vercel builds are currently running at maximum capacity",
+                link: "https://vercel.com",
+                description: "Engineers report that deploying clean dark-mode interfaces from a phone keyboard increases system performance by 200%."
+            },
+            {
+                title: "Toogle News officially declared immortalized legacy feature",
+                link: "#",
+                description: "Typo history was made today as keyboard fat-finger incidents bypass standard corporate formatting protocols permanently."
+            }
+        ];
     }
 
     // Clear loading indicator
     resultsDiv.innerHTML = "";
 
-    // Render results if data was recovered successfully
-    if (data && data.items && data.items.length > 0) {
-        const sourceTag = isGoogleSearch ? "Toogle News" : "Google News";
+    // 📰 3. Render Results
+    const sourceTag = isGoogleSearch ? "Toogle News" : "Google News";
 
-        if (isGoogleSearch) {
-            const fakeDiv = document.createElement("div");
-            fakeDiv.className = "result";
-            fakeDiv.style.borderLeft = "3px solid #ea4335";
-            fakeDiv.style.paddingLeft = "10px";
-            
-            fakeDiv.innerHTML = `
-                <span class="source-tag" style="color: #ea4335; font-weight: bold;">Toogle Lore</span>
-                <a href="#" class="result-link" onclick="showToogleLore(event)">Why does this say 'Toogle' instead of 'Google'? The Secret Revealed</a>
-                <p class="result-snippet">An inside look into the catastrophic, accidental mobile keyboard fat-finger incident that permanently altered internet search history on Loaigle...</p>
-            `;
-            resultsDiv.appendChild(fakeDiv);
-        }
-
-        const articles = data.items.slice(0, 10);
+    // Inject Fake Lore link if query matches Google triggers
+    if (isGoogleSearch) {
+        const fakeDiv = document.createElement("div");
+        fakeDiv.className = "result";
+        fakeDiv.style.borderLeft = "3px solid #ea4335";
+        fakeDiv.style.paddingLeft = "10px";
         
-        articles.forEach((item) => {
-            const div = document.createElement("div");
-            div.className = "result";
-            
-            const tempDiv = document.createElement("div");
-            tempDiv.innerHTML = item.description || "";
-            const cleanSnippet = tempDiv.innerText.split("...")[0] + "..."; 
+        fakeDiv.innerHTML = `
+            <span class="source-tag" style="color: #ea4335; font-weight: bold;">Toogle Lore</span>
+            <a href="#" class="result-link" onclick="showToogleLore(event)">Why does this say 'Toogle' instead of 'Google'? The Secret Revealed</a>
+            <p class="result-snippet">An inside look into the catastrophic, accidental mobile keyboard fat-finger incident that permanently altered internet search history on Loaigle...</p>
+        `;
+        resultsDiv.appendChild(fakeDiv);
+    }
 
-            div.dataset.originalTitle = item.title;
-            div.dataset.originalLink = item.link;
-            div.dataset.originalSnippet = cleanSnippet;
+    // Loop and build out the 10 clean articles
+    articles.forEach((item) => {
+        const div = document.createElement("div");
+        div.className = "result";
+        
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = item.description || "";
+        const cleanSnippet = tempDiv.innerText.split("...")[0] + "..."; 
 
-            div.innerHTML = `
-                <span class="source-tag">${sourceTag}</span>
-                <a href="${item.link}" class="result-link" target="_blank">${item.title}</a>
-                <p class="result-snippet">${cleanSnippet}</p>
-            `;
-            resultsDiv.appendChild(div);
-        });
+        div.dataset.originalTitle = item.title;
+        div.dataset.originalLink = item.link;
+        div.dataset.originalSnippet = cleanSnippet;
 
-        if (isBarrelRoll) {
-            triggerChaosAnimation();
-        } else if (isTilt) {
-            if (lowerQuery === "67" || lowerQuery === "wobble") {
-                document.body.classList.add("wobble-animation");
-            } else {
-                document.body.classList.add("tilt-animation");
-            }
-        } else if (isZergRush) {
-            triggerZergRush();
+        div.innerHTML = `
+            <span class="source-tag">${sourceTag}</span>
+            <a href="${item.link}" class="result-link" target="_blank">${item.title}</a>
+            <p class="result-snippet">${cleanSnippet}</p>
+        `;
+        resultsDiv.appendChild(div);
+    });
+
+    // Fire animations
+    if (isBarrelRoll) {
+        triggerChaosAnimation();
+    } else if (isTilt) {
+        if (lowerQuery === "67" || lowerQuery === "wobble") {
+            document.body.classList.add("wobble-animation");
+        } else {
+            document.body.classList.add("tilt-animation");
         }
-
-    } else {
-        resultsDiv.innerHTML = "<p style='color: #bdc1c6;'>No results found on Loaigle.</p>";
+    } else if (isZergRush) {
+        triggerZergRush();
     }
 }
 
@@ -211,7 +234,7 @@ function triggerChaosAnimation() {
 
 // 👾 Zerg Rush Link Destroyer Logic
 function triggerZergRush() {
-    const resultsDiv = document.getElementById("results");
+    const NavDiv = document.getElementById("results");
     
     activeZergRush = setInterval(() => {
         const currentResults = document.querySelectorAll(".result");
@@ -247,10 +270,10 @@ function triggerZergRush() {
             clearInterval(activeZergRush);
             activeZergRush = null;
             
-            resultsDiv.innerHTML = "<p style='color: #ea4335; font-family: monospace; font-size: 20px; font-weight: bold;'>🚨 API not found!</p>";
+            NavDiv.innerHTML = "<p style='color: #ea4335; font-family: monospace; font-size: 20px; font-weight: bold;'>🚨 API not found!</p>";
             
             setTimeout(() => {
-                resultsDiv.innerHTML = "<p style='color: #bdc1c6;'>No results found on Loaigle.</p>";
+                NavDiv.innerHTML = "<p style='color: #bdc1c6;'>No results found on Loaigle.</p>";
             }, 1500);
         }
     }, 500);
