@@ -639,34 +639,27 @@ function triggerZergRush() {
                 if (userDoc.exists) {
                   const cloudData = userDoc.data();
                   
-                  let stateChanged = false;
-                  if (cloudData.bgHtml && localStorage.getItem('loaigle_bg_html') !== cloudData.bgHtml) {
-                      localStorage.setItem('loaigle_bg_html', cloudData.bgHtml);
-                      stateChanged = true;
-                  }
-                  if (cloudData.konamiUnlocked && localStorage.getItem('loaigle_konami_unlocked') !== cloudData.konamiUnlocked) {
-                      localStorage.setItem('loaigle_konami_unlocked', cloudData.konamiUnlocked);
-                      stateChanged = true;
-                  }
+                  // Clean write variables *without* triggering destructive page refreshes
+                  if (cloudData.bgHtml) localStorage.setItem('loaigle_bg_html', cloudData.bgHtml);
+                  if (cloudData.konamiUnlocked) localStorage.setItem('loaigle_konami_unlocked', cloudData.konamiUnlocked);
                   
-                  if (stateChanged) {
-                      // 🌟 REDIRECT SAFING PARAMETER: Tag local session before execution so menu re-opens automatically!
-                      localStorage.setItem('loaigle_force_settings_open', 'true');
-                      window.location.reload();
-                  }
+                  // Hydrate layouts smoothly in real-time
+                  if (cloudData.konamiUnlocked === "true") renderGuideOnMenu();
                 }
             } catch (e) { console.error(e); }
           }
         });
 
-        // ⚡ GATEWAY CAPTURE HANDSHAKE: Evaluates incoming redirect packets instantly!
+        // Forced layout state trigger the absolute exact instant redirect response registers!
         auth.getRedirectResult().then((result) => {
-            // Force settings menu frame layout graph to materialize open instantly upon redirect completion!
             document.getElementById("loaigle-settings-modal").style.display = "flex";
             window.forceSyncButtonsUI();
+            
+            // Back up flag state so if a fallback hits on cold start it triggers open cleanly
+            localStorage.setItem('loaigle_force_settings_open', 'true');
         }).catch((e) => { console.error(e.message); });
 
-        // Check local storage anchors on system boot loop
+        // Evaluates storage parameters on system initialization passes
         if (localStorage.getItem('loaigle_force_settings_open') === 'true') {
             localStorage.removeItem('loaigle_force_settings_open');
             setTimeout(() => {
