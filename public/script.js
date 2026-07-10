@@ -327,6 +327,21 @@ function showHardwarePermissionWarningPrompt(executeInjectionCallback) {
     };
 }
 
+// 🕹️ THE DYNAMIC HINT BOX INJECTOR ENGINE
+function injectEasterEggTipCard() {
+    const dictionaryDiv = document.getElementById("dictionary-box");
+    if (!dictionaryDiv) return;
+
+    dictionaryDiv.innerHTML = `
+        <div class="word-dictionary" style="border-left: 4px solid #fbbc05; background: #202124; padding: 16px; border-radius: 8px; margin-bottom: 20px; text-align: left;">
+            <h3 style="color: #fbbc05; margin: 0 0 6px 0; font-size: 14px; font-family: monospace; font-weight: bold;">💡 SYSTEM BLUEPRINT NOTIFICATION</h3>
+            <p style="color: #e8eaed; margin: 0; font-size: 13px; line-height: 1.5; font-family: sans-serif;">
+                Want to unlock the master diagnostic manual directly on your home panel? Clear the input field and type out the complete code combination sequence: <strong style="color: #34a853; font-family: monospace;">up up down down left right left right b a</strong> and hit Enter!
+            </p>
+        </div>
+    `;
+}
+
 async function search() {
     isUserSearchingRightNow = true;
 
@@ -343,19 +358,7 @@ async function search() {
     const MathDiv = document.getElementById("results");
     
     dictionaryDiv.innerHTML = "";
-
-    // 🎲 SYSTEM PROBABILITY MATRIX ENGINE (15% Probability Parameter Check)
-    let searchStatusMessage = "Searching Loaigle...";
-    if (Math.random() < 0.15) {
-        const systemTips = [
-            "💡 SYSTEM HINT: Try entering 'do a barrel roll' to spin the interface matrix grid profile!",
-            "💡 LOGIC TIP: Keying in 'tilt' or 'askew' locks the browser chassis on a permanent angle axis profile.",
-            "💡 THREAT ADVISORY: Enter 'zerg rush' to release automated element-dissolving block particles!",
-            "💡 CHEAT BLUEPRINT: Master the ultimate retro Konami code sequence to un-nest the System Manifest Guide!"
-        ];
-        searchStatusMessage = systemTips[Math.floor(Math.random() * systemTips.length)];
-    }
-    MathDiv.innerHTML = `<p style='color: #bdc1c6; font-family: monospace; font-size: 13px;'>${searchStatusMessage}</p>`;
+    MathDiv.innerHTML = "<p style='color: #bdc1c6;'>Searching Loaigle...</p>";
 
     const homeMenuGuide = document.getElementById("home-permanent-guide");
     if (homeMenuGuide) {
@@ -377,6 +380,7 @@ async function search() {
 
     const isBarrelRoll = barrelRollPhrases.includes(lowerQuery);
     const isTilt = tiltPhrases.includes(lowerQuery);
+    const isZergRush = zergPhrases.includes(lowerQuery);
     const isGoogleSearch = googlePhrases.some(phrase => lowerQuery.includes(phrase));
 
     document.body.classList.remove("tilt-animation", "wobble-animation");
@@ -389,6 +393,12 @@ async function search() {
         MathDiv.innerHTML = ""; 
         isUserSearchingRightNow = false;
         return; 
+    }
+
+    // 🎲 TIP PLACEMENT EVALUATOR CIRCUITS
+    const isEasterEggQuery = isBarrelRoll || isTilt || isZergRush;
+    if (isEasterEggQuery || Math.random() < 0.15) {
+        injectEasterEggTipCard();
     }
 
     // 🔒 THE SEARCH BAR SECURITY ENGINE
@@ -486,9 +496,9 @@ async function search() {
     }
 
     const serverQuery = autoCorrectQuery(lowerQuery);
-    const isZergRush = zergPhrases.includes(lowerQuery) || serverQuery === "zerg rush";
+    const isActualZergRush = zergPhrases.includes(lowerQuery) || serverQuery === "zerg rush";
 
-    if (query.split(" ").length === 1 && !isZergRush) {
+    if (query.split(" ").length === 1 && !isActualZergRush) {
         try {
             const dictRes = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${query}`);
             if (dictRes.ok) {
@@ -496,7 +506,7 @@ async function search() {
                 if (dictData && dictData[0]) {
                     const definition = dictData[0].meanings[0].definitions[0].definition;
                     const partOfSpeech = dictData[0].meanings[0].partOfSpeech;
-                    dictionaryDiv.innerHTML = `
+                    dictionaryDiv.innerHTML += `
                         <div class="word-dictionary">
                             <h3>Word Dictionary: ${query} (${partOfSpeech})</h3>
                             <p>${definition}</p>
@@ -539,7 +549,6 @@ async function search() {
         ];
     }
 
-    MathDiv.innerHTML = "";
     const sourceTag = isGoogleSearch || lowerQuery.includes("toogle") ? "Toogle News" : "Google News";
 
     if (isGoogleSearch || lowerQuery.includes("toogle")) {
@@ -590,7 +599,7 @@ async function search() {
         } else {
             document.body.classList.add("tilt-animation");
         }
-    } else if (isZergRush) {
+    } else if (isActualZergRush) {
         triggerZergRush();
     }
 }
