@@ -4,6 +4,9 @@ let activeZergRush = null;
 // Track if current instance session is running under unauthenticated Guest criteria
 let isGuestModeActive = false;
 
+// 🔐 INITIALIZATION SAFETY LOCK: Stops the login screen from hijacking active redirect streams
+let isFirebaseInitializing = true;
+
 // The canonical master blueprint text block utilized across both viewport layouts
 const masterGuideHTML = `
     <div class="konami-guide-container" id="loaigle-system-guide">
@@ -38,7 +41,6 @@ const masterGuideHTML = `
 
 // ⚙️ SETTINGS PANEL NAVIGATION CONTROLS
 function toggleSettingsMenu() {
-    // 🚪 COUNTER-MEASURE PROTOCOL: If guest attempts view access parameter modification, intercept and return to lock screen
     if (isGuestModeActive) {
         document.getElementById("loaigle-settings-modal").style.display = "none";
         document.getElementById("main-app-canvas").style.display = "none";
@@ -444,7 +446,6 @@ async function search() {
     }
 }
 
-// Matrix Scrambling & Animations
 function showToogleLore(event) {
     event.preventDefault();
     showCustomAlert(
@@ -453,6 +454,29 @@ function showToogleLore(event) {
         "Vercel built it instantly. The internet witnessed it. The blinding white layout collapsed under its power. Instead of fixing the mistake silently, it was immortalized forever into the source code as a feature.\n\n" +
         "Long live Toogle News! 💀😭"
     );
+}
+
+function showHtmlViewerLore() {
+    const modalHtml = `
+        <div id="custom-lore-modal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 20000; padding: 20px;">
+            <div style="background: #202124; border: 1px solid #3c4043; border-radius: 16px; max-width: 500px; width: 100%; padding: 24px; max-height: 80vh; overflow-y: auto; text-align: left; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                <h3 style="color: #8ab4f8; margin-top: 0; font-size: 20px; border-bottom: 1px solid #3c4043; padding-bottom: 10px; font-weight: bold; font-family: sans-serif;">🛠️ LOAIGLE HTML VIEWER PRO STATUS LOG:</h3>
+                <div style="color: #bdc1c6; font-size: 13px; line-height: 1.6; font-family: sans-serif;">
+                    <p style="margin-bottom: 15px;"><strong>1. THE ORIGIN ACCIDENT:</strong><br>This portal was birthed during a high-velocity script layout verification test. A copy of the platform's literal repository code was passed directly into the search bar. Because code syntax fails the vowel-ratio metrics of the Gibberish Roast Engine, the input was flagged as an absolute keyboard smash.</p>
+                    <p style="margin-bottom: 15px;"><strong>2. THE CHAIN REACTION:</strong><br>Instead of rendering as flat string text, the engine dropped the raw source code variables directly inside a live innerHTML template. The browser compiled the structural tags instantly—manifesting an identical, operational mirror loop of the website layout inside the insult card, while the hardcoded gibberish routine automatically unleashed an active Zerg Rush script to destroy it.</p>
+                    <p style="margin-bottom: 15px;"><strong>3. THE THEME CONTROLS & DISCLAIMER ORIGIN:</strong><br>The theme-injection disclaimer was permanently written into the specs after a developer tried running a massive standalone React + Tailwind YouTube Simulator inside the engine. The browser parsed the simulator's custom stylesheet, completely overrode Loaigle's global layout properties, and instantly hijacked the master viewport background color from dark charcoal to onyx black!</p>
+                    <p><strong>4. CURRENT PRODUCTION USECASE:</strong><br>This portal now features dual-routing capability: use the interface window to safely execute and debug live single-file 'index.html' applications without interference, OR use the background engine to permanently save custom CSS code overrides into localStorage to inject custom skins, backgrounds, and custom textures natively into Loaigle's core skin style!</p>
+                </div>
+                <div style="margin-top: 20px; text-align: right;">
+                    <button onclick="document.getElementById('custom-lore-modal').remove()" style="padding: 10px 24px; font-size: 14px; border: none; border-radius: 24px; background-color: #ea4335; color: white; cursor: pointer; font-weight: bold;">OK</button>
+                </div>
+            </div>
+        </div>
+    `;
+    const div = document.createElement("div");
+    div.id = "lore-modal-container";
+    div.innerHTML = modalHtml;
+    document.body.appendChild(div);
 }
 
 function triggerChaosAnimation() {
@@ -553,7 +577,6 @@ function triggerZergRush() {
 
         auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch((e) => { console.error(e); });
 
-        // Helper layout switcher mechanism
         function displayActiveGate(gateMode) {
             const loginGate = document.getElementById("login-gate");
             const appCanvas = document.getElementById("main-app-canvas");
@@ -573,15 +596,27 @@ function triggerZergRush() {
             }
         }
 
-        // Monitors verification loops cleanly
+        // 🛠️ HANDSHAKE INTERCEPTOR: Capture incoming tokens first before allowing redirects to clear
+        auth.getRedirectResult().then((result) => {
+            isFirebaseInitializing = false; // Release lock layout parameters immediately
+            if (result && result.user) {
+                displayActiveGate("app");
+            }
+        }).catch((e) => { 
+            isFirebaseInitializing = false;
+            showCustomAlert("⚠️ Secure Handshake Rejection: " + e.message); 
+        });
+
+        // Monitors user authentication states securely
         auth.onAuthStateChanged(async (user) => {
             const syncStatusP = document.getElementById('settings-sync-indicator');
             const btnSaveCloud = document.getElementById('settings-btn-save');
 
             if (user) {
+                isFirebaseInitializing = false; // Token verified
                 displayActiveGate("app");
                 if (syncStatusP) {
-                    syncStatusP.innerText = `Active Account: ${user.email || 'Authorized Secure Node'}`;
+                    syncStatusP.innerText = `Active Account: ${user.email || 'Authorized Operator'}`;
                     syncStatusP.style.color = "#34a853";
                 }
                 if (btnSaveCloud) btnSaveCloud.style.display = "block";
@@ -596,31 +631,48 @@ function triggerZergRush() {
                     }
                 } catch (e) { console.error(e); }
             } else {
-                // If not logged in and not explicitly exploring as a guest, drop user back to Portal Entrance
+                // 🛑 CHECK STATE GUARD: If firebase is still initializing its initial pass, hold the screen state
+                if (isFirebaseInitializing) {
+                    // Check if local guest trace memory is active to preserve state across page changes
+                    if (localStorage.getItem('loaigle_guest_trace') === 'true') {
+                        isFirebaseInitializing = false;
+                        displayActiveGate("guest");
+                    }
+                    return; 
+                }
+
                 if (!isGuestModeActive) {
                     displayActiveGate("login");
                 }
             }
         });
 
-        // Redirect arrival checker loop
-        auth.getRedirectResult().then((result) => {
-            if (result && result.user) {
-                displayActiveGate("app");
+        // Fallback safety timeout: if things hang for over 2.5 seconds, force drop the gate
+        setTimeout(() => {
+            if (isFirebaseInitializing && !auth.currentUser && !isGuestModeActive) {
+                isFirebaseInitializing = false;
+                if (localStorage.getItem('loaigle_guest_trace') === 'true') {
+                    displayActiveGate("guest");
+                } else {
+                    displayActiveGate("login");
+                }
             }
-        }).catch((e) => { showCustomAlert("⚠️ Secure Gateway Handshake Rejection: " + e.message); });
+        }, 250);
 
         // Event hooks assigning
         document.addEventListener('click', (e) => {
             if (e.target && e.target.id === 'gate-btn-google') {
+                isFirebaseInitializing = true; // Engage auth lock sequence parameters
                 auth.signInWithRedirect(googleProvider);
             }
 
             if (e.target && e.target.id === 'gate-btn-github') {
+                isFirebaseInitializing = true; 
                 auth.signInWithRedirect(githubProvider);
             }
 
             if (e.target && e.target.id === 'gate-btn-guest') {
+                localStorage.setItem('loaigle_guest_trace', 'true');
                 displayActiveGate("guest");
             }
 
