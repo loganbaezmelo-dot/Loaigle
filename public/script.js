@@ -2,12 +2,10 @@
 let activeZergRush = null;
 
 async function search() {
-    // Force the browser to read the absolute latest value from the input field
     const searchInput = document.getElementById("searchInput");
     const query = searchInput.value.trim();
     if (!query) return;
 
-    // Clear any running Zerg Rush loops from previous searches
     if (activeZergRush) {
         clearInterval(activeZergRush);
         activeZergRush = null;
@@ -16,13 +14,12 @@ async function search() {
     const dictionaryDiv = document.getElementById("dictionary-box");
     const resultsDiv = document.getElementById("results");
     
-    // Clear the UI completely so old content can't hang
     dictionaryDiv.innerHTML = "";
     resultsDiv.innerHTML = "<p style='color: #bdc1c6;'>Searching Loaigle...</p>";
 
-    // 🌀 1. Check for Triggers
     const lowerQuery = query.toLowerCase();
     
+    // 🌀 Easter Egg Trigger Lists
     const barrelRollPhrases = [
         "do a barrel roll", "do a barrel roll please", 
         "can you do a barrel roll", "barrel roll", 
@@ -30,17 +27,20 @@ async function search() {
     ];
     const tiltPhrases = ["askew", "tilt", "67", "wobble"];
     const zergPhrases = ["zerg rush", "destroy my page", "virus"];
+    
+    // 🕵️‍♂️ Brand-new Google Trigger List
+    const googlePhrases = ["google", "alphabet", "sundar pichai", "google.com", "googl"];
 
     const isBarrelRoll = barrelRollPhrases.includes(lowerQuery);
     const isTilt = tiltPhrases.includes(lowerQuery);
     const isZergRush = zergPhrases.includes(lowerQuery);
+    const isGoogleSearch = googlePhrases.some(phrase => lowerQuery.includes(phrase));
 
-    // Reset tilt/wobble from previous searches if this is a normal search
     document.body.classList.remove("tilt-animation", "wobble-animation");
 
-    // 📖 2. Dictionary Lookup
+    // 📖 1. Dictionary Lookup
     const isSingleWord = query.split(" ").length === 1;
-    if (isSingleWord && !isZergRush) { // Don't show dictionary if we are destroying the page
+    if (isSingleWord && !isZergRush) {
         try {
             const dictRes = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${query}`);
             if (dictRes.ok) {
@@ -61,7 +61,7 @@ async function search() {
         }
     }
 
-    // 📰 3. News Search (Adding a cache-busting timestamp so the first click never uses stale data)
+    // 📰 2. News Search
     try {
         const newsUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-US&gl=US&ceid=US:en`;
         const timestamp = new Date().getTime();
@@ -71,9 +71,25 @@ async function search() {
         if (!res.ok) throw new Error("Network response failed");
         
         const data = await res.json();
-
-        // Wipe the loader text
         resultsDiv.innerHTML = "";
+
+        // 🏷️ Set the tag name based on the query
+        const sourceTag = isGoogleSearch ? "Toogle News" : "Google News";
+
+        // 🎁 Inject the Fake Easter Egg Result first if they searched for Google
+        if (isGoogleSearch) {
+            const fakeDiv = document.createElement("div");
+            fakeDiv.className = "result";
+            fakeDiv.style.borderLeft = "3px solid #ea4335";
+            fakeDiv.style.paddingLeft = "10px";
+            
+            fakeDiv.innerHTML = `
+                <span class="source-tag" style="color: #ea4335; font-weight: bold;">Toogle Lore</span>
+                <a href="#" class="result-link" onclick="showToogleLore(event)">Why does this say 'Toogle' instead of 'Google'? The Secret Revealed</a>
+                <p class="result-snippet">An inside look into the catastrophic, accidental mobile keyboard fat-finger incident that permanently altered internet search history on Loaigle...</p>
+            `;
+            resultsDiv.appendChild(fakeDiv);
+        }
 
         if (data.items && data.items.length > 0) {
             const articles = data.items.slice(0, 10);
@@ -91,14 +107,13 @@ async function search() {
                 div.dataset.originalSnippet = cleanSnippet;
 
                 div.innerHTML = `
-                    <span class="source-tag">Toogle News</span>
+                    <span class="source-tag">${sourceTag}</span>
                     <a href="${item.link}" class="result-link" target="_blank">${item.title}</a>
                     <p class="result-snippet">${cleanSnippet}</p>
                 `;
                 resultsDiv.appendChild(div);
             });
 
-            // Trigger corresponding Easter Egg mechanics
             if (isBarrelRoll) {
                 triggerChaosAnimation();
             } else if (isTilt) {
@@ -118,6 +133,17 @@ async function search() {
         console.error(err);
         resultsDiv.innerHTML = "<p style='color: #bdc1c6;'>Error fetching results. Try clicking search again.</p>";
     }
+}
+
+// 📖 The Secret Backstory Popup Box
+function showToogleLore(event) {
+    event.preventDefault(); // Stop it from jumping or loading a new page
+    alert(
+        "📜 THE LORE OF TOOGLE:\n\n" +
+        "This was not an intentional tech feature. While the lead engineer was rapidly deploying code from a tiny, chaotic mobile interface, their thumb struck the 'T' key instead of the 'G' key.\n\n" +
+        "Vercel built it instantly. The internet witnessed it. The blinding white layout collapsed under its power. Instead of fixing the mistake silently, it was immortalized forever into the source code as a feature.\n\n" +
+        "Long live Toogle News! 💀😭"
+    );
 }
 
 // 🎰 Matrix Scrambling & Barrel Roll Logic
@@ -177,37 +203,33 @@ function triggerZergRush() {
         const currentResults = document.querySelectorAll(".result");
         
         if (currentResults.length > 0) {
-            // Target a random link container
             const targetIndex = Math.floor(Math.random() * currentResults.length);
             const targetDiv = currentResults[targetIndex];
             
-            // Create the attacking letter "o"
             const bug = document.createElement("span");
             bug.innerText = Math.random() > 0.5 ? "o" : "O";
             bug.style.position = "absolute";
-            bug.style.color = Math.random() > 0.5 ? "#ea4335" : "#fbbc05"; // Google Red/Yellow colors
+            bug.style.color = Math.random() > 0.5 ? "#ea4335" : "#fbbc05";
             bug.style.fontWeight = "bold";
             bug.style.fontSize = "24px";
-            bug.style.left = `${Math.random() * 60 + 20}%`; // Confines them over the main content area
-            bug.style.top = "-50px"; // Starts outside the container
+            bug.style.left = `${Math.random() * 60 + 20}%`;
+            bug.style.top = "-50px";
             bug.style.zIndex = "999";
-            bug.style.animation = "fall 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards"; // Slower, dramatic drop
+            bug.style.animation = "fall 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards";
             
-            targetDiv.style.position = "relative"; // Ensure the absolute coordinate system registers correctly
+            targetDiv.style.position = "relative";
             targetDiv.appendChild(bug);
             
-            // Delay the disintegration slightly so you witness the attack collision
             setTimeout(() => {
                 targetDiv.style.transition = "opacity 0.4s ease, transform 0.4s ease";
                 targetDiv.style.opacity = "0";
-                targetDiv.style.transform = "translateX(-20px) scale(0.9)"; // Slides away as it gets eaten
+                targetDiv.style.transform = "translateX(-20px) scale(0.9)";
                 setTimeout(() => {
                     if (targetDiv.parentNode) targetDiv.remove();
                 }, 400);
             }, 650);
             
         } else {
-            // 🚨 PANIC STATE
             clearInterval(activeZergRush);
             activeZergRush = null;
             
@@ -217,5 +239,5 @@ function triggerZergRush() {
                 resultsDiv.innerHTML = "<p style='color: #bdc1c6;'>No results found on Loaigle.</p>";
             }, 1500);
         }
-    }, 500); // Spawns a new attacking drop every half-second
+    }, 500);
 }
