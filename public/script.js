@@ -573,7 +573,7 @@ function triggerZergRush() {
 
         auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch((e) => { console.error(e); });
 
-        // 🔥 THE IDENTITY SYNC ENGINE: Directly listens for user payload delivery from Google/GitHub
+        // 🛠️ DYNAMIC LOOKUP METHOD: Grabs selectors freshly during state alterations
         window.forceSyncButtonsUI = function() {
             const syncStatusP = document.getElementById('settings-sync-indicator');
             const btnGoogle = document.getElementById('settings-btn-google');
@@ -583,17 +583,13 @@ function triggerZergRush() {
 
             if (!btnGoogle || !btnGithub || !syncStatusP) return;
 
-            // If the service has successfully passed back ANY valid username/email profile parameters:
             if (user && (user.email || user.displayName || user.uid)) {
                 syncStatusP.innerText = `Active Operator: ${user.email || user.displayName || 'Authorized User'}`;
                 syncStatusP.style.color = "#34a853";
                 if (btnSaveCloud) btnSaveCloud.style.display = "block";
 
-                // Scan provider metadata packets directly to map which network channel returned data
                 const isGoogleLinked = user.providerData && user.providerData.some(p => p.providerId === 'google.com');
                 const isGithubLinked = user.providerData && user.providerData.some(p => p.providerId === 'github.com');
-                
-                // Fallback catch: If provider array is empty but we have an email, read sign-in method directly
                 const fallbackGoogle = user.email && user.email.includes('@gmail.com');
 
                 if (isGoogleLinked || fallbackGoogle) {
@@ -618,7 +614,6 @@ function triggerZergRush() {
                     btnGoogle.style.border = "none";
                 }
             } else {
-                // If the app returns zero credential data strings, fall back cleanly to baseline Connect states
                 syncStatusP.innerText = "Active Session: Offline";
                 syncStatusP.style.color = "#9aa0a6";
                 if (btnSaveCloud) btnSaveCloud.style.display = "none";
@@ -635,7 +630,6 @@ function triggerZergRush() {
             }
         };
 
-        // Automatically re-evaluate whenever Firebase finishes its internal security handshake
         auth.onAuthStateChanged(async (user) => {
           window.forceSyncButtonsUI();
           
@@ -647,42 +641,34 @@ function triggerZergRush() {
                   const cloudData = userDoc.data();
                   if (cloudData.bgHtml) localStorage.setItem('loaigle_bg_html', cloudData.bgHtml);
                   if (cloudData.konamiUnlocked) localStorage.setItem('loaigle_konami_unlocked', cloudData.konamiUnlocked);
-                  window.location.reload();
                 }
             } catch (e) { console.error(e); }
           }
         });
 
-        // Instant background capture loop to parse returning incoming server tokens
         auth.getRedirectResult().then((result) => {
             if (result && result.user) { 
                 window.forceSyncButtonsUI();
             }
-        }).catch((e) => { console.error("Handshake token pending...", e.message); });
+        }).catch((e) => { console.error(e.message); });
 
-        const btnGoogle = document.getElementById('settings-btn-google');
-        const btnGithub = document.getElementById('settings-btn-github');
-        const btnSaveCloud = document.getElementById('settings-btn-save');
-
-        if (btnSaveCloud) {
-            btnSaveCloud.addEventListener('click', async () => {
-              if (!auth.currentUser) return;
-              try {
-                await db.collection('users').doc(auth.currentUser.uid).set({
+        // Dynamic click routers attached freshly on call execution passes
+        document.addEventListener('click', (e) => {
+            if (e.target && e.target.id === 'settings-btn-save') {
+                if (!auth.currentUser) return;
+                db.collection('users').doc(auth.currentUser.uid).set({
                   email: auth.currentUser.email || "",
                   bgHtml: localStorage.getItem('loaigle_bg_html') || "",
                   konamiUnlocked: localStorage.getItem('loaigle_konami_unlocked') || "false",
                   updatedAt: new Date().toISOString()
-                }, { merge: true });
-                showCustomAlert("Configuration saved permanently to cloud database grid! 🎰🏁");
-              } catch (e) { showCustomAlert("⚠️ Upload Rejection: " + e.message); }
-            });
-        }
+                }, { merge: true }).then(() => {
+                    showCustomAlert("Configuration saved permanently to cloud database grid! 🎰🏁");
+                });
+            }
 
-        if (btnGoogle) {
-            btnGoogle.addEventListener('click', () => {
-                const isGoogleConnected = btnGoogle.innerText === "Disconnect";
-                if (auth.currentUser && (isGoogleConnected || auth.currentUser.providerData.some(p => p.providerId === 'google.com'))) {
+            if (e.target && e.target.id === 'settings-btn-google') {
+                const btnGoogle = document.getElementById('settings-btn-google');
+                if (auth.currentUser && btnGoogle.innerText === "Disconnect") {
                     auth.signOut().then(() => {
                         localStorage.clear();
                         window.location.reload();
@@ -690,13 +676,11 @@ function triggerZergRush() {
                 } else {
                     auth.signInWithRedirect(googleProvider);
                 }
-            });
-        }
+            }
 
-        if (btnGithub) {
-            btnGithub.addEventListener('click', () => {
-                const isGithubConnected = btnGithub.innerText === "Disconnect";
-                if (auth.currentUser && (isGithubConnected || auth.currentUser.providerData.some(p => p.providerId === 'github.com'))) {
+            if (e.target && e.target.id === 'settings-btn-github') {
+                const btnGithub = document.getElementById('settings-btn-github');
+                if (auth.currentUser && btnGithub.innerText === "Disconnect") {
                     auth.signOut().then(() => {
                         localStorage.clear();
                         window.location.reload();
@@ -704,8 +688,8 @@ function triggerZergRush() {
                 } else {
                     auth.signInWithRedirect(githubProvider);
                 }
-            });
-        }
+            }
+        });
 
     } catch (globalError) { console.error(globalError); }
 })();
