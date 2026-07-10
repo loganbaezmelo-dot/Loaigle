@@ -6,7 +6,7 @@ const masterGuideHTML = `
     <div class="konami-guide-container" id="loaigle-system-guide">
         <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #3c4043; padding-bottom: 10px; margin-bottom: 15px;">
             <h2 style="color: #34a853; margin: 0; font-size: 20px; font-family: monospace;">🎮 LOAIGLE SYSTEM MANIFEST</h2>
-            <button onclick="deleteFromBrowserStorage()" style="background: #ef4444; color: white; border: none; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer;">Wipe Settings</button>
+            <button onclick="deleteFromBrowserStorage()" style="background: #ef4444; color: white; border: none; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer;">Hide Guide</button>
         </div>
         
         <div class="guide-section">
@@ -348,7 +348,7 @@ async function search() {
 
     resultsDiv.innerHTML = "";
 
-    // 💡 THE HINT INJECTOR RADAR MATRIX (Permanently muted if unlocked)
+    // 💡 THE HINT INJECTOR RADAR MATRIX
     const konamiCodeUnlockedGlobal = localStorage.getItem("loaigle_konami_unlocked") === "true";
     const isEasterEggTriggered = isBarrelRoll || isTilt || isZergRush || isGoogleSearch || isKonamiHint;
     const triggerRandomLuck = Math.random() < 0.15;
@@ -426,7 +426,7 @@ function showToogleLore(event) {
     );
 }
 
-// 🛠[] HISTORICAL LORE LOG MODAL INJECTION
+// 🛠️ HISTORICAL LORE LOG MODAL INJECTION
 function showHtmlViewerLore() {
     const modalHtml = `
         <div id="custom-lore-modal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 20000; padding: 20px;">
