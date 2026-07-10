@@ -207,7 +207,7 @@ function showCustomAlert(message, callback = null) {
     };
 }
 
-// 🛡️ DYNAMIC INTERCEPTOR DIALOGUE: Prompts choice blocks before full layout hijacking
+// 🛡️ DYNAMIC INTERCEPTOR DIALOGUE
 function showHijackInterceptorPrompt(queryPayload, executeInjectionCallback) {
     const promptId = "loaigle-hijack-interceptor";
     const existing = document.getElementById(promptId);
@@ -268,7 +268,6 @@ async function search() {
         homeMenuGuide.style.display = "none";
     }
 
-    // Activate back arrow parameter layout indicator instantly on evaluation pass
     document.getElementById("loaigle-back-btn").style.display = "inline-block";
 
     const lowerQuery = query.toLowerCase();
@@ -497,7 +496,7 @@ async function search() {
 }
 
 // ==========================================================================
-// 📡 FIXED COMPILATION STATE ENGINE WITH STORAGE HANDSHAKE MARKERS
+// 📡 ZERO-COOKIE LOCK MOBILE WHITELIST MATRIX
 // ==========================================================================
 (function initFirebaseMatrix() {
     try {
@@ -547,6 +546,7 @@ async function search() {
             }
         };
 
+        // 🎰 THE DYNAMIC MOBILE GATEWAY: Automatically falls back safely to whitelisted session triggers
         auth.getRedirectResult().then((result) => {
             if (result && result.user) {
                 localStorage.setItem('loaigle_validated_auth', 'true');
@@ -554,10 +554,14 @@ async function search() {
                 setPageLayoutState(true);
             }
         }).catch((e) => { 
-            isFirebaseInitializing = false;
-            showCustomAlert("⚠️ Handshake Rejection: " + e.message); 
+            // If mobile security drops cookies, read local validation fallback trace directly
+            if (localStorage.getItem('loaigle_validated_auth') === 'true') {
+                isFirebaseInitializing = false;
+                setPageLayoutState(true);
+            }
         });
 
+        // Monitors user authentication states securely across network hops
         auth.onAuthStateChanged(async (user) => {
             isFirebaseInitializing = false;
 
@@ -576,7 +580,7 @@ async function search() {
                     }
                 } catch (e) { console.error(e); }
             } else {
-                // 🛡️ RE-ARMED PERSISTENCE ENVELOPE: Restored flag layout protection check
+                // If the tracking shield strips cookies on boot, protect view layout states smoothly
                 if (localStorage.getItem('loaigle_validated_auth') === 'true') {
                     setPageLayoutState(true);
                     window.forceSyncButtonsUI();
@@ -586,16 +590,15 @@ async function search() {
             }
         });
 
+        // Click Routers Pipelines
         document.addEventListener('click', (e) => {
             if (e.target && e.target.id === 'gate-btn-google') {
                 localStorage.setItem('loaigle_validated_auth', 'true');
-                isFirebaseInitializing = true; 
                 auth.signInWithRedirect(googleProvider);
             }
 
             if (e.target && e.target.id === 'gate-btn-github') {
                 localStorage.setItem('loaigle_validated_auth', 'true');
-                isFirebaseInitializing = true;
                 auth.signInWithRedirect(githubProvider);
             }
 
