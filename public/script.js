@@ -38,57 +38,78 @@ const masterGuideHTML = `
         template.id = "background-persistent-layer";
         template.innerHTML = cachedHtml;
         document.documentElement.appendChild(template);
-
-        window.addEventListener("DOMContentLoaded", () => {
-            const toast = document.createElement("div");
-            toast.className = "bg-toast";
-            toast.id = "loaigle-bg-toast";
-            toast.innerHTML = `
-                <span style="color: #bdc1c6;">Running HTML in the background!</span>
-                <button onclick="deleteFromBrowserStorage()">Delete from BrowserStorage</button>
-            `;
-            document.body.appendChild(toast);
-        });
     }
 
-    // 🔒 PERSISTENT MENU CHECKER: Restores the guide below the search bar if unlocked
+    // Unifies layout rendering onto the home dashboard securely once structural DOM initializes
     window.addEventListener("DOMContentLoaded", () => {
-        const isUnlocked = localStorage.getItem("loaigle_konami_unlocked") === "true";
-        if (isUnlocked) {
+        const hasTheme = localStorage.getItem("loaigle_bg_html");
+        const isKonamiUnlocked = localStorage.getItem("loaigle_konami_unlocked") === "true";
+
+        // 🛠️ NO POPUP SYSTEM: If custom configurations are active, mount a clean text control node beneath search box
+        if (hasTheme || isKonamiUnlocked) {
+            const controlCard = document.createElement("div");
+            controlCard.id = "loaigle-home-control-panel";
+            controlCard.style.maxWidth = "650px";
+            controlCard.style.margin = "15px auto";
+            controlCard.style.padding = "0 20px";
+            controlCard.innerHTML = `
+                <div style="background-color: #202124; border: 1px solid #ef4444; padding: 12px 20px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-family: sans-serif; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                    <span style="color: #bdc1c6; font-weight: bold;">Running custom layout settings!</span>
+                    <button onclick="deleteFromBrowserStorage()" style="background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer; transition: background 0.2s;">Delete from BrowserStorage</button>
+                </div>
+            `;
+            
+            const searchBox = document.querySelector(".search-box");
+            if (searchBox) {
+                searchBox.parentNode.insertBefore(controlCard, searchBox.nextSibling);
+            }
+        }
+
+        // Restores the cheat blueprint registry view below the control panel if unlocked
+        if (isKonamiUnlocked) {
             renderGuideOnMenu();
         }
     });
 })();
 
-// Helper function to cleanly inject the guide right beneath the home page search bar
+// Helper function to cleanly inject the guide right beneath the homepage configuration node
 function renderGuideOnMenu() {
     const existing = document.getElementById("home-permanent-guide");
-    if (existing) return; // Prevent duplicating
+    if (existing) return; 
 
     const homeGuideAnchor = document.createElement("div");
     homeGuideAnchor.id = "home-permanent-guide";
     homeGuideAnchor.style.maxWidth = "650px";
-    homeGuideAnchor.style.margin = "0 auto 40px auto";
+    homeGuideAnchor.style.margin = "20px auto 40px auto";
     homeGuideAnchor.style.padding = "0 20px";
     homeGuideAnchor.innerHTML = masterGuideHTML;
     
+    // Always appends below the control card if present, otherwise directly follows search container
+    const controlPanel = document.getElementById("loaigle-home-control-panel");
     const searchBox = document.querySelector(".search-box");
-    if (searchBox) {
+    
+    if (controlPanel) {
+        controlPanel.parentNode.insertBefore(homeGuideAnchor, controlPanel.nextSibling);
+    } else if (searchBox) {
         searchBox.parentNode.insertBefore(homeGuideAnchor, searchBox.nextSibling);
     }
 }
 
-// Action button wrapper to wipe theme modifications instantly
+// 🛠️ UNINTERRUPTED RESETS: Instantly drops database elements and hard reloads without popups!
 function deleteFromBrowserStorage() {
     localStorage.removeItem("loaigle_bg_html");
-    const layer = document.getElementById("background-persistent-layer");
-    const toast = document.getElementById("loaigle-bg-toast");
-    if (layer) layer.remove();
-    if (toast) toast.remove();
+    localStorage.removeItem("loaigle_konami_unlocked"); 
     
-    showCustomAlert("Background HTML successfully purged. Reloading page to restore defaults! 💀😭", () => {
-        window.location.reload();
-    });
+    const layer = document.getElementById("background-persistent-layer");
+    const panel = document.getElementById("loaigle-home-control-panel");
+    const guide = document.getElementById("home-permanent-guide");
+    
+    if (layer) layer.remove();
+    if (panel) panel.remove();
+    if (guide) guide.remove();
+    
+    // Seamless hot reload loop
+    window.location.reload();
 }
 
 // Action button wrapper to grab input and save it to localStorage securely
@@ -163,15 +184,14 @@ async function search() {
 
     // 🕹️ CRACK THE CODE: Save achievement to storage, update menu, and fire a clean custom popup modal!
     if (lowerQuery === "up up down down left right left right b a") {
-        localStorage.setItem("loaigle_konami_unlocked", "true"); // 💾 Lock into memory permanently
-        renderGuideOnMenu(); // Inject the guide layout right beneath the home search box instantly
+        localStorage.setItem("loaigle_konami_unlocked", "true"); 
+        renderGuideOnMenu(); 
         
-        // Custom non-cutting alert modal to announce the unlock
         showCustomAlert("✔ CHEAT CODE ACTIVATED!<br><br>The Master Blueprint Registry has been permanently locked and anchored right onto your home menu screen beneath the search bar! 🎮🚀");
         
-        searchInput.value = ""; // Flush the input box clean
-        resultsDiv.innerHTML = ""; // Clear the search loader feed text
-        return; // Kill execution instantly so old results don't hang!
+        searchInput.value = ""; 
+        resultsDiv.innerHTML = ""; 
+        return; 
     }
 
     // 🖥️ EXTENDED FEATURE: HTML VIEWER PRO INTERFACE
@@ -347,8 +367,7 @@ async function search() {
 
     resultsDiv.innerHTML = "";
 
-    // 💡 THE HINT INJECTOR RADAR MATRIX (Permanently muted if code cracked in storage)
-    const konamiCodeUnlocked = localStorage.getItem("loaigle_konami_unlocked") === "true";
+    // 💡 THE HINT INJECTOR RADAR MATRIX
     const isEasterEggTriggered = isBarrelRoll || isTilt || isZergRush || isGoogleSearch || isKonamiHint;
     const triggerRandomLuck = Math.random() < 0.15;
 
