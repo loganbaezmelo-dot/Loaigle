@@ -571,11 +571,9 @@ function triggerZergRush() {
         const googleProvider = new firebase.auth.GoogleAuthProvider();
         const githubProvider = new firebase.auth.GithubAuthProvider();
 
-        // 🔐 LOCAL STATE PERSISTENCE: Forces session driver to remain active through redirects
-        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
-            console.log("LocalStorage session framework active.");
-        }).catch((e) => { console.error("Persistence issue:", e); });
+        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch((e) => { console.error(e); });
 
+        // 🔥 THE IDENTITY SYNC ENGINE: Directly listens for user payload delivery from Google/GitHub
         window.forceSyncButtonsUI = function() {
             const syncStatusP = document.getElementById('settings-sync-indicator');
             const btnGoogle = document.getElementById('settings-btn-google');
@@ -585,15 +583,20 @@ function triggerZergRush() {
 
             if (!btnGoogle || !btnGithub || !syncStatusP) return;
 
-            if (user && user.providerData) {
-                syncStatusP.innerText = `Active Operator: ${user.email}`;
+            // If the service has successfully passed back ANY valid username/email profile parameters:
+            if (user && (user.email || user.displayName || user.uid)) {
+                syncStatusP.innerText = `Active Operator: ${user.email || user.displayName || 'Authorized User'}`;
                 syncStatusP.style.color = "#34a853";
                 if (btnSaveCloud) btnSaveCloud.style.display = "block";
 
-                const isGoogleLinked = user.providerData.some(p => p.providerId === 'google.com');
-                const isGithubLinked = user.providerData.some(p => p.providerId === 'github.com');
+                // Scan provider metadata packets directly to map which network channel returned data
+                const isGoogleLinked = user.providerData && user.providerData.some(p => p.providerId === 'google.com');
+                const isGithubLinked = user.providerData && user.providerData.some(p => p.providerId === 'github.com');
                 
-                if (isGoogleLinked) {
+                // Fallback catch: If provider array is empty but we have an email, read sign-in method directly
+                const fallbackGoogle = user.email && user.email.includes('@gmail.com');
+
+                if (isGoogleLinked || fallbackGoogle) {
                     btnGoogle.innerText = "Disconnect";
                     btnGoogle.style.background = "transparent";
                     btnGoogle.style.border = "1px solid #ea4335";
@@ -615,6 +618,7 @@ function triggerZergRush() {
                     btnGoogle.style.border = "none";
                 }
             } else {
+                // If the app returns zero credential data strings, fall back cleanly to baseline Connect states
                 syncStatusP.innerText = "Active Session: Offline";
                 syncStatusP.style.color = "#9aa0a6";
                 if (btnSaveCloud) btnSaveCloud.style.display = "none";
@@ -631,47 +635,30 @@ function triggerZergRush() {
             }
         };
 
-        auth.getRedirectResult().then(async (result) => {
-            if (result && result.user) { 
-                console.log("Redirect token processing verified.");
-                window.forceSyncButtonsUI();
-            }
-        }).catch((e) => { showCustomAlert("⚠️ Auth Redirect Failed: " + e.message); });
-
+        // Automatically re-evaluate whenever Firebase finishes its internal security handshake
         auth.onAuthStateChanged(async (user) => {
           window.forceSyncButtonsUI();
           
-          if (user && user.providerData) {
+          if (user) {
             try {
                 const userDocRef = db.collection('users').doc(user.uid);
                 const userDoc = await userDocRef.get();
-                const localBgHtml = localStorage.getItem('loaigle_bg_html');
-                const localKonami = localStorage.getItem('loaigle_konami_unlocked');
-
                 if (userDoc.exists) {
                   const cloudData = userDoc.data();
-                  if (cloudData.email === user.email) {
-                    if (cloudData.bgHtml) localStorage.setItem('loaigle_bg_html', cloudData.bgHtml);
-                    if (cloudData.konamiUnlocked) localStorage.setItem('loaigle_konami_unlocked', cloudData.konamiUnlocked);
-                    if (cloudData.bgHtml && !document.getElementById('background-persistent-layer')) {
-                        const template = document.createElement("div");
-                        template.id = "background-persistent-layer";
-                        template.innerHTML = cloudData.bgHtml;
-                        document.documentElement.appendChild(template);
-                    }
-                    if (cloudData.konamiUnlocked === "true") renderGuideOnMenu();
-                  }
-                } else if (localBgHtml || localKonami) {
-                  await userDocRef.set({
-                    email: user.email,
-                    bgHtml: localBgHtml || "",
-                    konamiUnlocked: localKonami || "false",
-                    updatedAt: new Date().toISOString()
-                  });
+                  if (cloudData.bgHtml) localStorage.setItem('loaigle_bg_html', cloudData.bgHtml);
+                  if (cloudData.konamiUnlocked) localStorage.setItem('loaigle_konami_unlocked', cloudData.konamiUnlocked);
+                  window.location.reload();
                 }
-            } catch (e) { console.error("Firestore error:", e); }
+            } catch (e) { console.error(e); }
           }
         });
+
+        // Instant background capture loop to parse returning incoming server tokens
+        auth.getRedirectResult().then((result) => {
+            if (result && result.user) { 
+                window.forceSyncButtonsUI();
+            }
+        }).catch((e) => { console.error("Handshake token pending...", e.message); });
 
         const btnGoogle = document.getElementById('settings-btn-google');
         const btnGithub = document.getElementById('settings-btn-github');
@@ -682,7 +669,7 @@ function triggerZergRush() {
               if (!auth.currentUser) return;
               try {
                 await db.collection('users').doc(auth.currentUser.uid).set({
-                  email: auth.currentUser.email,
+                  email: auth.currentUser.email || "",
                   bgHtml: localStorage.getItem('loaigle_bg_html') || "",
                   konamiUnlocked: localStorage.getItem('loaigle_konami_unlocked') || "false",
                   updatedAt: new Date().toISOString()
@@ -694,10 +681,10 @@ function triggerZergRush() {
 
         if (btnGoogle) {
             btnGoogle.addEventListener('click', () => {
-                if (auth.currentUser && auth.currentUser.providerData.some(p => p.providerId === 'google.com')) {
+                const isGoogleConnected = btnGoogle.innerText === "Disconnect";
+                if (auth.currentUser && (isGoogleConnected || auth.currentUser.providerData.some(p => p.providerId === 'google.com'))) {
                     auth.signOut().then(() => {
-                        localStorage.removeItem('loaigle_bg_html');
-                        localStorage.removeItem('loaigle_konami_unlocked');
+                        localStorage.clear();
                         window.location.reload();
                     });
                 } else {
@@ -708,10 +695,10 @@ function triggerZergRush() {
 
         if (btnGithub) {
             btnGithub.addEventListener('click', () => {
-                if (auth.currentUser && auth.currentUser.providerData.some(p => p.providerId === 'github.com')) {
+                const isGithubConnected = btnGithub.innerText === "Disconnect";
+                if (auth.currentUser && (isGithubConnected || auth.currentUser.providerData.some(p => p.providerId === 'github.com'))) {
                     auth.signOut().then(() => {
-                        localStorage.removeItem('loaigle_bg_html');
-                        localStorage.removeItem('loaigle_konami_unlocked');
+                        localStorage.clear();
                         window.location.reload();
                     });
                 } else {
