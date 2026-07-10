@@ -1,6 +1,9 @@
 // Keep track of any active Zerg Rush intervals so they don't stack up
 let activeZergRush = null;
 
+// Tracks initialized state parameters during cold reboots
+let isFirebaseInitializing = true;
+
 // The canonical master blueprint text block utilized across both viewport layouts
 const masterGuideHTML = `
     <div class="konami-guide-container" id="loaigle-system-guide">
@@ -44,6 +47,23 @@ function toggleSettingsMenu() {
     }
 }
 
+// ↩️ INTERACTIVE BACK CONTROLLER: Returns layout smoothly to menu home view parameters
+function returnToHomeMenu() {
+    if (activeZergRush) {
+        clearInterval(activeZergRush);
+        activeZergRush = null;
+    }
+    
+    document.getElementById("searchInput").value = "";
+    document.getElementById("dictionary-box").innerHTML = "";
+    document.getElementById("results").innerHTML = "";
+    document.getElementById("loaigle-back-btn").style.display = "none";
+    document.body.classList.remove("tilt-animation", "wobble-animation");
+
+    const guide = document.getElementById("home-permanent-guide");
+    if (guide) guide.style.display = "block";
+}
+
 // 🌓 ULTIMATE REAL-TIME THEME TRANSLATION ENGINE
 function setThemeStyle(themeMode) {
     localStorage.setItem('loaigle_theme', themeMode);
@@ -51,7 +71,6 @@ function setThemeStyle(themeMode) {
     updateThemeButtonsUI();
 }
 
-// Applies theme rules natively
 function applyThemeLayer() {
     const currentMode = localStorage.getItem('loaigle_theme') || 'auto';
     
@@ -99,7 +118,7 @@ function updateThemeButtonsUI() {
     }
 }
 
-// 🚀 BOOTSTRAPPER: Engine parameters mapping choosingChoices
+// 🚀 BOOTSTRAPPER
 (function bootLoader() {
     const cachedHtml = localStorage.getItem("loaigle_bg_html");
     if (cachedHtml) {
@@ -187,6 +206,42 @@ function showCustomAlert(message, callback = null) {
     };
 }
 
+// 🛡️ DYNAMIC INTERCEPTOR DIALOGUE: Prompts choice blocks before full layout hijacking
+function showHijackInterceptorPrompt(queryPayload, executeInjectionCallback) {
+    const promptId = "loaigle-hijack-interceptor";
+    const existing = document.getElementById(promptId);
+    if (existing) existing.remove();
+
+    const promptHtml = `
+        <div id="${promptId}" style="position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 90000; padding: 20px; font-family: monospace;">
+            <div style="background: #202124; border: 2px solid #ea4335; border-radius: 16px; max-width: 450px; width: 100%; padding: 28px; text-align: left; box-shadow: 0 10px 40px rgba(0,0,0,0.6); color: #fff;">
+                <h3 style="color: #ea4335; margin-top: 0; font-size: 18px; margin-bottom: 15px;">⚠️ SECURE RUNTIME SHIELD INTERCEPT</h3>
+                <p style="color: #bdc1c6; font-size: 13px; line-height: 1.6; margin-bottom: 24px;">
+                    This HTML code is trying to cover the entire page of Loaigle, please confirm if you want to inject this code temporarily. To bring back Loaigle you will have to refresh the page.
+                </p>
+                <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                    <button id="hijack-btn-no" style="padding: 10px 24px; font-size: 13px; border: 1px solid #5f6368; border-radius: 20px; background: #303134; color: #fff; cursor: pointer; font-weight: bold;">No</button>
+                    <button id="hijack-btn-yes" style="padding: 10px 24px; font-size: 13px; border: none; border-radius: 20px; background: #ea4335; color: #fff; cursor: pointer; font-weight: bold;">Yes</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    const wrapper = document.createElement("div");
+    wrapper.innerHTML = promptHtml;
+    document.body.appendChild(wrapper);
+
+    document.getElementById("hijack-btn-no").onclick = function() {
+        document.getElementById(promptId).remove();
+        document.getElementById("searchInput").value = "";
+    };
+
+    document.getElementById("hijack-btn-yes").onclick = function() {
+        document.getElementById(promptId).remove();
+        executeInjectionCallback();
+    };
+}
+
 async function search() {
     const searchInput = document.getElementById("searchInput");
     const query = searchInput.value.trim();
@@ -207,6 +262,9 @@ async function search() {
     if (homeMenuGuide) {
         homeMenuGuide.style.display = "none";
     }
+
+    // 💥 RE-ROUTE: Activate back arrow parameter layout indicator instantly on evaluation pass
+    document.getElementById("loaigle-back-btn").style.display = "inline-block";
 
     const lowerQuery = query.toLowerCase();
     
@@ -238,21 +296,35 @@ async function search() {
 
     const hasHtmlTags = /<(!doctype|html|head|body|div|p|span|a|link|script)/i.test(lowerQuery);
     if (hasHtmlTags) {
-        MathDiv.innerHTML = `
-            <div class="html-viewer-container" style="text-align: left; margin-top: 20px;">
-                <h2 style="color: #8ab4f8; font-size: 20px; margin-bottom: 15px; border-bottom: 1px solid #3c4043; padding-bottom: 8px;">HTML Viewer:</h2>
-                <div class="rendered-payload" style="background: transparent; padding: 10px 0;">${query}</div>
-                <div style="margin-top: 30px; background-color: #202124; border: 1px solid #3c4043; padding: 16px; border-radius: 12px; text-align: center;">
-                    <button onclick="loadToBrowserStorage()" style="padding: 10px 20px; font-size: 13px; border: none; border-radius: 24px; background-color: #34a853; color: white; cursor: pointer; font-weight: bold; margin-bottom: 12px;">Load custom HTML in BrowserStorage</button>
-                    <p style="color: #ea4335; font-size: 11px; font-weight: bold; line-height: 1.4; margin: 0; text-align: left;">
-                        ⚠️ DISCLAIMER: This is only made for an HTML that changes the theme or texture of Loaigle. If this is code that actually is a full HTML app, test it through this HTML Viewer interface and don't click the button.
-                    </p>
+        // 🔬 PROXIMITY SHIELD RADAR: Check if template strings attempt full browser viewport hijacking
+        const attemptsFullHijack = /<body|<html|id=["']login-gate["']|id=["']main-app-canvas["']/i.test(lowerQuery) || lowerQuery.length > 1500;
+        const isJustAThemeOverride = /color|background|style/i.test(lowerQuery) && !attemptsFullHijack;
+
+        const renderHtmlViewerLayout = () => {
+            MathDiv.innerHTML = `
+                <div class="html-viewer-container" style="text-align: left; margin-top: 20px;">
+                    <h2 style="color: #8ab4f8; font-size: 20px; margin-bottom: 15px; border-bottom: 1px solid #3c4043; padding-bottom: 8px;">HTML Viewer:</h2>
+                    <div class="rendered-payload" style="background: transparent; padding: 10px 0;">${query}</div>
+                    <div style="margin-top: 30px; background-color: #202124; border: 1px solid #3c4043; padding: 16px; border-radius: 12px; text-align: center;">
+                        <button onclick="loadToBrowserStorage()" style="padding: 10px 20px; font-size: 13px; border: none; border-radius: 24px; background-color: #34a853; color: white; cursor: pointer; font-weight: bold; margin-bottom: 12px;">Load custom HTML in BrowserStorage</button>
+                        <p style="color: #ea4335; font-size: 11px; font-weight: bold; line-height: 1.4; margin: 0; text-align: left;">
+                            ⚠️ DISCLAIMER: This is only made for an HTML that changes the theme or texture of Loaigle. If this is code that actually is a full HTML app, test it through this HTML Viewer interface and don't click the button.
+                        </p>
+                    </div>
                 </div>
-                <div style="margin-top: 40px; text-align: center; border-top: 1px solid #3c4043; padding-top: 20px;">
-                    <button onclick="showHtmlViewerLore()" style="padding: 10px 20px; font-size: 14px; border: none; border-radius: 24px; background-color: #ea4335; color: white; cursor: pointer;">What is this?</button>
-                </div>
-            </div>
-        `;
+            `;
+        };
+
+        if (attemptsFullHijack && !isJustAThemeOverride) {
+            // Force back trigger parameters to fade away since screen overrides override everything
+            document.getElementById("loaigle-back-btn").style.display = "none";
+            
+            showHijackInterceptorPrompt(query, () => {
+                renderHtmlViewerLayout();
+            });
+        } else {
+            renderHtmlViewerLayout();
+        }
         return; 
     }
 
@@ -367,18 +439,6 @@ async function search() {
 
     MathDiv.innerHTML = "";
 
-    if (localStorage.getItem("loaigle_konami_unlocked") !== "true") {
-        const hintCard = document.createElement("div");
-        hintCard.className = "hint-header-card";
-        hintCard.innerHTML = `
-            <span style="font-size: 18px;">💡</span>
-            <span style="color: #ea4335; font-size: 12px; font-weight: bold; font-family: sans-serif;">
-                Tip: Type <span style="color: #8ab4f8; font-family: monospace; background: #202124; padding: 2px 6px; border-radius: 4px;">up up down down left right left right b a</span> into our search bar!
-            </span>
-        `;
-        MathDiv.appendChild(hintCard);
-    }
-
     const sourceTag = isGoogleSearch || lowerQuery.includes("toogle") ? "Toogle News" : "Google News";
 
     if (isGoogleSearch || lowerQuery.includes("toogle")) {
@@ -442,29 +502,6 @@ function showToogleLore(event) {
         "Vercel built it instantly. The internet witnessed it. The blinding white layout collapsed under its power. Instead of fixing the mistake silently, it was immortalized forever into the source code as a feature.\n\n" +
         "Long live Toogle News! 💀😭"
     );
-}
-
-function showHtmlViewerLore() {
-    const modalHtml = `
-        <div id="custom-lore-modal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 20000; padding: 20px;">
-            <div style="background: #202124; border: 1px solid #3c4043; border-radius: 16px; max-width: 500px; width: 100%; padding: 24px; max-height: 80vh; overflow-y: auto; text-align: left; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-                <h3 style="color: #8ab4f8; margin-top: 0; font-size: 20px; border-bottom: 1px solid #3c4043; padding-bottom: 10px; font-weight: bold; font-family: sans-serif;">🛠️ LOAIGLE HTML VIEWER PRO STATUS LOG:</h3>
-                <div style="color: #bdc1c6; font-size: 13px; line-height: 1.6; font-family: sans-serif;">
-                    <p style="margin-bottom: 15px;"><strong>1. THE ORIGIN ACCIDENT:</strong><br>This portal was birthed during a high-velocity script layout verification test. A copy of the platform's literal repository code was passed directly into the search bar. Because code syntax fails the vowel-ratio metrics of the Gibberish Roast Engine, the input was flagged as an absolute keyboard smash.</p>
-                    <p style="margin-bottom: 15px;"><strong>2. THE CHAIN REACTION:</strong><br>Instead of rendering as flat string text, the engine dropped the raw source code variables directly inside a live innerHTML template. The browser compiled the structural tags instantly—manifesting an identical, operational mirror loop of the website layout inside the insult card, while the hardcoded gibberish routine automatically unleashed an active Zerg Rush script to destroy it.</p>
-                    <p style="margin-bottom: 15px;"><strong>3. THE THEME CONTROLS & DISCLAIMER ORIGIN:</strong><br>The theme-injection disclaimer was permanently written into the specs after a developer tried running a massive standalone React + Tailwind YouTube Simulator inside the engine. The browser parsed the simulator's custom stylesheet, completely overrode Loaigle's global layout properties, and instantly hijacked the master viewport background color from dark charcoal to onyx black!</p>
-                    <p><strong>4. CURRENT PRODUCTION USECASE:</strong><br>This portal now features dual-routing capability: use the interface window to safely execute and debug live single-file 'index.html' applications without interference, OR use the background engine to permanently save custom CSS code overrides into localStorage to inject custom skins, backgrounds, and custom textures natively into Loaigle's core skin style!</p>
-                </div>
-                <div style="margin-top: 20px; text-align: right;">
-                    <button onclick="document.getElementById('custom-lore-modal').remove()" style="padding: 10px 24px; font-size: 14px; border: none; border-radius: 24px; background-color: #ea4335; color: white; cursor: pointer; font-weight: bold;">OK</button>
-                </div>
-            </div>
-        </div>
-    `;
-    const div = document.createElement("div");
-    div.id = "lore-modal-container";
-    div.innerHTML = modalHtml;
-    document.body.appendChild(div);
 }
 
 function triggerChaosAnimation() {
@@ -541,7 +578,7 @@ function triggerZergRush() {
 }
 
 // ==========================================================================
-// 📡 BULLETPROOF SYNCHRONOUS REDIRECT STATE HANDLER MATRIX
+// 📡 ZERO-RACE CONDITIONAL DIRECT CONTAINER STATE MANIFEST SYSTEM
 // ==========================================================================
 (function initFirebaseMatrix() {
     try {
@@ -591,20 +628,20 @@ function triggerZergRush() {
             }
         };
 
-        // 🎰 INTERNAL REDIRECT RECOVERY MATRIX: Evaluates incoming payload streams before layout guards run
         auth.getRedirectResult().then((result) => {
             if (result && result.user) {
-                localStorage.setItem('loaigle_validated_auth', 'true'); // Drop persistence anchor flag
+                isFirebaseInitializing = false; 
                 setPageLayoutState(true);
             }
         }).catch((e) => { 
+            isFirebaseInitializing = false;
             showCustomAlert("⚠️ Handshake Rejection: " + e.message); 
         });
 
-        // Monitors user authentication states securely
         auth.onAuthStateChanged(async (user) => {
+            isFirebaseInitializing = false;
+
             if (user) {
-                localStorage.setItem('loaigle_validated_auth', 'true');
                 setPageLayoutState(true);
                 window.forceSyncButtonsUI();
 
@@ -618,24 +655,18 @@ function triggerZergRush() {
                     }
                 } catch (e) { console.error(e); }
             } else {
-                // 🛑 TIMING PROTECTION LOCK: If anchor flag is present, block the logged-out fallback gate from executing!
-                if (localStorage.getItem('loaigle_validated_auth') === 'true') {
-                    setPageLayoutState(true);
-                    return;
-                }
                 setPageLayoutState(false);
             }
         });
 
-        // Click Routers Pipelines using standard mobile-proof redirects protected by storage hooks
         document.addEventListener('click', (e) => {
             if (e.target && e.target.id === 'gate-btn-google') {
-                localStorage.setItem('loaigle_validated_auth', 'true'); // Pre-arm anchor before page bounces away
+                isFirebaseInitializing = true; 
                 auth.signInWithRedirect(googleProvider);
             }
 
             if (e.target && e.target.id === 'gate-btn-github') {
-                localStorage.setItem('loaigle_validated_auth', 'true');
+                isFirebaseInitializing = true;
                 auth.signInWithRedirect(githubProvider);
             }
 
@@ -668,3 +699,4 @@ window.deleteFromBrowserStorage = deleteFromBrowserStorage;
 window.loadToBrowserStorage = loadToBrowserStorage;
 window.toggleSettingsMenu = toggleSettingsMenu;
 window.setThemeStyle = setThemeStyle;
+window.returnToHomeMenu = returnToHomeMenu;
