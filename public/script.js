@@ -30,8 +30,11 @@ function deleteFromBrowserStorage() {
     const toast = document.getElementById("loaigle-bg-toast");
     if (layer) layer.remove();
     if (toast) toast.remove();
-    alert("Background HTML successfully purged. Reloading page to restore defaults! 💀😭");
-    window.location.reload();
+    
+    // Custom non-cutting alert modal
+    showCustomAlert("Background HTML successfully purged. Reloading page to restore defaults! 💀😭", () => {
+        window.location.reload();
+    });
 }
 
 // Action button wrapper to grab input and save it to localStorage securely
@@ -40,8 +43,32 @@ function loadToBrowserStorage() {
     const currentPayload = searchInput.value.trim();
     if (currentPayload) {
         localStorage.setItem("loaigle_bg_html", currentPayload);
-        alert("HTML successfully locked into BrowserStorage! Reload Loaigle to see your new persistent interface skin live! 💀😭📲");
+        showCustomAlert("HTML successfully locked into BrowserStorage! Reload Loaigle to see your new persistent interface skin live! 💀😭📲");
     }
+}
+
+// Helper function to build custom non-cutting alert boxes
+function showCustomAlert(message, callback = null) {
+    const alertId = "loaigle-custom-alert";
+    const existing = document.getElementById(alertId);
+    if (existing) existing.remove();
+
+    const alertHtml = `
+        <div id="${alertId}" style="position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 30000; padding: 20px;">
+            <div style="background: #202124; border: 1px solid #3c4043; border-radius: 16px; max-width: 400px; w-full; padding: 24px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: sans-serif;">
+                <p style="color: #bdc1c6; font-size: 14px; line-height: 1.5; margin-bottom: 20px;">${message}</p>
+                <button id="close-alert-btn" style="padding: 10px 30px; font-size: 14px; border: none; border-radius: 24px; background-color: #34a853; color: white; cursor: pointer; font-weight: bold;">OK</button>
+            </div>
+        </div>
+    `;
+    const div = document.createElement("div");
+    div.innerHTML = alertHtml;
+    document.body.appendChild(div);
+
+    document.getElementById("close-alert-btn").onclick = function() {
+        document.getElementById(alertId).remove();
+        if (callback) callback();
+    };
 }
 
 async function search() {
@@ -78,7 +105,7 @@ async function search() {
 
     document.body.classList.remove("tilt-animation", "wobble-animation");
 
-    // 🖥️ EXTENDED FEATURE: HTML VIEWER PRO INTERFACE (Now reading value dynamically without string breaks!)
+    // 🖥 shrink-0 ENGINE HOOK
     const hasHtmlTags = /<(!doctype|html|head|body|div|p|span|a|link|script)/i.test(lowerQuery);
     if (hasHtmlTags) {
         resultsDiv.innerHTML = `
@@ -102,7 +129,7 @@ async function search() {
                 </div>
             </div>
         `;
-        return; // Halt logic tree
+        return; 
     }
 
     // 🕵️‍♂️ ULTRA-STRICT GIBBERISH DETECTION ENGINE
@@ -304,7 +331,7 @@ async function search() {
 // 📖 The Secret Backstory Popup Box
 function showToogleLore(event) {
     event.preventDefault();
-    alert(
+    showCustomAlert(
         "📜 THE LORE OF TOOGLE:\n\n" +
         "This was not an intentional tech feature. While the lead engineer was rapidly deploying code from a tiny, chaotic mobile interface, their thumb struck the 'T' key instead of the 'G' key.\n\n" +
         "Vercel built it instantly. The internet witnessed it. The blinding white layout collapsed under its power. Instead of fixing the mistake silently, it was immortalized forever into the source code as a feature.\n\n" +
@@ -312,20 +339,38 @@ function showToogleLore(event) {
     );
 }
 
-// 🛠️ COMPLETELY OVERHAULED HISTORICAL LORE LOGS
+// 🛠️ COMPLETELY UNCHOPPED HISTORICAL LORE LOGS WITH MOBILE MODAL INJECTION
 function showHtmlViewerLore() {
-    alert(
-        "🛠️ LOAIGLE HTML VIEWER PRO STATUS LOG:\n\n" +
-        "1. THE ORIGIN ACCIDENT:\n" +
-        "This portal was birthed during a high-velocity script layout verification test. A copy of the platform's literal repository code was passed directly into the search bar. Because code syntax fails the vowel-ratio metrics of the Gibberish Roast Engine, the input was flagged as an absolute keyboard smash.\n\n" +
-        "2. THE CHAIN REACTION:\n" +
-        "Instead of rendering as flat string text, the engine dropped the raw source code variables directly inside a live innerHTML template. The browser compiled the structural tags instantly—manifesting an identical, operational mirror loop of the website layout inside the insult card, while the hardcoded gibberish routine automatically unleashed an active Zerg Rush script to destroy it.\n\n" +
-        "3. THE THEME CONTROLS & DISCLAIMER ORIGIN:\n" +
-        "The theme-injection disclaimer was permanently written into the specs after a developer tried running a massive standalone React + Tailwind YouTube Simulator inside the engine. The browser parsed the simulator's custom stylesheet, completely overrode Loaigle's global layout properties, and instantly hijacked the master viewport background color from dark charcoal to onyx black!\n\n" +
-        "4. CURRENT PRODUCTION USECASE:\n" +
-        "This portal now features dual-routing capability: use the interface window to safely execute and debug live single-file 'index.html' applications without interference, OR use the background engine to permanently save custom CSS code overrides into localStorage to inject custom skins, backgrounds, and custom textures natively into Loaigle's core skin style!\n\n" +
-        "Enjoy your unnerfed workspace! 💀😭💻🏁"
-    );
+    const modalHtml = `
+        <div id="custom-lore-modal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 20000; padding: 20px;">
+            <div style="background: #202124; border: 1px solid #3c4043; border-radius: 16px; max-width: 500px; width: 100%; padding: 24px; max-height: 80vh; overflow-y: auto; text-align: left; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                <h3 style="color: #8ab4f8; margin-top: 0; font-size: 20px; border-bottom: 1px solid #3c4043; padding-bottom: 10px; font-weight: bold; font-family: sans-serif;">🛠️ LOAIGLE HTML VIEWER PRO STATUS LOG:</h3>
+                
+                <div style="color: #bdc1c6; font-size: 13px; line-height: 1.6; font-family: sans-serif;">
+                    <p style="margin-bottom: 15px;"><strong>1. THE ORIGIN ACCIDENT:</strong><br>
+                    This portal was birthed during a high-velocity script layout verification test. A copy of the platform's literal repository code was passed directly into the search bar. Because code syntax fails the vowel-ratio metrics of the Gibberish Roast Engine, the input was flagged as an absolute keyboard smash.</p>
+                    
+                    <p style="margin-bottom: 15px;"><strong>2. THE CHAIN REACTION:</strong><br>
+                    Instead of rendering as flat string text, the engine dropped the raw source code variables directly inside a live innerHTML template. The browser compiled the structural tags instantly—manifesting an identical, operational mirror loop of the website layout inside the insult card, while the hardcoded gibberish routine automatically unleashed an active Zerg Rush script to destroy it.</p>
+                    
+                    <p style="margin-bottom: 15px;"><strong>3. THE THEME CONTROLS & DISCLAIMER ORIGIN:</strong><br>
+                    The theme-injection disclaimer was permanently written into the specs after a developer tried running a massive standalone React + Tailwind YouTube Simulator inside the engine. The browser parsed the simulator's custom stylesheet, completely overrode Loaigle's global layout properties, and instantly hijacked the master viewport background color from dark charcoal to onyx black!</p>
+                    
+                    <p><strong>4. CURRENT PRODUCTION USECASE:</strong><br>
+                    This portal now features dual-routing capability: use the interface window to safely execute and debug live single-file 'index.html' applications without interference, OR use the background engine to permanently save custom CSS code overrides into localStorage to inject custom skins, backgrounds, and custom textures natively into Loaigle's core skin style!</p>
+                </div>
+                
+                <div style="margin-top: 20px; text-align: right;">
+                    <button onclick="document.getElementById('custom-lore-modal').remove()" style="padding: 10px 24px; font-size: 14px; border: none; border-radius: 24px; background-color: #ea4335; color: white; cursor: pointer; font-weight: bold;">OK</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    const div = document.createElement("div");
+    div.id = "lore-modal-container";
+    div.innerHTML = modalHtml;
+    document.body.appendChild(div);
 }
 
 // 🎰 Matrix Scrambling & Barrel Roll Logic
