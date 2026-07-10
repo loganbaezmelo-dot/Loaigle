@@ -17,27 +17,63 @@ const masterGuideHTML = `
         
         <div class="guide-section">
             <h3>✨ Active Animation Drivers</h3>
-            <p>• <strong>"do a barrel roll"</strong> (or spin variations) - Forces full 360-degree CSS viewport rotation alongside an automated real-time text scrambling algorithm matrix.</p>
-            <p>• <strong>"tilt" / "askew"</strong> - Locks the core browser axis parameters onto a fixed, permanent 4.5-degree slant profile.</p>
-            <p>• <strong>"67" / "wobble"</strong> - Initiates an infinite loop alternate keyframe layout simulation that rhythmically vibrates the interface glass.</p>
+            <p>• <strong>"do a barrel roll"</strong> - Forces full 360-degree CSS viewport rotation alongside text scrambling.</p>
+            <p>• <strong>"tilt" / "askew"</strong> - Locks the core browser axis parameters onto a fixed 4.5-degree slant profile.</p>
+            <p>• <strong>"67" / "wobble"</strong> - Initiates an infinite alternate keyframe vibration loop layout simulation.</p>
         </div>
 
         <div class="guide-section">
             <h3>🕵️‍♂️ Core Threat Mitigation Systems</h3>
-            <p>• <strong>"zerg rush"</strong> (or direct string smash failures) - Triggers the automated destruction array. Rains localized alpha characters from the document roof that systematically dissolve and delete elements from the screen layout graph.</p>
-        </div>
-
-        <div class="guide-section">
-            <h3>📜 Integrated Corporate Lore Routes</h3>
-            <p>• <strong>"google" / "toogle"</strong> - Injects custom layout reference components mapping the accidental history of the mobile fat-finger deployment event that permanently altered corporate naming architecture conventions.</p>
+            <p>• <strong>"zerg rush"</strong> - Triggers automated destruction array rains that systematic dissolve element layouts.</p>
         </div>
 
         <div class="guide-section">
             <h3>💻 Standalone HTML Sandbox Pro Suite</h3>
-            <p>• <strong>Raw Data Strings (&lt;html&gt;, &lt;!DOCTYPE&gt;)</strong> - Bypasses standard server proxies to manifest a 100% unnerfed components theater card. Features a client-side <code>localStorage</code> database sync utility designed explicitly to test or persistently lock custom theme templates, design styles, and skin textures directly into the system boot cycle.</p>
+            <p>• <strong>Raw Data Strings (&lt;html&gt;, &lt;!DOCTYPE&gt;)</strong> - Manifests a 100% unnerfed sandbox theater card layout with full security shields.</p>
         </div>
     </div>
 `;
+
+// 🎙️ REAL-TIME HARDWARE VOICE SEARCH ENGINE
+function triggerVoiceCapture() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+        showCustomAlert("❌ Audio Exception: Speech Recognition API is not supported on this specific mobile browser browser framework.");
+        return;
+    }
+
+    const micBtn = document.getElementById("voice-search-btn");
+    const searchInput = document.getElementById("searchInput");
+    const recognition = new SpeechRecognition();
+
+    recognition.continuous = false;
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+
+    micBtn.style.color = "#ea4335"; // Turn red indicating recording state
+    micBtn.innerText = "🛑";
+
+    recognition.start();
+
+    recognition.onresult = function(event) {
+        const spokenText = event.results[0][0].transcript;
+        searchInput.value = spokenText;
+        micBtn.style.color = "#9aa0a6";
+        micBtn.innerText = "🎙️";
+        search(); // Automatically execute search pass!
+    };
+
+    recognition.onerror = function(e) {
+        console.error(e);
+        micBtn.style.color = "#9aa0a6";
+        micBtn.innerText = "🎙️";
+    };
+
+    recognition.onend = function() {
+        micBtn.style.color = "#9aa0a6";
+        micBtn.innerText = "🎙️";
+    };
+}
 
 // ⚙️ SETTINGS PANEL NAVIGATION CONTROLS
 function toggleSettingsMenu() {
@@ -210,7 +246,7 @@ function showCustomAlert(message, callback = null) {
     };
 }
 
-// 🛡️ DYNAMIC INTERCEPTOR DIALOGUE: Prompts choice blocks before full layout hijacking
+// 🛡️ GATEWAY 1 INTERCEPTOR DIALOGUE: Prompts choice blocks before full layout hijacking
 function showHijackInterceptorPrompt(queryPayload, executeInjectionCallback) {
     const promptId = "loaigle-hijack-interceptor";
     const existing = document.getElementById(promptId);
@@ -236,16 +272,50 @@ function showHijackInterceptorPrompt(queryPayload, executeInjectionCallback) {
     document.body.appendChild(wrapper);
 
     document.getElementById("hijack-btn-no").onclick = function() {
-        document.getElementById(promptId).remove();
+        wrapper.remove();
         document.getElementById("searchInput").value = "";
-        document.getElementById("loaigle-back-btn").style.display = "none";
-        
-        const guide = document.getElementById("home-permanent-guide");
-        if (guide) guide.style.display = "block";
+        window.returnToHomeMenu();
     };
 
     document.getElementById("hijack-btn-yes").onclick = function() {
-        document.getElementById(promptId).remove();
+        wrapper.remove();
+        executeInjectionCallback();
+    };
+}
+
+// 🛡️ GATEWAY 2 INTERCEPTOR DIALOGUE: Fires strictly upon unauthorized hardware permission probe traces
+function showHardwarePermissionWarningPrompt(executeInjectionCallback) {
+    const promptId = "loaigle-hardware-interceptor";
+    const existing = document.getElementById(promptId);
+    if (existing) existing.remove();
+
+    const promptHtml = `
+        <div id="${promptId}" style="position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; z-index: 95000; padding: 20px; font-family: monospace;">
+            <div style="background: #202124; border: 2px solid #fbbc05; border-radius: 16px; max-width: 450px; width: 100%; padding: 28px; text-align: left; box-shadow: 0 10px 40px rgba(0,0,0,0.7); color: #fff;">
+                <h3 style="color: #fbbc05; margin-top: 0; font-size: 18px; margin-bottom: 15px;">⚠️ CRITICAL PRIVACY EXPLOIT RADAR</h3>
+                <p style="color: #bdc1c6; font-size: 13px; line-height: 1.6; margin-bottom: 24px;">
+                    This code is trying to use permissions you set up on Loaigle. Are you sure you wanna use it?
+                </p>
+                <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                    <button id="hw-btn-no" style="padding: 10px 24px; font-size: 13px; border: 1px solid #5f6368; border-radius: 20px; background: #303134; color: #fff; cursor: pointer; font-weight: bold;">No</button>
+                    <button id="hw-btn-yes" style="padding: 10px 24px; font-size: 13px; border: none; border-radius: 20px; background: #fbbc05; color: #000; cursor: pointer; font-weight: bold;">Yes</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    const wrapper = document.createElement("div");
+    wrapper.innerHTML = promptHtml;
+    document.body.appendChild(wrapper);
+
+    document.getElementById("hw-btn-no").onclick = function() {
+        wrapper.remove();
+        document.getElementById("searchInput").value = "";
+        window.returnToHomeMenu();
+    };
+
+    document.getElementById("hw-btn-yes").onclick = function() {
+        wrapper.remove();
         executeInjectionCallback();
     };
 }
@@ -271,7 +341,6 @@ async function search() {
         homeMenuGuide.style.display = "none";
     }
 
-    // Activate back arrow parameter layout indicator instantly on evaluation pass
     document.getElementById("loaigle-back-btn").style.display = "inline-block";
 
     const lowerQuery = query.toLowerCase();
@@ -302,34 +371,43 @@ async function search() {
         return; 
     }
 
+    // 🛡️ ARMED SECURITY SHIELD PERIMETER (Secure 1,000 character length threshold limit check)
     const hasHtmlTags = /<(!doctype|html|head|body|div|p|span|a|link|script)/i.test(lowerQuery);
-    if (hasHtmlTags) {
-        const attemptsFullHijack = /<body|<html|id=["']login-gate["']|id=["']main-app-canvas["']/i.test(lowerQuery) || lowerQuery.length > 1500;
-        const isJustAThemeOverride = /color|background|style/i.test(lowerQuery) && !attemptsFullHijack;
+    const containsCodeElements = /<script|function\s*\(|eval\(|setTimeout\(|setInterval\(|\.onclick/i.test(lowerQuery);
+    
+    // 🚨 HARDWARE PRIVACY PERMISSION BREACH RADAR TRACER STRING SELECTION
+    const attemptsHardwareAccess = /getusermedia|mediadevices|geolocation|getcurrentposition|webkitAudioContext|AudioContext|notification|permission|microphone/i.test(lowerQuery);
 
-        const renderHtmlViewerLayout = () => {
-            MathDiv.innerHTML = `
-                <div class="html-viewer-container" style="text-align: left; margin-top: 20px;">
-                    <h2 style="color: #8ab4f8; font-size: 20px; margin-bottom: 15px; border-bottom: 1px solid #3c4043; padding-bottom: 8px;">HTML Viewer:</h2>
-                    <div class="rendered-payload" style="background: transparent; padding: 10px 0;">${query}</div>
-                    <div style="margin-top: 30px; background-color: #202124; border: 1px solid #3c4043; padding: 16px; border-radius: 12px; text-align: center;">
-                        <button onclick="loadToBrowserStorage()" style="padding: 10px 20px; font-size: 13px; border: none; border-radius: 24px; background-color: #34a853; color: white; cursor: pointer; font-weight: bold; margin-bottom: 12px;">Load custom HTML in BrowserStorage</button>
-                        <p style="color: #ea4335; font-size: 11px; font-weight: bold; line-height: 1.4; margin: 0; text-align: left;">
-                            ⚠️ DISCLAIMER: This is only made for an HTML that changes the theme or texture of Loaigle. If this is code that actually is a full HTML app, test it through this HTML Viewer interface and don't click the button.
-                        </p>
-                    </div>
+    const attemptsFullHijack = hasHtmlTags || containsCodeElements || lowerQuery.length > 1000;
+
+    const renderHtmlViewerLayout = () => {
+        MathDiv.innerHTML = `
+            <div class="html-viewer-container" style="text-align: left; margin-top: 20px;">
+                <h2 style="color: #8ab4f8; font-size: 20px; margin-bottom: 15px; border-bottom: 1px solid #3c4043; padding-bottom: 8px;">HTML Viewer:</h2>
+                <div class="rendered-payload" style="background: transparent; padding: 10px 0;">${query}</div>
+                <div style="margin-top: 30px; background-color: #202124; border: 1px solid #3c4043; padding: 16px; border-radius: 12px; text-align: center;">
+                    <button onclick="loadToBrowserStorage()" style="padding: 10px 20px; font-size: 13px; border: none; border-radius: 24px; background-color: #34a853; color: white; cursor: pointer; font-weight: bold; margin-bottom: 12px;">Load custom HTML in BrowserStorage</button>
+                    <p style="color: #ea4335; font-size: 11px; font-weight: bold; line-height: 1.4; margin: 0; text-align: left;">
+                        ⚠️ DISCLAIMER: This is only made for an HTML that changes the theme or texture of Loaigle. If this is code that actually is a full HTML app, test it through this HTML Viewer interface and don't click the button.
+                    </p>
                 </div>
-            `;
-        };
+            </div>
+        `;
+    };
 
-        if (attemptsFullHijack && !isJustAThemeOverride) {
-            document.getElementById("loaigle-back-btn").style.display = "none";
-            showHijackInterceptorPrompt(query, () => {
+    if (attemptsFullHijack) {
+        document.getElementById("loaigle-back-btn").style.display = "none";
+        // Stage 1 Shield Gate Check
+        showHijackInterceptorPrompt(query, () => {
+            // Stage 2 Shield Gate Check (Hardware Protection Lock Trigger)
+            if (attemptsHardwareAccess) {
+                showHardwarePermissionWarningPrompt(() => {
+                    renderHtmlViewerLayout();
+                });
+            } else {
                 renderHtmlViewerLayout();
-            });
-        } else {
-            renderHtmlViewerLayout();
-        }
+            }
+        });
         return; 
     }
 
@@ -414,7 +492,6 @@ async function search() {
         try {
             const response = await proxyChain[i]();
             let data = response.items ? response : await response.json();
-            
             if (data && data.items && data.items.length > 0) {
                 articles = data.items.slice(0, 10);
                 break;
@@ -427,23 +504,12 @@ async function search() {
             {
                 title: `Latest updates on '${query}' surrounding global trends`,
                 link: "https://google.com",
-                description: `High-velocity internet traffic for '${query}' temporarily delayed live proxy servers. Systems are monitoring the surge.`
-            },
-            {
-                title: "Loaigle Mobile interface officially deploys globally",
-                link: "#",
-                description: "User experience metrics skyrocket by 300% after developers transition layout formatting to phone-responsive media parameters."
-            },
-            {
-                title: "Toogle News legacy protocol remains active",
-                link: "#",
-                description: "Inside sources confirm corporate spelling overrides are running smoothly across all mobile viewport tests."
+                description: `High-velocity internet traffic for '${query}' temporarily delayed live proxy servers.`
             }
         ];
     }
 
     MathDiv.innerHTML = "";
-
     const sourceTag = isGoogleSearch || lowerQuery.includes("toogle") ? "Toogle News" : "Google News";
 
     if (isGoogleSearch || lowerQuery.includes("toogle")) {
@@ -454,7 +520,7 @@ async function search() {
         fakeDiv.innerHTML = `
             <span class="source-tag" style="color: #ea4335; font-weight: bold;">Toogle Lore</span>
             <a href="#" class="result-link" onclick="showToogleLore(event)">Why does this say 'Toogle' instead of 'Google'? The Secret Revealed</a>
-            <p class="result-snippet">An inside look into the catastrophic, accidental mobile keyboard fat-finger incident that permanently altered internet search history on Loaigle...</p>
+            <p class="result-snippet">An inside look into the catastrophic, accidental mobile keyboard fat-finger incident...</p>
         `;
         MathDiv.appendChild(fakeDiv);
     }
@@ -501,49 +567,30 @@ async function search() {
 
 function showToogleLore(event) {
     event.preventDefault();
-    showCustomAlert(
-        "📜 THE LORE OF TOOGLE:\n\n" +
-        "This was not an intentional tech feature. While the lead engineer was rapidly deploying code from a tiny, chaotic mobile interface, their thumb struck the 'T' key instead of the 'G' key.\n\n" +
-        "Vercel built it instantly. The internet witnessed it. The blinding white layout collapsed under its power. Instead of fixing the mistake silently, it was immortalized forever into the source code as a feature.\n\n" +
-        "Long live Toogle News! 💀😭"
-    );
+    showCustomAlert("📜 THE LORE OF TOOGLE:\n\nThis was not an intentional tech feature. While the lead engineer was rapidly deploying code from a tiny, chaotic mobile interface, their thumb struck the 'T' key instead of the 'G' key... Long live Toogle News! 💀😭");
 }
 
 function triggerChaosAnimation() {
     document.body.classList.add("spin-animation");
     setTimeout(() => { document.body.classList.remove("spin-animation"); }, 1000);
     const results = document.querySelectorAll(".result");
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     results.forEach(result => {
         const linkElement = result.querySelector(".result-link");
         const snippetElement = result.querySelector(".result-snippet");
         const origTitle = result.dataset.originalTitle;
         const origSnippet = result.dataset.originalSnippet;
-        const origLink = result.dataset.originalLink;
         let scrambledTitle = "";
-        let scrambledSnippet = "";
         for(let i=0; i<origTitle.length; i++) scrambledTitle += chars[Math.floor(Math.random() * chars.length)];
-        for(let i=0; i<origSnippet.length; i++) scrambledSnippet += chars[Math.floor(Math.random() * chars.length)];
         linkElement.innerText = scrambledTitle;
-        snippetElement.innerText = scrambledSnippet;
-        linkElement.href = `https://${scrambledTitle.substring(0,8)}.com/error-broken-link`;
         let iterations = 0;
         const interval = setInterval(() => {
             linkElement.innerText = origTitle.split("").map((letter, index) => {
                 if (index < iterations) return origTitle[index];
                 return chars[Math.floor(Math.random() * chars.length)];
             }).join("");
-            snippetElement.innerText = origSnippet.split("").map((letter, index) => {
-                if (index < iterations) return origSnippet[index];
-                return chars[Math.floor(Math.random() * chars.length)];
-            }).join("");
             iterations += 1;
-            if (iterations >= Math.max(origTitle.length, origSnippet.length)) {
-                clearInterval(interval);
-                linkElement.innerText = origTitle;
-                snippetElement.innerText = origSnippet;
-                linkElement.href = origLink;
-            }
+            if (iterations >= origTitle.length) { clearInterval(interval); linkElement.innerText = origTitle; }
         }, 30);
     });
 }
@@ -555,52 +602,33 @@ function triggerZergRush() {
         if (currentResults.length > 0) {
             const targetIndex = Math.floor(Math.random() * currentResults.length);
             const targetDiv = currentResults[targetIndex];
-            const bug = document.createElement("span");
-            bug.innerText = Math.random() > 0.5 ? "o" : "O";
-            bug.style.position = "absolute";
-            bug.style.color = Math.random() > 0.5 ? "#ea4335" : "#fbbc05";
-            bug.style.fontWeight = "bold";
-            bug.style.fontSize = "24px";
-            bug.style.left = `${Math.random() * 60 + 20}%`;
-            bug.style.top = "-50px";
-            bug.style.zIndex = "999";
-            bug.style.animation = "fall 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards";
-            targetDiv.style.position = "relative";
-            targetDiv.appendChild(bug);
             setTimeout(() => {
                 targetDiv.style.transition = "opacity 0.4s ease, transform 0.4s ease";
                 targetDiv.style.opacity = "0";
-                targetDiv.style.transform = "translateX(-20px) scale(0.9)";
+                targetDiv.style.transform = "scale(0.9)";
                 setTimeout(() => { if (targetDiv.parentNode) targetDiv.remove(); }, 400);
-            }, 650);
+            }, 200);
         } else {
-            clearInterval(activeZergRush);
-            activeZergRush = null;
-            DefenseDiv.innerHTML = "<p style='color: #ea4335; font-family: monospace; font-size: 20px; font-weight: bold;'>🚨 API not found!</p>";
-            setTimeout(() => { DefenseDiv.innerHTML = "<p style='color: #bdc1c6;'>No results found on Loaigle.</p>"; }, 1500);
+            clearInterval(activeZergRush); activeZergRush = null;
+            DefenseDiv.innerHTML = "<p style='color: #ea4335;'>🚨 API not found!</p>";
         }
     }, 500);
 }
 
-// 🌐 EXPOSED SYSTEM MOBILE INLINE CLICK ACTIONS
+// 🌐 EXPOSED SYSTEM AUTHENTICATION LOGIC
 function triggerGoogleLogin() {
     localStorage.setItem('loaigle_validated_auth', 'true');
-    isFirebaseInitializing = true;
     auth.signInWithRedirect(googleProvider);
 }
 
 function triggerGithubLogin() {
     localStorage.setItem('loaigle_validated_auth', 'true');
-    isFirebaseInitializing = true;
     auth.signInWithRedirect(githubProvider);
 }
 
 function triggerSignOut() {
     localStorage.removeItem('loaigle_validated_auth');
-    auth.signOut().then(() => {
-        localStorage.clear();
-        setPageLayoutState(false);
-    });
+    auth.signOut().then(() => { localStorage.clear(); setPageLayoutState(false); });
 }
 
 function pushConfigsToCloud() {
@@ -610,9 +638,7 @@ function pushConfigsToCloud() {
       bgHtml: localStorage.getItem('loaigle_bg_html') || "",
       konamiUnlocked: localStorage.getItem('loaigle_konami_unlocked') || "false",
       updatedAt: new Date().toISOString()
-    }, { merge: true }).then(() => {
-        showCustomAlert("Configuration saved permanently to cloud database grid! 🎰🏁");
-    });
+    }, { merge: true }).then(() => { showCustomAlert("Configuration saved permanently to cloud database grid! 🎰🏁"); });
 }
 
 function setPageLayoutState(isAuthenticated) {
@@ -648,36 +674,26 @@ function setPageLayoutState(isAuthenticated) {
         googleProvider = new firebase.auth.GoogleAuthProvider(); githubProvider = new firebase.auth.GithubAuthProvider();
 
         auth.getRedirectResult().then((result) => {
-            if (result && result.user) {
-                localStorage.setItem('loaigle_validated_auth', 'true');
-                isFirebaseInitializing = false; 
-                setPageLayoutState(true);
-            }
-        }).catch((e) => { 
-            isFirebaseInitializing = false; 
-        });
+            if (result && result.user) { localStorage.setItem('loaigle_validated_auth', 'true'); isFirebaseInitializing = false; setPageLayoutState(true); }
+        }).catch((e) => { isFirebaseInitializing = false; });
 
         auth.onAuthStateChanged(async (user) => {
             isFirebaseInitializing = false;
             if (user) {
-                localStorage.setItem('loaigle_validated_auth', 'true');
-                setPageLayoutState(true);
+                localStorage.setItem('loaigle_validated_auth', 'true'); setPageLayoutState(true);
                 const syncStatusP = document.getElementById('settings-sync-indicator');
                 const btnSaveCloud = document.getElementById('settings-btn-save');
                 if (syncStatusP) { syncStatusP.innerText = `Active Account: ${user.email}`; syncStatusP.style.color = "#34a853"; }
                 if (btnSaveCloud) btnSaveCloud.style.display = "block";
             } else {
-                if (localStorage.getItem('loaigle_validated_auth') === 'true') {
-                    setPageLayoutState(true);
-                    return;
-                }
+                if (localStorage.getItem('loaigle_validated_auth') === 'true') { setPageLayoutState(true); return; }
                 setPageLayoutState(false);
             }
         });
     } catch (globalError) { console.error(globalError); }
 })();
 
-// Attach functions explicitly to global scope blueprints
 window.search = search; window.deleteFromBrowserStorage = deleteFromBrowserStorage; window.loadToBrowserStorage = loadToBrowserStorage;
 window.toggleSettingsMenu = toggleSettingsMenu; window.setThemeStyle = setThemeStyle; window.returnToHomeMenu = returnToHomeMenu;
-window.triggerGoogleLogin = triggerGoogleLogin; window.triggerGithubLogin = triggerGithubLogin; window.triggerSignOut = triggerSignOut; window.pushConfigsToCloud = pushConfigsToCloud;
+window.triggerGoogleLogin = triggerGoogleLogin; window.triggerGithubLogin = triggerGithubLogin; window.triggerSignOut = triggerSignOut; 
+window.pushConfigsToCloud = pushConfigsToCloud; window.triggerVoiceCapture = triggerVoiceCapture;
