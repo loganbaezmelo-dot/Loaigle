@@ -35,6 +35,23 @@ async function search() {
 
     document.body.classList.remove("tilt-animation", "wobble-animation");
 
+    // 🖥️ BULLETPROOF HTML VIEWER ROUTER (Catches partial strings and unclosed tags!)
+    const hasHtmlTags = /<(!doctype|html|head|body|div|p|span|a|link|script)/i.test(lowerQuery);
+    if (hasHtmlTags) {
+        resultsDiv.innerHTML = `
+            <div class="html-viewer-container" style="text-align: left; margin-top: 20px;">
+                <h2 style="color: #8ab4f8; font-size: 20px; margin-bottom: 15px; border-bottom: 1px solid #3c4043; padding-bottom: 8px;">HTML Viewer:</h2>
+                <div class="rendered-payload" style="background: transparent; padding: 10px 0;">
+                    ${query}
+                </div>
+                <div style="margin-top: 40px; text-align: center; border-top: 1px solid #3c4043; padding-top: 20px;">
+                    <button onclick="showHtmlViewerLore()" style="padding: 10px 20px; font-size: 14px; border: none; border-radius: 24px; background-color: #ea4335; color: white; cursor: pointer;">What is this?</button>
+                </div>
+            </div>
+        `;
+        return; // Kill execution instantly!
+    }
+
     // 🕵️‍♂️ ULTRA-STRICT GIBBERISH DETECTION ENGINE
     function checkIsGibberish(str) {
         const words = str.split(" ");
@@ -43,15 +60,12 @@ async function search() {
         for (let word of words) {
             if (passList.includes(word) || word.startsWith("zerg") || word.startsWith("rush")) continue;
             
-            // Check 1: Check for repeated patterns/spam laughing (3 identical characters in a row like aaa)
             if (/(.)\1\1/.test(word)) return true; 
             
-            // Check 2: Mostly consonants with weird clustering keys (e.g., jw, wj, hx)
             if (word.length >= 6 && (word.match(/[bcdfghjklmnpqrstvwxz]/gi) || []).length > word.length * 0.7) {
                 if (!/[aeiouy]{2,}/i.test(word) && /jw|wj|hx|q|z/i.test(word)) return true;
             }
             
-            // Check 3: Unbroken consonant walls lowered to 4 (Catches "hahajww" because of "hjww")
             if (word.length >= 4) {
                 const vowels = (word.match(/[aeiouy]/gi) || []).length;
                 if (vowels === 0) return true;
@@ -63,16 +77,16 @@ async function search() {
 
     const isGibberish = checkIsGibberish(lowerQuery);
 
-    // If it's absolute keyboard smash, deploy the automated Roast Engine (No auto-correct allowed!)
     if (isGibberish) {
         resultsDiv.innerHTML = `
             <div class="result result-roast" style="margin-top: 20px;">
-                <h2 style="color: #ea4335; font-size: 24px; margin-bottom: 8px;">"${query}" is gibberish! Learn English!</h2>
+                <h2 id="roast-text" style="color: #ea4335; font-size: 24px; margin-bottom: 8px;"></h2>
                 <p class="result-snippet" style="color: #9aa0a6; font-style: italic; font-size: 13px; margin-top: 15px;">
                     Disclaimer: If you didn't type gibberish, you might have triggered another error.
                 </p>
             </div>
         `;
+        document.getElementById("roast-text").innerText = `"${query}" is gibberish! Learn English!`;
         triggerZergRush();
         return; 
     }
@@ -105,7 +119,7 @@ async function search() {
     const serverQuery = autoCorrectQuery(lowerQuery);
     const isZergRush = zergPhrases.includes(lowerQuery) || serverQuery === "zerg rush";
 
-    // 📖 1. Dictionary Lookup (Only for clean single words)
+    // 📖 1. Dictionary Lookup
     const isSingleWord = query.split(" ").length === 1;
     if (isSingleWord && !isZergRush) {
         try {
@@ -133,7 +147,6 @@ async function search() {
     const timestamp = new Date().getTime();
     let articles = [];
 
-    // --- ROUTE 1: Primary Proxy ---
     try {
         const rss2json = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(newsUrl)}&_cb=${timestamp}`;
         const res = await fetch(rss2json);
@@ -147,7 +160,6 @@ async function search() {
         console.log("Route 1 dropped.");
     }
 
-    // --- ROUTE 2: Backup Proxy ---
     if (articles.length === 0) {
         try {
             const allOriginsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(newsUrl)}`)}&_cb=${timestamp}`;
@@ -164,7 +176,6 @@ async function search() {
         }
     }
 
-    // --- ROUTE 3: Genuine System Error Fallback (Dynamic Anti-Crash Matrix) ---
     if (articles.length === 0) {
         articles = [
             {
@@ -185,7 +196,6 @@ async function search() {
         ];
     }
 
-    // Clear loading indicator
     resultsDiv.innerHTML = "";
 
     // 📰 3. Render Results
@@ -225,7 +235,6 @@ async function search() {
         resultsDiv.appendChild(div);
     });
 
-    // Fire triggers on original input query concepts
     if (isBarrelRoll || serverQuery.includes("barrel roll")) {
         triggerChaosAnimation();
     } else if (isTilt) {
@@ -247,6 +256,16 @@ function showToogleLore(event) {
         "This was not an intentional tech feature. While the lead engineer was rapidly deploying code from a tiny, chaotic mobile interface, their thumb struck the 'T' key instead of the 'G' key.\n\n" +
         "Vercel built it instantly. The internet witnessed it. The blinding white layout collapsed under its power. Instead of fixing the mistake silently, it was immortalized forever into the source code as a feature.\n\n" +
         "Long live Toogle News! 💀😭"
+    );
+}
+
+// 🛠️ NEW FEATURE LORE: THE BIRTH OF THE VIEWPORT PORTAL
+function showHtmlViewerLore() {
+    alert(
+        "🛠️ THE ACCIDENTAL HTML VIEWER PORTAL:\n\n" +
+        "During a routine structural test, the lead developer pasted a copy of the entire repository source code directly into the main query input.\n\n" +
+        "Because the input payload contained explicit syntax like '<!DOCTYPE html>', the rendering block glitched completely out of context. Instead of registering as text, the browser executed the elements, manifesting an identical, parallel website loop directly inside the results card!\n\n" +
+        "Instead of patching the safety vulnerability, management immediately certified it as an advanced development tool. Welcome to the feature! 💀😭"
     );
 }
 
