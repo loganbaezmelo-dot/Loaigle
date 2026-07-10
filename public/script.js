@@ -36,7 +36,41 @@ async function search() {
 
     document.body.classList.remove("tilt-animation", "wobble-animation");
 
-    // 📖 1. Dictionary Lookup
+    // 🕵️‍♂️ GIBBERISH DETECTION ENGINE
+    function checkIsGibberish(str) {
+        const words = str.split(" ");
+        // If it's multiple words, let's look closer at individual chunks
+        for (let word of words) {
+            if (word.length > 4) {
+                const vowels = (word.match(/[aeiouy]/gi) || []).length;
+                const consonants = word.length - vowels;
+                
+                // Real words rarely have 0 vowels or a 5+ consonant pileup
+                if (vowels === 0 && word.length > 3) return true;
+                if (/(?![aeiouy])[a-z]{5,}/i.test(word)) return true; 
+            }
+        }
+        return false;
+    }
+
+    const isGibberish = checkIsGibberish(lowerQuery);
+
+    // If it's absolute keyboard smash, deploy the automated Roast Engine
+    if (isGibberish) {
+        resultsDiv.innerHTML = `
+            <div class="result roast-box">
+                <h2 style="color: #ea4335; font-size: 24px; margin-bottom: 8px;">"${query}" is gibberish! Learn English!</h2>
+                <p class="result-snippet" style="color: #9aa0a6; font-style: italic; font-size: 13px; margin-top: 15px;">
+                    Disclaimer: If you didn't type gibberish, you might have triggered another error.
+                </p>
+            </div>
+        `;
+        // Execute immediate self-destruction via Zerg Rush
+        triggerZergRush();
+        return; // Halt all network requests completely!
+    }
+
+    // 📖 1. Dictionary Lookup (Only for clean single words)
     const isSingleWord = query.split(" ").length === 1;
     if (isSingleWord && !isZergRush) {
         try {
@@ -59,12 +93,12 @@ async function search() {
         }
     }
 
-    // 📰 2. Bulletproof Multi-Route News Search
+    // 📰 2. News Search (Optimized path routing for regular long sentences)
     const newsUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-US&gl=US&ceid=US:en`;
     const timestamp = new Date().getTime();
     let articles = [];
 
-    // --- ROUTE 1: Primary Proxy (rss2json) ---
+    // --- ROUTE 1: Primary Proxy ---
     try {
         const rss2json = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(newsUrl)}&_cb=${timestamp}`;
         const res = await fetch(rss2json);
@@ -75,13 +109,13 @@ async function search() {
             }
         }
     } catch (err) {
-        console.log("Route 1 failed. Switching to Backup Router...");
+        console.log("Route 1 dropped.");
     }
 
-    // --- ROUTE 2: Backup Proxy (allorigins) if Route 1 failed ---
+    // --- ROUTE 2: Backup Proxy (Fixes sentence hang-ups) ---
     if (articles.length === 0) {
         try {
-            const allOriginsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(rss2json)}` + `&_cb=${timestamp}`;
+            const allOriginsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(newsUrl)}`)}&_cb=${timestamp}`;
             const res = await fetch(allOriginsUrl);
             if (res.ok) {
                 const wrapper = await res.json();
@@ -91,27 +125,17 @@ async function search() {
                 }
             }
         } catch (err) {
-            console.log("Route 2 failed. Activating Emergency Local Fail-safe...");
+            console.log("Route 2 dropped.");
         }
     }
 
-    // --- ROUTE 3: Emergency Hardcoded Mock Data (Anti-Crash Guarantee) ---
+    // --- ROUTE 3: Genuine System Error Fallback (Safe from gibberish triggers) ---
     if (articles.length === 0) {
         articles = [
             {
-                title: `Breaking: Internet searches for '${query}' completely break the web`,
-                link: "https://google.com",
-                description: "Loaigle servers experienced high-velocity chaos traffic due to massive search queries. Local systems successfully intercepted the crash."
-            },
-            {
-                title: "Vercel builds are currently running at maximum capacity",
-                link: "https://vercel.com",
-                description: "Engineers report that deploying clean dark-mode interfaces from a phone keyboard increases system performance by 200%."
-            },
-            {
-                title: "Toogle News officially declared immortalized legacy feature",
+                title: "Loaigle Search Connection Gateway Timed Out",
                 link: "#",
-                description: "Typo history was made today as keyboard fat-finger incidents bypass standard corporate formatting protocols permanently."
+                description: "The structural formatting for this complex sentence query caused an off-site proxy delay. Click search again to reload live data."
             }
         ];
     }
@@ -122,7 +146,6 @@ async function search() {
     // 📰 3. Render Results
     const sourceTag = isGoogleSearch ? "Toogle News" : "Google News";
 
-    // Inject Fake Lore link if query matches Google triggers
     if (isGoogleSearch) {
         const fakeDiv = document.createElement("div");
         fakeDiv.className = "result";
@@ -137,7 +160,6 @@ async function search() {
         resultsDiv.appendChild(fakeDiv);
     }
 
-    // Loop and build out the 10 clean articles
     articles.forEach((item) => {
         const div = document.createElement("div");
         div.className = "result";
@@ -158,7 +180,6 @@ async function search() {
         resultsDiv.appendChild(div);
     });
 
-    // Fire animations
     if (isBarrelRoll) {
         triggerChaosAnimation();
     } else if (isTilt) {
@@ -234,9 +255,10 @@ function triggerChaosAnimation() {
 
 // 👾 Zerg Rush Link Destroyer Logic
 function triggerZergRush() {
-    const NavDiv = document.getElementById("results");
+    const resultsDiv = document.getElementById("results");
     
     activeZergRush = setInterval(() => {
+        // Target whatever blocks exist (normal results OR the new roast container)
         const currentResults = document.querySelectorAll(".result");
         
         if (currentResults.length > 0) {
@@ -270,10 +292,10 @@ function triggerZergRush() {
             clearInterval(activeZergRush);
             activeZergRush = null;
             
-            NavDiv.innerHTML = "<p style='color: #ea4335; font-family: monospace; font-size: 20px; font-weight: bold;'>🚨 API not found!</p>";
+            resultsDiv.innerHTML = "<p style='color: #ea4335; font-family: monospace; font-size: 20px; font-weight: bold;'>🚨 API not found!</p>";
             
             setTimeout(() => {
-                NavDiv.innerHTML = "<p style='color: #bdc1c6;'>No results found on Loaigle.</p>";
+                resultsDiv.innerHTML = "<p style='color: #bdc1c6;'>No results found on Loaigle.</p>";
             }, 1500);
         }
     }, 500);
