@@ -134,7 +134,7 @@ async function search() {
     dictionaryDiv.innerHTML = "";
     resultsDiv.innerHTML = "<p style='color: #bdc1c6;'>Searching Loaigle...</p>";
 
-    // 🏎️ EXTRA CRITICAL LAYOUT HIDE ROUTINE: Safely tucks the menu guide away during searches!
+    // Safely tucks the menu guide away during searches
     const homeMenuGuide = document.getElementById("home-permanent-guide");
     if (homeMenuGuide) {
         homeMenuGuide.style.display = "none";
@@ -166,7 +166,7 @@ async function search() {
         renderGuideOnMenu(); 
         
         const targetGuide = document.getElementById("home-permanent-guide");
-        if (targetGuide) targetGuide.style.display = "block"; // Make sure it's visible on unlock!
+        if (targetGuide) targetGuide.style.display = "block"; 
         
         showCustomAlert("✔ CHEAT CODE ACTIVATED!<br><br>The Master Blueprint Registry has been permanently locked and anchored right onto your home menu screen beneath the search bar! 🎮🚀");
         
@@ -269,7 +269,7 @@ async function search() {
     const serverQuery = autoCorrectQuery(lowerQuery);
     const isZergRush = zergPhrases.includes(lowerQuery) || serverQuery === "zerg rush";
 
-    // 📖 1. Dictionary Lookup
+    // 📖 1. Dictionary Lookup (Safely Sandboxed: Keeps official spelling intact)
     const isSingleWord = query.split(" ").length === 1;
     if (isSingleWord && !isZergRush) {
         try {
@@ -350,9 +350,6 @@ async function search() {
 
     // 💡 THE HINT INJECTOR RADAR MATRIX
     const konamiCodeUnlockedGlobal = localStorage.getItem("loaigle_konami_unlocked") === "true";
-    const isEasterEggTriggered = isBarrelRoll || isTilt || isZergRush || isGoogleSearch || isKonamiHint;
-    const triggerRandomLuck = Math.random() < 0.15;
-
     if (!konamiCodeUnlockedGlobal && (isEasterEggTriggered || triggerRandomLuck)) {
         const hintCard = document.createElement("div");
         hintCard.className = "hint-header-card";
@@ -386,17 +383,26 @@ async function search() {
         const div = document.createElement("div");
         div.className = "result";
         
+        let displayTitle = item.title;
+        let displaySnippet = item.description || "";
+
+        // 🔄 THE INTERCEPTOR MATRIX: Rewrite text fields to enforce Toogle corporate spelling!
+        if (isGoogleSearch || lowerQuery.includes("toogle")) {
+            displayTitle = displayTitle.replace(/Google/g, "Toogle").replace(/google/g, "toogle");
+            displaySnippet = displaySnippet.replace(/Google/g, "Toogle").replace(/google/g, "toogle");
+        }
+        
         const tempDiv = document.createElement("div");
-        tempDiv.innerHTML = item.description || "";
+        tempDiv.innerHTML = displaySnippet;
         const cleanSnippet = tempDiv.innerText.split("...")[0] + "..."; 
 
-        div.dataset.originalTitle = item.title;
+        div.dataset.originalTitle = displayTitle;
         div.dataset.originalLink = item.link;
         div.dataset.originalSnippet = cleanSnippet;
 
         div.innerHTML = `
             <span class="source-tag">${sourceTag}</span>
-            <a href="${item.link}" class="result-link" target="_blank">${item.title}</a>
+            <a href="${item.link}" class="result-link" target="_blank">${displayTitle}</a>
             <p class="result-snippet">${cleanSnippet}</p>
         `;
         resultsDiv.appendChild(div);
