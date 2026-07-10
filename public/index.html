@@ -6,27 +6,27 @@
     <title>Loaigle</title>
     <link rel="stylesheet" href="style.css">
 
+    <!-- 🌐 Core Firebase CDN App, Auth, and Firestore Drivers -->
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
+    <!-- 🚪 GATE 1: THE PORTAL ENTRANCE LOGIN GATE -->
     <div id="login-gate" style="display: flex; position: fixed; inset: 0; background: #171717; z-index: 60000; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
         <div style="background: #202124; border: 1px solid #3c4043; border-radius: 16px; max-width: 400px; width: 100%; padding: 32px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); text-align: center; font-family: monospace; color: white;">
             <div style="font-size: 36px; font-weight: bold; margin-bottom: 8px; color: #ffffff;">Loaigle</div>
             <p style="color: #9aa0a6; font-size: 12px; margin-bottom: 30px; line-height: 1.4;">Secure Node Gateway Deployment Protocol</p>
             
             <button id="gate-btn-google" style="width: 100%; padding: 14px; border: none; border-radius: 24px; background: #ea4335; color: white; font-weight: bold; cursor: pointer; font-size: 14px; margin-bottom: 12px; font-family: monospace;">Sign in with Google Net</button>
-            <button id="gate-btn-github" style="width: 100%; padding: 14px; border: 1px solid #5f6368; border-radius: 24px; background: #24292e; color: white; font-weight: bold; cursor: pointer; font-size: 14px; margin-bottom: 24px; font-family: monospace;">Sign in with GitHub Node</button>
-            
-            <div style="border-top: 1px solid #3c4043; padding-top: 20px;">
-                <button id="gate-btn-guest" style="background: transparent; border: none; color: #8ab4f8; font-size: 13px; text-decoration: underline; cursor: pointer; font-family: monospace;">View as a Guest →</button>
-            </div>
+            <button id="gate-btn-github" style="width: 100%; padding: 14px; border: 1px solid #5f6368; border-radius: 24px; background: #24292e; color: white; font-weight: bold; cursor: pointer; font-size: 14px; font-family: monospace;">Sign in with GitHub Node</button>
         </div>
     </div>
 
+    <!-- 🌐 GATE 2: THE MAIN APPLICATION PRODUCTION CANVAS -->
     <div id="main-app-canvas" style="display: none; width: 100%; min-height: 100vh; box-sizing: border-box;">
+        <!-- ⚙️ Top Navigation Gear Controls -->
         <div style="width: 100%; display: flex; justify-content: flex-end; padding: 15px; box-sizing: border-box;">
             <button onclick="toggleSettingsMenu()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #bdc1c6; padding: 5px 10px;">⚙️</button>
         </div>
@@ -42,6 +42,7 @@
         <div id="results"></div>
     </div>
 
+    <!-- 🎛️ GATE 3: SYSTEM CONTROL PANEL MODAL -->
     <div id="loaigle-settings-modal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 40000; padding: 20px;">
         <div style="background: #202124; border: 1px solid #3c4043; border-radius: 16px; max-width: 450px; width: 100%; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: monospace; color: #fff; box-sizing: border-box; text-align: left;">
             
@@ -50,6 +51,7 @@
                 <button onclick="toggleSettingsMenu()" style="background: transparent; color: #9aa0a6; border: none; font-size: 18px; cursor: pointer;">✕</button>
             </div>
 
+            <!-- Theme Options -->
             <div style="margin-bottom: 25px;">
                 <h4 style="color: #bdc1c6; margin: 0 0 10px 0; font-size: 14px;">🎨 Interface Skins</h4>
                 <div style="display: flex; flex-direction: column; gap: 8px;">
@@ -61,6 +63,7 @@
                 </div>
             </div>
 
+            <!-- Session Termination Control Grid -->
             <div>
                 <h4 style="color: #bdc1c6; margin: 0 0 10px 0; font-size: 14px;">🔐 Session Authentication Profile</h4>
                 <p id="settings-sync-indicator" style="font-size: 12px; color: #9aa0a6; margin: 0 0 20px 0; line-height: 1.4;">Active Session: Verifying credentials...</p>
@@ -72,6 +75,7 @@
         </div>
     </div>
 
+    <!-- ⚡ Master script bootloader -->
     <script src="script.js"></script>
 
 </body>
