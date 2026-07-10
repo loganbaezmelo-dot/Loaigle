@@ -17,8 +17,8 @@
             <div style="font-size: 36px; font-weight: bold; margin-bottom: 8px; color: #ffffff;">Loaigle</div>
             <p style="color: #9aa0a6; font-size: 12px; margin-bottom: 30px; line-height: 1.4;">Secure Node Gateway Deployment Protocol</p>
             
-            <button id="gate-btn-google" style="width: 100%; padding: 14px; border: none; border-radius: 24px; background: #ea4335; color: white; font-weight: bold; cursor: pointer; font-size: 14px; margin-bottom: 12px; font-family: monospace;">Sign in with Google Net</button>
-            <button id="gate-btn-github" style="width: 100%; padding: 14px; border: 1px solid #5f6368; border-radius: 24px; background: #24292e; color: white; font-weight: bold; cursor: pointer; font-size: 14px; font-family: monospace;">Sign in with GitHub Node</button>
+            <button onclick="triggerGoogleLogin()" style="width: 100%; padding: 14px; border: none; border-radius: 24px; background: #ea4335; color: white; font-weight: bold; cursor: pointer; font-size: 14px; margin-bottom: 12px; font-family: monospace;">Sign in with Google Net</button>
+            <button onclick="triggerGithubLogin()" style="width: 100%; padding: 14px; border: 1px solid #5f6368; border-radius: 24px; background: #24292e; color: white; font-weight: bold; cursor: pointer; font-size: 14px; font-family: monospace;">Sign in with GitHub Node</button>
         </div>
     </div>
 
@@ -62,12 +62,13 @@
                 <h4 style="color: #bdc1c6; margin: 0 0 10px 0; font-size: 14px;">🔐 Session Authentication Profile</h4>
                 <p id="settings-sync-indicator" style="font-size: 12px; color: #9aa0a6; margin: 0 0 20px 0; line-height: 1.4;">Active Session: Verifying credentials...</p>
                 
-                <button id="settings-btn-save" style="display: none; background: #34a853; color: #fff; border: none; padding: 12px 15px; width: 100%; border-radius: 24px; cursor: pointer; font-weight: bold; margin-bottom: 12px; text-align: center; font-family: monospace;">Push Local Configs to Cloud Matrix</button>
-                <button id="settings-btn-logout" style="background: #ea4335; color: #fff; border: none; padding: 12px 15px; width: 100%; border-radius: 24px; cursor: pointer; font-weight: bold; text-align: center; font-family: monospace;">Terminate Session & Log Out</button>
+                <button id="settings-btn-save" onclick="pushConfigsToCloud()" style="display: none; background: #34a853; color: #fff; border: none; padding: 12px 15px; width: 100%; border-radius: 24px; cursor: pointer; font-weight: bold; margin-bottom: 12px; text-align: center; font-family: monospace;">Push Local Configs to Cloud Matrix</button>
+                <button id="settings-btn-logout" onclick="triggerSignOut()" style="background: #ea4335; color: #fff; border: none; padding: 12px 15px; width: 100%; border-radius: 24px; cursor: pointer; font-weight: bold; text-align: center; font-family: monospace;">Terminate Session & Log Out</button>
             </div>
 
         </div>
     </div>
 
+    <script src="script.js"></script>
 </body>
 </html>
