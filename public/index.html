@@ -18,7 +18,25 @@
     <div id="dictionary-box"></div>
     <div id="results"></div>
 
-    <script src="script.js"></script>
+    <div class="auth-container" style="background: #202124; padding: 20px; border-radius: 16px; font-family: monospace; color: #fff; max-width: 450px; margin: 40px auto; border: 1px solid #3c4043; text-align: left;">
+      <h3 style="color: #8ab4f8; margin-top: 0; border-bottom: 1px solid #3c4043; padding-bottom: 8px;">🔐 LOAIGLE SECURITY CORE</h3>
+      
+      <div id="auth-logged-out">
+        <p style="color: #9aa0a6; font-size: 13px;">Sign in to sync your custom layouts and master cheat records across the global database cloud grid.</p>
+        <button id="btn-google" style="background: #ea4335; color: #fff; border: none; padding: 12px 15px; width: 100%; border-radius: 24px; cursor: pointer; font-weight: bold; margin-bottom: 10px;">Authorize via Google Net</button>
+        <button id="btn-github" style="background: #24292e; color: #fff; border: 1px solid #444; padding: 12px 15px; width: 100%; border-radius: 24px; cursor: pointer; font-weight: bold;">Authorize via GitHub Node</button>
+      </div>
+
+      <div id="auth-logged-in" style="display: none;">
+        <p style="font-size: 13px;">Active Operator: <strong id="user-email" style="color: #34a853;"></strong></p>
+        <button id="btn-save-cloud" style="background: #34a853; color: #fff; border: none; padding: 12px 15px; width: 100%; border-radius: 24px; cursor: pointer; font-weight: bold; margin-bottom: 10px;">Push Local Configs to Cloud Matrix</button>
+        <button id="btn-logout" style="background: transparent; color: #ea4335; border: 1px solid #ea4335; padding: 10px 15px; width: 100%; border-radius: 24px; cursor: pointer; font-weight: bold;">Disconnect Console</button>
+      </div>
+
+      <p id="sync-status" style="background: #171717; padding: 10px; font-size: 12px; color: #00ffaa; border-left: 3px solid #34a853; margin-top: 15px; display: none; border-radius: 4px;"></p>
+    </div>
+
+    <script type="module" src="script.js"></script>
 
 </body>
 </html>
