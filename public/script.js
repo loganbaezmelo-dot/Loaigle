@@ -1,9 +1,6 @@
 // Keep track of any active Zerg Rush intervals so they don't stack up
 let activeZergRush = null;
 
-// Tracks initialized state parameters during cold reboots
-let isFirebaseInitializing = true;
-
 // The canonical master blueprint text block utilized across both viewport layouts
 const masterGuideHTML = `
     <div class="konami-guide-container" id="loaigle-system-guide">
@@ -54,6 +51,7 @@ function setThemeStyle(themeMode) {
     updateThemeButtonsUI();
 }
 
+// Applies theme rules natively
 function applyThemeLayer() {
     const currentMode = localStorage.getItem('loaigle_theme') || 'auto';
     
@@ -101,7 +99,7 @@ function updateThemeButtonsUI() {
     }
 }
 
-// 🚀 BOOTSTRAPPER: Direct script execution block triggered immediately on engine load
+// 🚀 BOOTSTRAPPER: Engine parameters mapping choosingChoices
 (function bootLoader() {
     const cachedHtml = localStorage.getItem("loaigle_bg_html");
     if (cachedHtml) {
@@ -331,8 +329,8 @@ async function search() {
     const proxyChain = [
         () => fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(newsUrl)}&_cb=${cb}`),
         () => fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(newsUrl)}`)}&_cb=${cb}`).then(res => res.ok ? res.json().then(d => ({ items: JSON.parse(d.contents).items })) : null),
-        () => fetch(`https://corsproxy.io/?${encodeURIComponent(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(newsUrl)}`)}`),
-        () => fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(newsUrl)}`)}`)
+        () => fetch(`https://corsproxy.io/?${encodeURIComponent('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(newsUrl))}`),
+        () => fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(newsUrl))}`)
     ];
 
     for (let i = 0; i < proxyChain.length; i++) {
@@ -543,7 +541,7 @@ function triggerZergRush() {
 }
 
 // ==========================================================================
-// 📡 ZERO-RACE CONDITIONAL DIRECT CONTAINER STATE MANIFEST SYSTEM
+// 📡 BULLETPROOF SYNCHRONOUS REDIRECT STATE HANDLER MATRIX
 // ==========================================================================
 (function initFirebaseMatrix() {
     try {
@@ -593,23 +591,20 @@ function triggerZergRush() {
             }
         };
 
-        // 🎰 THE COMPLETE OVERRIDE HANDSHAKE: Catching redirect tokens synchronously
+        // 🎰 INTERNAL REDIRECT RECOVERY MATRIX: Evaluates incoming payload streams before layout guards run
         auth.getRedirectResult().then((result) => {
             if (result && result.user) {
-                isFirebaseInitializing = false; // Intentionally unlock state machine parameters
+                localStorage.setItem('loaigle_validated_auth', 'true'); // Drop persistence anchor flag
                 setPageLayoutState(true);
             }
         }).catch((e) => { 
-            isFirebaseInitializing = false;
             showCustomAlert("⚠️ Handshake Rejection: " + e.message); 
         });
 
         // Monitors user authentication states securely
         auth.onAuthStateChanged(async (user) => {
-            // 🛑 CRITICAL REPAIR OVERRIDE: The exact split second Firebase fires, we officially kill the initialization state tracker
-            isFirebaseInitializing = false;
-
             if (user) {
+                localStorage.setItem('loaigle_validated_auth', 'true');
                 setPageLayoutState(true);
                 window.forceSyncButtonsUI();
 
@@ -623,24 +618,29 @@ function triggerZergRush() {
                     }
                 } catch (e) { console.error(e); }
             } else {
-                // If token returns false completely, pass layout state to logged-out baseline
+                // 🛑 TIMING PROTECTION LOCK: If anchor flag is present, block the logged-out fallback gate from executing!
+                if (localStorage.getItem('loaigle_validated_auth') === 'true') {
+                    setPageLayoutState(true);
+                    return;
+                }
                 setPageLayoutState(false);
             }
         });
 
-        // Click Routers Pipelines
+        // Click Routers Pipelines using standard mobile-proof redirects protected by storage hooks
         document.addEventListener('click', (e) => {
             if (e.target && e.target.id === 'gate-btn-google') {
-                isFirebaseInitializing = true; // Lock initialization loops state ahead of redirect
+                localStorage.setItem('loaigle_validated_auth', 'true'); // Pre-arm anchor before page bounces away
                 auth.signInWithRedirect(googleProvider);
             }
 
             if (e.target && e.target.id === 'gate-btn-github') {
-                isFirebaseInitializing = true;
+                localStorage.setItem('loaigle_validated_auth', 'true');
                 auth.signInWithRedirect(githubProvider);
             }
 
             if (e.target && e.target.id === 'settings-btn-logout') {
+                localStorage.removeItem('loaigle_validated_auth');
                 auth.signOut().then(() => {
                     localStorage.clear();
                     setPageLayoutState(false);
