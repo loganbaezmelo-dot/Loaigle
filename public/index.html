@@ -33,7 +33,9 @@
             <button id="loaigle-back-btn" onclick="returnToHomeMenu()" style="display: none; padding: 14px 20px; font-size: 16px; border: none; border-radius: 24px; background-color: #303134; color: #8ab4f8; cursor: pointer; font-weight: bold; font-family: sans-serif;">←</button>
             <input type="text" id="searchInput" placeholder="Search with Loaigle..." onkeydown="if(event.key === 'Enter') search()">
             
-            <button id="voice-search-btn" onclick="triggerVoiceCapture()" style="background: none; border: none; font-size: 18px; cursor: pointer; padding: 0 10px; display: flex; align-items: center; justify-content: center; color: #9aa0a6;">🎙️</button>
+            <button id="voice-search-btn" onclick="triggerVoiceCapture()" style="background: #303134; border: 1px solid #3c4043; font-size: 16px; cursor: pointer; padding: 0; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #bdc1c6; transition: all 0.2s ease; box-sizing: border-box; margin: 0 8px; -webkit-tap-highlight-color: transparent;" ontouchstart="this.style.background='#3c4043'; this.style.borderColor='#5f6368';" ontouchend="this.style.background='#303134'; this.style.borderColor='#3c4043';">
+                🎙️
+            </button>
             
             <button onclick="search()">Search</button>
         </div>
