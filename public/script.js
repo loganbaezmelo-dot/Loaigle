@@ -238,9 +238,9 @@ function showCustomAlert(message, callback = null) {
 
     const alertHtml = `
         <div id="${alertId}" style="position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 50000; padding: 20px;">
-            <div style="background: #202124; border: 1px solid #3c4043; border-radius: 16px; max-width: 400px; width: 100%; padding: 24px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: sans-serif;">
-                <p style="color: #bdc1c6; font-size: 14px; line-height: 1.5; margin-bottom: 20px;">${message}</p>
-                <button id="close-alert-btn" style="padding: 10px 30px; font-size: 14px; border: none; border-radius: 24px; background-color: #34a853; color: white; cursor: pointer; font-weight: bold;">OK</button>
+            <div style="background: #202124; border: 1px solid #3c4043; border-radius: 16px; max-width: 440px; width: 100%; padding: 24px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: sans-serif; box-sizing: border-box;">
+                <p style="color: #bdc1c6; font-size: 13px; line-height: 1.6; text-align: left; white-space: pre-line; margin: 0 0 20px 0;">${message}</p>
+                <button id="close-alert-btn" style="padding: 10px 30px; font-size: 14px; border: none; border-radius: 24px; background-color: #34a853; color: white; cursor: pointer; font-weight: bold; font-family: sans-serif;">OK</button>
             </div>
         </div>
     `;
@@ -425,8 +425,9 @@ async function search() {
                 <div style="margin-top: 30px; background-color: #202124; border: 1px solid #3c4043; padding: 16px; border-radius: 12px; text-align: center;">
                     <button onclick="loadToBrowserStorage()" style="padding: 10px 20px; font-size: 13px; border: none; border-radius: 24px; background-color: #34a853; color: white; cursor: pointer; font-weight: bold; margin-bottom: 12px; font-family: sans-serif;">Load custom HTML in BrowserStorage</button>
                     
+                    <!-- 🛠️ OFFICIAL ACCIDENTAL HARDCODED LORE REGISTRY ACCESS -->
                     <div style="margin-bottom: 15px;">
-                        <span style="color: #8ab4f8; font-size: 12px; font-weight: bold; cursor: pointer; font-family: monospace; text-decoration: underline;" onclick="showCustomAlert('ℹ️ SYSTEM NOTICE:<br><br>Loaigle includes hidden diagnostic keys engineered into the search track framework. Passing the master key combination drops a permanent interface manual block under the dashboard.')">What is this?</span>
+                        <span style="color: #8ab4f8; font-size: 12px; font-weight: bold; cursor: pointer; font-family: monospace; text-decoration: underline;" onclick="showCustomAlert('🎮 Loaigle HTML Viewer Pro Lore\\n\\nThe HTML Viewer was not originally a planned feature. It was created accidentally during development.\\n\\nLoaigle has a Gibberish Roast Engine that detects nonsense input. During testing, I accidentally pasted the entire index.html of Loaigle into the search bar. Because the app detected HTML and rendered it using the existing HTML-rendering path, the browser parsed the markup instead of treating it as plain text.\\n\\nThe pasted page contained the full login screen, CSS, Firebase scripts, and other UI elements. As a result, Loaigle rendered a second copy of itself inside the current page, making it look like the search bar had become a live website simulator.\\n\\nInstead of removing the behavior completely, we turned the idea into the HTML Viewer Pro lore. Even if the dedicated viewer UI were removed, the underlying HTML-handling behavior is still intertwined with the search pipeline because the app is built around HTML, CSS, and JavaScript. Code-like input still reaches the HTML handling path before the Gibberish Roast Engine ultimately \\'zerg rushes\\' it.\\n\\nToday, this standalone sandbox interface layout is utilized to instantly test if single-file HTML frontend projects work live!')">What is this?</span>
                     </div>
 
                     <p style="color: #ea4335; font-size: 11px; font-weight: bold; line-height: 1.4; margin: 0; text-align: left;">
@@ -518,7 +519,6 @@ async function search() {
                 const dictData = await dictRes.json();
                 if (dictData && dictData[0]) {
                     const definition = dictData[0].meanings[0].definitions[0].definition;
-                    // 🛡️ ACCURACY FIX: Corrected API variable pointer tree setup
                     const partOfSpeech = dictData[0].meanings[0].partOfSpeech;
                     dictionaryDiv.innerHTML += `
                         <div class="word-dictionary">
@@ -700,7 +700,6 @@ function triggerGithubLogin() {
     auth.signInWithRedirect(githubProvider);
 }
 
-// 🛡️ SAFE DIALOG TRACK CONTROLLER
 function triggerSignOut() {
     localStorage.removeItem('loaigle_validated_auth');
     auth.signOut().then(() => { localStorage.clear(); setPageLayoutState(false); });
