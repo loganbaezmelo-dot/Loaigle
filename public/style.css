@@ -213,3 +213,42 @@ body {
         font-size: 13px;
     }
 }
+
+/* 🍞 Background HTML Toast Notification */
+.bg-toast {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background-color: #202124;
+    border: 1px solid #ef4444;
+    padding: 12px 20px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    z-index: 10000;
+    font-size: 13px;
+    font-family: Arial, sans-serif;
+    animation: slideUpToast 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.bg-toast button {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.bg-toast button:hover {
+    background: #dc2626;
+}
+
+@keyframes slideUpToast {
+    0% { transform: translateY(50px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
