@@ -513,19 +513,18 @@ function triggerZergRush() {
 }
 
 // ==========================================================================
-// 📡 SECURE DIRECT FIREBASE SYNC MATRIX (Flat Deployment Profile)
+// 📡 SECURE DIRECT FIREBASE SYNC MATRIX (Verified Verified Production Keys)
 // ==========================================================================
 (function initFirebaseMatrix() {
     try {
-        // Pristine Production Keys: Direct Injection Matrix
         const config = {
-          apiKey: "AIzaSyDLwdVbCty7p005hqQkgUegtyZKCcgmX", 
+          apiKey: "AIzaSyCqv4m005enhNhdXbdqvWHZ3fV2pZERdjU",
           authDomain: "loaiglesearch.firebaseapp.com",
           projectId: "loaiglesearch",
           storageBucket: "loaiglesearch.firebasestorage.app",
           messagingSenderId: "411313454942",
-          appId: "1:411313454942:web:7h0c24e33ifdh74hi359fi",
-          measurementId: "G-KAV9Q4JQ7B"
+          appId: "1:411313454942:web:4e0c24b33fcae74ef359cf",
+          measurementId: "G-HXS9N4GQ7Y"
         };
 
         if (typeof firebase === 'undefined') {
