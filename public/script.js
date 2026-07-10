@@ -340,11 +340,8 @@ function injectEasterEggTipCard() {
     if (!dictionaryDiv) return;
 
     dictionaryDiv.innerHTML = `
-        <div class="word-dictionary" style="border-left: 4px solid #fbbc05; background: #202124; padding: 16px; border-radius: 8px; margin-bottom: 20px; text-align: left; position: relative;">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
-                <h3 style="color: #fbbc05; margin: 0; font-size: 14px; font-family: monospace; font-weight: bold;">💡 SYSTEM BLUEPRINT NOTIFICATION</h3>
-                <span style="color: #8ab4f8; font-size: 11px; font-weight: bold; cursor: pointer; font-family: monospace; text-decoration: underline;" onclick="showCustomAlert('ℹ️ SYSTEM NOTICE:<br><br>Loaigle includes hidden diagnostic keys engineered into the search track framework. Passing the master key combination drops a permanent interface manual block under the dashboard.')">What is this?</span>
-            </div>
+        <div class="word-dictionary" style="border-left: 4px solid #fbbc05; background: #202124; padding: 16px; border-radius: 8px; margin-bottom: 20px; text-align: left;">
+            <h3 style="color: #fbbc05; margin: 0 0 6px 0; font-size: 14px; font-family: monospace; font-weight: bold;">💡 SYSTEM BLUEPRINT NOTIFICATION</h3>
             <p style="color: #e8eaed; margin: 0; font-size: 13px; line-height: 1.5; font-family: sans-serif;">
                 Want to unlock the master diagnostic manual directly on your home panel? Clear the input field and type out the complete code combination sequence: <strong style="color: #34a853; font-family: monospace;">up up down down left right left right b a</strong> and hit Enter!
             </p>
@@ -416,7 +413,6 @@ async function search() {
     const hasHtmlTags = /<html|<head|<body|<div|<p|<span|<a\s+href|<link|<script/i.test(lowerQuery);
     const containsCodeElements = /<script|eval\s*\(|settimeout\s*\(|setinterval\s*\(|\.onclick\s*=/i.test(lowerQuery);
     
-    // 🛡️ PRECISION SECURE LOOKUP (No longer catches padding/background string styles)
     const attemptsFullHijack = /position\s*:\s*(fixed|absolute)|width\s*:\s*100(vw|%)|height\s*:\s*100(vh|%)|inset\s*:\s*0|<html|<body/i.test(lowerQuery) || lowerQuery.length > 1000;
 
     const isAnyCodePayload = hasHtmlTags || containsCodeElements || lowerQuery.length > 300;
@@ -427,7 +423,12 @@ async function search() {
                 <h2 style="color: #8ab4f8; font-size: 20px; margin-bottom: 15px; border-bottom: 1px solid #3c4043; padding-bottom: 8px;">HTML Viewer:</h2>
                 <div class="rendered-payload" style="background: transparent; padding: 10px 0;">${query}</div>
                 <div style="margin-top: 30px; background-color: #202124; border: 1px solid #3c4043; padding: 16px; border-radius: 12px; text-align: center;">
-                    <button onclick="loadToBrowserStorage()" style="padding: 10px 20px; font-size: 13px; border: none; border-radius: 24px; background-color: #34a853; color: white; cursor: pointer; font-weight: bold; margin-bottom: 12px;">Load custom HTML in BrowserStorage</button>
+                    <button onclick="loadToBrowserStorage()" style="padding: 10px 20px; font-size: 13px; border: none; border-radius: 24px; background-color: #34a853; color: white; cursor: pointer; font-weight: bold; margin-bottom: 12px; font-family: sans-serif;">Load custom HTML in BrowserStorage</button>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <span style="color: #8ab4f8; font-size: 12px; font-weight: bold; cursor: pointer; font-family: monospace; text-decoration: underline;" onclick="showCustomAlert('ℹ️ SYSTEM NOTICE:<br><br>Loaigle includes hidden diagnostic keys engineered into the search track framework. Passing the master key combination drops a permanent interface manual block under the dashboard.')">What is this?</span>
+                    </div>
+
                     <p style="color: #ea4335; font-size: 11px; font-weight: bold; line-height: 1.4; margin: 0; text-align: left;">
                         ⚠️ DISCLAIMER: This is only made for an HTML that changes the theme or texture of Loaigle. If this is code that actually is a full HTML app, test it through this HTML Viewer interface and don't click the button.
                     </p>
@@ -517,7 +518,7 @@ async function search() {
                 const dictData = await dictRes.json();
                 if (dictData && dictData[0]) {
                     const definition = dictData[0].meanings[0].definitions[0].definition;
-                    const partOfSpeech = dictData[0].meanings[0].partOfSpeech;
+                    const partOfSpeech = dictData[0].match[0].partOfSpeech;
                     dictionaryDiv.innerHTML += `
                         <div class="word-dictionary">
                             <h3>Word Dictionary: ${query} (${partOfSpeech})</h3>
@@ -561,7 +562,6 @@ async function search() {
         ];
     }
 
-    // 🧹 Clean loading strings profile block
     MathDiv.innerHTML = "";
 
     const sourceTag = isGoogleSearch || lowerQuery.includes("toogle") ? "Toogle News" : "Google News";
