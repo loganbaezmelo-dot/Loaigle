@@ -368,6 +368,7 @@ async function search() {
     resultsDiv.innerHTML = "";
 
     // 💡 THE HINT INJECTOR RADAR MATRIX
+    const konamiCodeUnlocked = localStorage.getItem("loaigle_konami_unlocked") === "true";
     const isEasterEggTriggered = isBarrelRoll || isTilt || isZergRush || isGoogleSearch || isKonamiHint;
     const triggerRandomLuck = Math.random() < 0.15;
 
