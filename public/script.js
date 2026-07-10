@@ -51,7 +51,7 @@ const masterGuideHTML = `
         });
     }
 
-    // 🔒 PERSISTENT MENU CHECKER: Checks if you've already unlocked the Konami guide!
+    // 🔒 PERSISTENT MENU CHECKER: Restores the guide below the search bar if unlocked
     window.addEventListener("DOMContentLoaded", () => {
         const isUnlocked = localStorage.getItem("loaigle_konami_unlocked") === "true";
         if (isUnlocked) {
@@ -161,18 +161,17 @@ async function search() {
 
     document.body.classList.remove("tilt-animation", "wobble-animation");
 
-    // 🕹️ CRACK THE CODE: Save to database state and anchor onto menu layout!
+    // 🕹️ CRACK THE CODE: Save achievement to storage, update menu, and fire a clean custom popup modal!
     if (lowerQuery === "up up down down left right left right b a") {
-        localStorage.setItem("loaigle_konami_unlocked", "true"); // 💾 LOCK IT INTO MEMORY PERMANENTLY!
-        renderGuideOnMenu(); // Append to the homepage menu under search box instantly
+        localStorage.setItem("loaigle_konami_unlocked", "true"); // 💾 Lock into memory permanently
+        renderGuideOnMenu(); // Inject the guide layout right beneath the home search box instantly
         
-        resultsDiv.innerHTML = `
-            <div style="margin-bottom: 25px; text-align: center;">
-                <span style="background-color: #34a853; color: white; font-size: 11px; font-weight: bold; padding: 4px 12px; border-radius: 20px; font-family: monospace; text-transform: uppercase;">✔ CHEAT CODE ACTIVATED & SAVED TO MENU</span>
-            </div>
-            ${masterGuideHTML}
-        `;
-        return; 
+        // Custom non-cutting alert modal to announce the unlock
+        showCustomAlert("✔ CHEAT CODE ACTIVATED!<br><br>The Master Blueprint Registry has been permanently locked and anchored right onto your home menu screen beneath the search bar! 🎮🚀");
+        
+        searchInput.value = ""; // Flush the input box clean
+        resultsDiv.innerHTML = ""; // Clear the search loader feed text
+        return; // Kill execution instantly so old results don't hang!
     }
 
     // 🖥️ EXTENDED FEATURE: HTML VIEWER PRO INTERFACE
