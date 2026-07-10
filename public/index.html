@@ -12,19 +12,35 @@
 </head>
 <body>
 
-    <div style="width: 100%; display: flex; justify-content: flex-end; padding: 15px; box-sizing: border-box; position: absolute; top: 0; left: 0; z-index: 10000;">
-        <button onclick="toggleSettingsMenu()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #bdc1c6; padding: 5px 10px;">⚙️</button>
+    <div id="login-gate" style="display: flex; position: fixed; inset: 0; background: #171717; z-index: 60000; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
+        <div style="background: #202124; border: 1px solid #3c4043; border-radius: 16px; max-width: 400px; width: 100%; padding: 32px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); text-align: center; font-family: monospace; color: white;">
+            <div style="font-size: 36px; font-weight: bold; margin-bottom: 8px; color: #ffffff;">Loaigle</div>
+            <p style="color: #9aa0a6; font-size: 12px; margin-bottom: 30px; line-height: 1.4;">Secure Node Gateway Deployment Protocol</p>
+            
+            <button id="gate-btn-google" style="width: 100%; padding: 14px; border: none; border-radius: 24px; background: #ea4335; color: white; font-weight: bold; cursor: pointer; font-size: 14px; margin-bottom: 12px; font-family: monospace;">Sign in with Google Net</button>
+            <button id="gate-btn-github" style="width: 100%; padding: 14px; border: 1px solid #5f6368; border-radius: 24px; background: #24292e; color: white; font-weight: bold; cursor: pointer; font-size: 14px; margin-bottom: 24px; font-family: monospace;">Sign in with GitHub Node</button>
+            
+            <div style="border-top: 1px solid #3c4043; padding-top: 20px;">
+                <button id="gate-btn-guest" style="background: transparent; border: none; color: #8ab4f8; font-size: 13px; text-decoration: underline; cursor: pointer; font-family: monospace;">View as a Guest →</button>
+            </div>
+        </div>
     </div>
 
-    <div class="logo">Loaigle</div>
+    <div id="main-app-canvas" style="display: none; width: 100%; min-height: 100vh; box-sizing: border-box;">
+        <div style="width: 100%; display: flex; justify-content: flex-end; padding: 15px; box-sizing: border-box;">
+            <button onclick="toggleSettingsMenu()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #bdc1c6; padding: 5px 10px;">⚙️</button>
+        </div>
 
-    <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Search with Loaigle..." onkeydown="if(event.key === 'Enter') search()">
-        <button onclick="search()">Search</button>
+        <div class="logo">Loaigle</div>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search with Loaigle..." onkeydown="if(event.key === 'Enter') search()">
+            <button onclick="search()">Search</button>
+        </div>
+
+        <div id="dictionary-box"></div>
+        <div id="results"></div>
     </div>
-
-    <div id="dictionary-box"></div>
-    <div id="results"></div>
 
     <div id="loaigle-settings-modal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 40000; padding: 20px;">
         <div style="background: #202124; border: 1px solid #3c4043; border-radius: 16px; max-width: 450px; width: 100%; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: monospace; color: #fff; box-sizing: border-box; text-align: left;">
@@ -46,20 +62,11 @@
             </div>
 
             <div>
-                <h4 style="color: #bdc1c6; margin: 0 0 10px 0; font-size: 14px;">🔐 Cloud Infrastructure Sync</h4>
-                <p id="settings-sync-indicator" style="font-size: 12px; color: #9aa0a6; margin: 0 0 15px 0; line-height: 1.4;">Active Session: Offline</p>
+                <h4 style="color: #bdc1c6; margin: 0 0 10px 0; font-size: 14px;">🔐 Session Authentication Profile</h4>
+                <p id="settings-sync-indicator" style="font-size: 12px; color: #9aa0a6; margin: 0 0 20px 0; line-height: 1.4;">Active Session: Verifying credentials...</p>
                 
-                <div style="display: flex; align-items: center; justify-content: space-between; background: #303134; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #3c4043;">
-                    <span style="font-size: 13px; font-weight: bold;">Google Network Connect</span>
-                    <button id="settings-btn-google" style="padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; border: none; background: #ea4335; color: white;">Connect</button>
-                </div>
-
-                <div style="display: flex; align-items: center; justify-content: space-between; background: #303134; padding: 12px; border-radius: 8px; border: 1px solid #3c4043; margin-bottom: 20px;">
-                    <span style="font-size: 13px; font-weight: bold;">GitHub Repository Node</span>
-                    <button id="settings-btn-github" style="padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; border: 1px solid #5f6368; background: #24292e; color: white;">Connect</button>
-                </div>
-                
-                <button id="settings-btn-save" style="display: none; background: #34a853; color: #fff; border: none; padding: 12px 15px; width: 100%; border-radius: 24px; cursor: pointer; font-weight: bold; margin-top: 10px; text-align: center; font-family: monospace;">Push Local Configs to Cloud Matrix</button>
+                <button id="settings-btn-save" style="display: none; background: #34a853; color: #fff; border: none; padding: 12px 15px; width: 100%; border-radius: 24px; cursor: pointer; font-weight: bold; margin-bottom: 12px; text-align: center; font-family: monospace;">Push Local Configs to Cloud Matrix</button>
+                <button id="settings-btn-logout" style="background: #ea4335; color: #fff; border: none; padding: 12px 15px; width: 100%; border-radius: 24px; cursor: pointer; font-weight: bold; text-align: center; font-family: monospace;">Terminate Session & Log Out</button>
             </div>
 
         </div>
