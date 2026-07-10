@@ -194,10 +194,7 @@ function renderGuideOnMenu() {
     const targetGuide = document.getElementById("home-permanent-guide");
     if (targetGuide) {
         targetGuide.innerHTML = masterGuideHTML;
-        const isKonamiUnlocked = localStorage.getItem("loaigle_konami_unlocked") === "true";
-        if (isKonamiUnlocked) {
-            targetGuide.style.display = "block";
-        }
+        targetGuide.style.display = "block";
     }
 }
 
@@ -327,8 +324,12 @@ function showHardwarePermissionWarningPrompt(executeInjectionCallback) {
     };
 }
 
-// 🕹️ THE DYNAMIC HINT BOX INJECTOR ENGINE
+// 🕹️ THE SMART HINT BOX INJECTOR ENGINE (Auto-Suppresses if guide is already unlocked in storage)
 function injectEasterEggTipCard() {
+    // Check if the system manifest guide is already present on the interface template canvas
+    const isAlreadyUnlocked = localStorage.getItem("loaigle_konami_unlocked") === "true";
+    if (isAlreadyUnlocked) return; // Terminate execution instantly if guide is unlocked!
+
     const dictionaryDiv = document.getElementById("dictionary-box");
     if (!dictionaryDiv) return;
 
@@ -377,15 +378,17 @@ async function search() {
     const tiltPhrases = ["askew", "tilt", "67", "wobble"];
     const zergPhrases = ["zerg rush", "destroy my page", "virus"];
     const googlePhrases = ["google", "alphabet", "sundar pichai", "google.com", "googl", "toogle"];
+    const konamiVariations = ["konami", "konami code", "unlock guide", "show guide", "manifest"];
 
     const isBarrelRoll = barrelRollPhrases.includes(lowerQuery);
     const isTilt = tiltPhrases.includes(lowerQuery);
     const isZergRush = zergPhrases.includes(lowerQuery);
     const isGoogleSearch = googlePhrases.some(phrase => lowerQuery.includes(phrase));
+    const isKonamiWord = konamiVariations.includes(lowerQuery);
 
     document.body.classList.remove("tilt-animation", "wobble-animation");
 
-    if (lowerQuery === "up up down down left right left right b a") {
+    if (lowerQuery === "up up down down left right left right b a" || isKonamiWord) {
         localStorage.setItem("loaigle_konami_unlocked", "true"); 
         renderGuideOnMenu(); 
         showCustomAlert("✔ CHEAT CODE ACTIVATED!<br><br>The Master Blueprint Registry has been permanently locked and anchored right onto your home menu screen beneath the search bar! 🎮🚀");
@@ -548,6 +551,8 @@ async function search() {
             }
         ];
     }
+
+    MathDiv.innerHTML = "";
 
     const sourceTag = isGoogleSearch || lowerQuery.includes("toogle") ? "Toogle News" : "Google News";
 
