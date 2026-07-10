@@ -1,12 +1,9 @@
 // Keep track of any active Zerg Rush intervals so they don't stack up
 let activeZergRush = null;
 
-// Global flag to permanently mute hints once the user cracks the code matrix
-let konamiCodeUnlocked = false;
-
 // The canonical master blueprint text block utilized across both viewport layouts
 const masterGuideHTML = `
-    <div class="konami-guide-container">
+    <div class="konami-guide-container" id="loaigle-system-guide">
         <h2>🎮 LOAIGLE SYSTEM MANIFEST & COMMAND REGISTRY</h2>
         
         <div class="guide-section">
@@ -33,7 +30,7 @@ const masterGuideHTML = `
     </div>
 `;
 
-// 🚀 BOOTSTRAPPER: Runs instantly on page load for background styles only
+// 🚀 BOOTSTRAPPER: Direct script execution block triggered immediately on engine load
 (function bootLoader() {
     const cachedHtml = localStorage.getItem("loaigle_bg_html");
     if (cachedHtml) {
@@ -53,7 +50,33 @@ const masterGuideHTML = `
             document.body.appendChild(toast);
         });
     }
+
+    // 🔒 PERSISTENT MENU CHECKER: Checks if you've already unlocked the Konami guide!
+    window.addEventListener("DOMContentLoaded", () => {
+        const isUnlocked = localStorage.getItem("loaigle_konami_unlocked") === "true";
+        if (isUnlocked) {
+            renderGuideOnMenu();
+        }
+    });
 })();
+
+// Helper function to cleanly inject the guide right beneath the home page search bar
+function renderGuideOnMenu() {
+    const existing = document.getElementById("home-permanent-guide");
+    if (existing) return; // Prevent duplicating
+
+    const homeGuideAnchor = document.createElement("div");
+    homeGuideAnchor.id = "home-permanent-guide";
+    homeGuideAnchor.style.maxWidth = "650px";
+    homeGuideAnchor.style.margin = "0 auto 40px auto";
+    homeGuideAnchor.style.padding = "0 20px";
+    homeGuideAnchor.innerHTML = masterGuideHTML;
+    
+    const searchBox = document.querySelector(".search-box");
+    if (searchBox) {
+        searchBox.parentNode.insertBefore(homeGuideAnchor, searchBox.nextSibling);
+    }
+}
 
 // Action button wrapper to wipe theme modifications instantly
 function deleteFromBrowserStorage() {
@@ -138,16 +161,18 @@ async function search() {
 
     document.body.classList.remove("tilt-animation", "wobble-animation");
 
-    // 🕹️ CRACK THE CODE: Canonical Konami Code Matching Sequence
+    // 🕹️ CRACK THE CODE: Save to database state and anchor onto menu layout!
     if (lowerQuery === "up up down down left right left right b a") {
-        konamiCodeUnlocked = true; // Permamutes notifications instantly!
+        localStorage.setItem("loaigle_konami_unlocked", "true"); // 💾 LOCK IT INTO MEMORY PERMANENTLY!
+        renderGuideOnMenu(); // Append to the homepage menu under search box instantly
+        
         resultsDiv.innerHTML = `
             <div style="margin-bottom: 25px; text-align: center;">
-                <span style="background-color: #34a853; color: white; font-size: 11px; font-weight: bold; padding: 4px 12px; border-radius: 20px; font-family: monospace; text-transform: uppercase;">✔ CHEAT CODE ACTIVATED</span>
+                <span style="background-color: #34a853; color: white; font-size: 11px; font-weight: bold; padding: 4px 12px; border-radius: 20px; font-family: monospace; text-transform: uppercase;">✔ CHEAT CODE ACTIVATED & SAVED TO MENU</span>
             </div>
             ${masterGuideHTML}
         `;
-        return; // Halt route logic
+        return; 
     }
 
     // 🖥️ EXTENDED FEATURE: HTML VIEWER PRO INTERFACE
@@ -252,7 +277,14 @@ async function search() {
             if (dictRes.ok) {
                 const dictData = await dictRes.json();
                 if (dictData && dictData[0]) {
-                    const definition = document.createElement("div"); // Placeholder logic
+                    const definition = dictData[0].meanings[0].definitions[0].definition;
+                    const partOfSpeech = dictData[0].meanings[0].partOfSpeech;
+                    dictionaryDiv.innerHTML = `
+                        <div class="word-dictionary">
+                            <h3>Word Dictionary: ${query} (${partOfSpeech})</h3>
+                            <p>${definition}</p>
+                        </div>
+                    `;
                 }
             }
         } catch (e) {
@@ -316,7 +348,8 @@ async function search() {
 
     resultsDiv.innerHTML = "";
 
-    // 💡 THE HINT INJECTOR RADAR MATRIX
+    // 💡 THE HINT INJECTOR RADAR MATRIX (Permanently muted if code cracked in storage)
+    const konamiCodeUnlocked = localStorage.getItem("loaigle_konami_unlocked") === "true";
     const isEasterEggTriggered = isBarrelRoll || isTilt || isZergRush || isGoogleSearch || isKonamiHint;
     const triggerRandomLuck = Math.random() < 0.15;
 
