@@ -199,10 +199,10 @@ async function search() {
     }
 
     const dictionaryDiv = document.getElementById("dictionary-box");
-    const resultsDiv = document.getElementById("results");
+    const MathDiv = document.getElementById("results");
     
     dictionaryDiv.innerHTML = "";
-    resultsDiv.innerHTML = "<p style='color: #bdc1c6;'>Searching Loaigle...</p>";
+    MathDiv.innerHTML = "<p style='color: #bdc1c6;'>Searching Loaigle...</p>";
 
     const homeMenuGuide = document.getElementById("home-permanent-guide");
     if (homeMenuGuide) {
@@ -233,13 +233,13 @@ async function search() {
         if (targetGuide) targetGuide.style.display = "block"; 
         showCustomAlert("✔ CHEAT CODE ACTIVATED!<br><br>The Master Blueprint Registry has been permanently locked and anchored right onto your home menu screen beneath the search bar! 🎮🚀");
         searchInput.value = ""; 
-        resultsDiv.innerHTML = ""; 
+        MathDiv.innerHTML = ""; 
         return; 
     }
 
     const hasHtmlTags = /<(!doctype|html|head|body|div|p|span|a|link|script)/i.test(lowerQuery);
     if (hasHtmlTags) {
-        resultsDiv.innerHTML = `
+        MathDiv.innerHTML = `
             <div class="html-viewer-container" style="text-align: left; margin-top: 20px;">
                 <h2 style="color: #8ab4f8; font-size: 20px; margin-bottom: 15px; border-bottom: 1px solid #3c4043; padding-bottom: 8px;">HTML Viewer:</h2>
                 <div class="rendered-payload" style="background: transparent; padding: 10px 0;">${query}</div>
@@ -276,7 +276,7 @@ async function search() {
     }
 
     if (checkIsGibberish(lowerQuery)) {
-        resultsDiv.innerHTML = `
+        MathDiv.innerHTML = `
             <div class="result result-roast" style="margin-top: 20px;">
                 <h2 id="roast-text" style="color: #ea4335; font-size: 24px; margin-bottom: 8px;"></h2>
                 <p class="result-snippet" style="color: #9aa0a6; font-style: italic; font-size: 13px; margin-top: 15px;">Disclaimer: If you didn't type gibberish, you might have triggered another error.</p>
@@ -366,7 +366,7 @@ async function search() {
         ];
     }
 
-    resultsDiv.innerHTML = "";
+    MathDiv.innerHTML = "";
 
     if (localStorage.getItem("loaigle_konami_unlocked") !== "true") {
         const hintCard = document.createElement("div");
@@ -377,7 +377,7 @@ async function search() {
                 Tip: Type <span style="color: #8ab4f8; font-family: monospace; background: #202124; padding: 2px 6px; border-radius: 4px;">up up down down left right left right b a</span> into our search bar!
             </span>
         `;
-        resultsDiv.appendChild(hintCard);
+        MathDiv.appendChild(hintCard);
     }
 
     const sourceTag = isGoogleSearch || lowerQuery.includes("toogle") ? "Toogle News" : "Google News";
@@ -392,7 +392,7 @@ async function search() {
             <a href="#" class="result-link" onclick="showToogleLore(event)">Why does this say 'Toogle' instead of 'Google'? The Secret Revealed</a>
             <p class="result-snippet">An inside look into the catastrophic, accidental mobile keyboard fat-finger incident that permanently altered internet search history on Loaigle...</p>
         `;
-        resultsDiv.appendChild(fakeDiv);
+        MathDiv.appendChild(fakeDiv);
     }
 
     articles.forEach((item) => {
@@ -419,7 +419,7 @@ async function search() {
             <a href="${item.link}" class="result-link" target="_blank">${displayTitle}</a>
             <p class="result-snippet">${cleanSnippet}</p>
         `;
-        resultsDiv.appendChild(div);
+        MathDiv.appendChild(div);
     });
 
     if (isBarrelRoll || serverQuery.includes("barrel roll")) {
@@ -513,7 +513,6 @@ function triggerChaosAnimation() {
     });
 }
 
-// 👾 Zerg Rush Falling Link Destroyer Logic
 function triggerZergRush() {
     const DefenseDiv = document.getElementById("results");
     activeZergRush = setInterval(() => {
@@ -575,7 +574,7 @@ function triggerZergRush() {
 
         let currentUserInstance = null;
 
-        // 🛠️ SAFE PROPERTY UI OVERRIDER: Updates element values directly without replacing nodes
+        // 🛠️ DIRECT PROPERTY MODIFIER STYLE SYSTEM: Changes values without node re-render crashes
         window.forceSyncButtonsUI = function() {
             const syncStatusP = document.getElementById('settings-sync-indicator');
             const btnGoogle = document.getElementById('settings-btn-google');
@@ -674,55 +673,53 @@ function triggerZergRush() {
           }
         });
 
-        // Event hooks assignment using early detection check macros
-        document.addEventListener('DOMContentLoaded', () => {
-            const btnGoogle = document.getElementById('settings-btn-google');
-            const btnGithub = document.getElementById('settings-btn-github');
-            const btnSaveCloud = document.getElementById('settings-btn-save');
+        // ⚡ REMOVED WINDOW LISTENER: Elements register instantly on evaluation loop pass!
+        const btnGoogle = document.getElementById('settings-btn-google');
+        const btnGithub = document.getElementById('settings-btn-github');
+        const btnSaveCloud = document.getElementById('settings-btn-save');
 
-            if (btnSaveCloud) {
-                btnSaveCloud.addEventListener('click', async () => {
-                  if (!auth.currentUser) return;
-                  try {
-                    await db.collection('users').doc(auth.currentUser.uid).set({
-                      email: auth.currentUser.email,
-                      bgHtml: localStorage.getItem('loaigle_bg_html') || "",
-                      konamiUnlocked: localStorage.getItem('loaigle_konami_unlocked') || "false",
-                      updatedAt: new Date().toISOString()
-                    }, { merge: true });
-                    showCustomAlert("Configuration saved permanently to cloud database grid! 🎰🏁");
-                  } catch (e) { showCustomAlert("⚠️ Upload Rejection: " + e.message); }
-                });
-            }
+        if (btnSaveCloud) {
+            btnSaveCloud.addEventListener('click', async () => {
+              if (!auth.currentUser) return;
+              try {
+                await db.collection('users').doc(auth.currentUser.uid).set({
+                  email: auth.currentUser.email,
+                  bgHtml: localStorage.getItem('loaigle_bg_html') || "",
+                  konamiUnlocked: localStorage.getItem('loaigle_konami_unlocked') || "false",
+                  updatedAt: new Date().toISOString()
+                }, { merge: true });
+                showCustomAlert("Configuration saved permanently to cloud database grid! 🎰🏁");
+              } catch (e) { showCustomAlert("⚠️ Upload Rejection: " + e.message); }
+            });
+        }
 
-            if (btnGoogle) {
-                btnGoogle.addEventListener('click', () => {
-                    if (auth.currentUser && auth.currentUser.providerData.some(p => p.providerId === 'google.com')) {
-                        auth.signOut().then(() => {
-                            localStorage.removeItem('loaigle_bg_html');
-                            localStorage.removeItem('loaigle_konami_unlocked');
-                            window.location.reload();
-                        });
-                    } else {
-                        auth.signInWithRedirect(googleProvider);
-                    }
-                });
-            }
+        if (btnGoogle) {
+            btnGoogle.addEventListener('click', () => {
+                if (auth.currentUser && auth.currentUser.providerData.some(p => p.providerId === 'google.com')) {
+                    auth.signOut().then(() => {
+                        localStorage.removeItem('loaigle_bg_html');
+                        localStorage.removeItem('loaigle_konami_unlocked');
+                        window.location.reload();
+                    });
+                } else {
+                    auth.signInWithRedirect(googleProvider);
+                }
+            });
+        }
 
-            if (btnGithub) {
-                btnGithub.addEventListener('click', () => {
-                    if (auth.currentUser && auth.currentUser.providerData.some(p => p.providerId === 'github.com')) {
-                        auth.signOut().then(() => {
-                            localStorage.removeItem('loaigle_bg_html');
-                            localStorage.removeItem('loaigle_konami_unlocked');
-                            window.location.reload();
-                        });
-                    } else {
-                        auth.signInWithRedirect(githubProvider);
-                    }
-                });
-            }
-        });
+        if (btnGithub) {
+            btnGithub.addEventListener('click', () => {
+                if (auth.currentUser && auth.currentUser.providerData.some(p => p.providerId === 'github.com')) {
+                    auth.signOut().then(() => {
+                        localStorage.removeItem('loaigle_bg_html');
+                        localStorage.removeItem('loaigle_konami_unlocked');
+                        window.location.reload();
+                    });
+                } else {
+                    auth.signInWithRedirect(githubProvider);
+                }
+            });
+        }
 
     } catch (globalError) { console.error(globalError); }
 })();
