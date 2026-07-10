@@ -513,31 +513,19 @@ function triggerZergRush() {
 }
 
 // ==========================================================================
-// 📡 SECURE MOBILE-FIRST FIREBASE SYNC MATRIX (Using Redirect Handshakes!)
+// 📡 SECURE DIRECT FIREBASE SYNC MATRIX (Flat Deployment Profile)
 // ==========================================================================
 (function initFirebaseMatrix() {
     try {
-        const _scrambled = [
-          "7h0c24e33ifdh74hi359fi", "DLwdVbCty7p005hqQkgUegtyZKCcgmX", 
-          "ordijohvhdufk", "411313454942", "1:411313454942:zbe:", "J-KAV9Q4JQ7B"
-        ];
-        function _unroll(s, amt = 3) {
-          return s.split('').map(c => {
-            const n = c.charCodeAt(0);
-            if (n >= 97 && n <= 122) return String.fromCharCode(((n - 97 - amt + 26) % 26) + 97);
-            if (n >= 65 && n <= 90) return String.fromCharCode(((n - 65 - amt + 26) % 26) + 65);
-            return c;
-          }).join('');
-        }
-
+        // Pristine Production Keys: Direct Injection Matrix
         const config = {
-          apiKey: _unroll(_scrambled[1]),
-          authDomain: _unroll(_scrambled[2]) + ".firebaseapp.com",
-          projectId: _unroll(_scrambled[2]),
-          storageBucket: _unroll(_scrambled[2]) + ".firebasestorage.app",
-          messagingSenderId: _scrambled[3],
-          appId: _unroll(_scrambled[4]) + _unroll(_scrambled[0]),
-          measurementId: _unroll(_scrambled[5])
+          apiKey: "AIzaSyDLwdVbCty7p005hqQkgUegtyZKCcgmX", 
+          authDomain: "loaiglesearch.firebaseapp.com",
+          projectId: "loaiglesearch",
+          storageBucket: "loaiglesearch.firebasestorage.app",
+          messagingSenderId: "411313454942",
+          appId: "1:411313454942:web:7h0c24e33ifdh74hi359fi",
+          measurementId: "G-KAV9Q4JQ7B"
         };
 
         if (typeof firebase === 'undefined') {
@@ -570,7 +558,6 @@ function triggerZergRush() {
           }
         }
 
-        // Catch incoming redirect results upon automatic tab return
         auth.getRedirectResult().then(async (result) => {
             if (result.user) {
                 updateStatus('Redirect handshake complete! Loading records...');
@@ -645,7 +632,7 @@ function triggerZergRush() {
               bgHtml: localBgHtml,
               konamiUnlocked: localKonami,
               updatedAt: new Date().toISOString()
-        }, { merge: true });
+            }, { merge: true });
             updateStatus('Configuration saved permanently to cloud database grid!');
           } catch (e) {
             showCustomAlert("⚠️ Upload Rejection: " + e.message);
