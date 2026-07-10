@@ -1,6 +1,47 @@
 // Keep track of any active Zerg Rush intervals so they don't stack up
 let activeZergRush = null;
 
+// 🚀 BOOTSTRAPPER: Run instantly on page load to inject cached themes/textures
+(function bootLoader() {
+    const cachedHtml = localStorage.getItem("loaigle_bg_html");
+    if (cachedHtml) {
+        // Safe document injection to parse style and structural changes immediately
+        const template = document.createElement("div");
+        template.id = "background-persistent-layer";
+        template.innerHTML = cachedHtml;
+        document.documentElement.appendChild(template);
+
+        // Render the Toast notification banner safely once DOM finishes construction
+        window.addEventListener("DOMContentLoaded", () => {
+            const toast = document.createElement("div");
+            toast.className = "bg-toast";
+            toast.id = "loaigle-bg-toast";
+            toast.innerHTML = `
+                <span style="color: #bdc1c6;">Running HTML in the background!</span>
+                <button onclick="deleteFromBrowserStorage()">Delete from BrowserStorage</button>
+            `;
+            document.body.appendChild(toast);
+        });
+    }
+})();
+
+// Action button wrapper to wipe theme modifications instantly
+function deleteFromBrowserStorage() {
+    localStorage.removeItem("loaigle_bg_html");
+    const layer = document.getElementById("background-persistent-layer");
+    const toast = document.getElementById("loaigle-bg-toast");
+    if (layer) layer.remove();
+    if (toast) toast.remove();
+    alert("Background HTML successfully purged. Reloading page to restore defaults! 💀😭");
+    window.location.reload();
+}
+
+// Action button wrapper to lock code payload into global browser state
+function loadToBrowserStorage(payload) {
+    localStorage.setItem("loaigle_bg_html", payload);
+    alert("HTML successfully locked into BrowserStorage! Reload Loaigle to see your new persistent interface skin live! 💀😭📲");
+}
+
 async function search() {
     const searchInput = document.getElementById("searchInput");
     const query = searchInput.value.trim();
@@ -35,21 +76,34 @@ async function search() {
 
     document.body.classList.remove("tilt-animation", "wobble-animation");
 
-    // 🖥️ BULLETPROOF HTML VIEWER ROUTER (Catches partial strings and unclosed tags!)
+    // 🖥️ EXTENDED FEATURE: HTML VIEWER PRO INTERFACE WITH PERSISTENT PERSISTENCE CONTROLS
     const hasHtmlTags = /<(!doctype|html|head|body|div|p|span|a|link|script)/i.test(lowerQuery);
     if (hasHtmlTags) {
+        // Cleanly escape inner single quotes to pass the raw string payload down without breaking onclick listeners
+        const escapedQuery = query.replace(/`/g, "\\`").replace(/'/g, "\\'");
+
         resultsDiv.innerHTML = `
             <div class="html-viewer-container" style="text-align: left; margin-top: 20px;">
                 <h2 style="color: #8ab4f8; font-size: 20px; margin-bottom: 15px; border-bottom: 1px solid #3c4043; padding-bottom: 8px;">HTML Viewer:</h2>
+                
                 <div class="rendered-payload" style="background: transparent; padding: 10px 0;">
                     ${query}
                 </div>
+
+                <div style="margin-top: 30px; background-color: #202124; border: 1px solid #3c4043; padding: 16px; border-radius: 12px; text-align: center;">
+                    <button onclick="loadToBrowserStorage(\`${escapedQuery}\`)" style="padding: 10px 20px; font-size: 13px; border: none; border-radius: 24px; background-color: #34a853; color: white; cursor: pointer; font-weight: bold; margin-bottom: 12px;">Load custom HTML in BrowserStorage</button>
+                    
+                    <p style="color: #ea4335; font-size: 11px; font-weight: bold; line-height: 1.4; margin: 0; text-align: left;">
+                        ⚠️ DISCLAIMER: This is only made for an HTML that changes the theme or texture of Loaigle. If this is code that actually is a full HTML app, test it through this HTML Viewer interface and don't click the button.
+                    </p>
+                </div>
+
                 <div style="margin-top: 40px; text-align: center; border-top: 1px solid #3c4043; padding-top: 20px;">
                     <button onclick="showHtmlViewerLore()" style="padding: 10px 20px; font-size: 14px; border: none; border-radius: 24px; background-color: #ea4335; color: white; cursor: pointer;">What is this?</button>
                 </div>
             </div>
         `;
-        return; // Kill execution instantly!
+        return; // Halt logic tree
     }
 
     // 🕵️‍♂️ ULTRA-STRICT GIBBERISH DETECTION ENGINE
@@ -259,7 +313,7 @@ function showToogleLore(event) {
     );
 }
 
-// 🛠️ OVERHAULED FEATURE LORE: SOFTWARE ACCIDENT DOCUMENTATION & SANDBOX PURPOSE
+// 🛠️ COMPLETELY OVERHAULED HISTORICAL LORE LOGS
 function showHtmlViewerLore() {
     alert(
         "🛠️ LOAIGLE HTML VIEWER PRO STATUS LOG:\n\n" +
@@ -267,8 +321,10 @@ function showHtmlViewerLore() {
         "This portal was birthed during a high-velocity script layout verification test. A copy of the platform's literal repository code was passed directly into the search bar. Because code syntax fails the vowel-ratio metrics of the Gibberish Roast Engine, the input was flagged as an absolute keyboard smash.\n\n" +
         "2. THE CHAIN REACTION:\n" +
         "Instead of rendering as flat string text, the engine dropped the raw source code variables directly inside a live innerHTML template. The browser compiled the structural tags instantly—manifesting an identical, operational mirror loop of the website layout inside the insult card, while the hardcoded gibberish routine automatically unleashed an active Zerg Rush script to destroy it.\n\n" +
-        "3. CURRENT PRODUCTION USECASE:\n" +
-        "Rather than nerfing this high-velocity processing anomaly, management has converted it into an official unnerfed Sandbox Suite. This dedicated environment is intentionally engineered for testing micro-applications, components, and entire scripts compiled cleanly inside a single standalone 'index.html' document at 100% processing power!\n\n" +
+        "3. THE THEME CONTROLS & DISCLAIMER ORIGIN:\n" +
+        "The theme-injection disclaimer was permanently written into the specs after a developer tried running a massive standalone React + Tailwind YouTube Simulator inside the engine. The browser parsed the simulator's custom stylesheet, completely overrode Loaigle's global layout properties, and instantly hijacked the master viewport background color from dark charcoal to onyx black!\n\n" +
+        "4. CURRENT PRODUCTION USECASE:\n" +
+        "This portal now features dual-routing capability: use the interface window to safely execute and debug live single-file 'index.html' applications without interference, OR use the background engine to permanently save custom CSS code overrides into localStorage to inject custom skins, backgrounds, and custom textures natively into Loaigle's core skin style!\n\n" +
         "Enjoy your unnerfed workspace! 💀😭💻🏁"
     );
 }
