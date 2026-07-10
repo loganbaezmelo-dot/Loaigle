@@ -5,13 +5,11 @@ let activeZergRush = null;
 (function bootLoader() {
     const cachedHtml = localStorage.getItem("loaigle_bg_html");
     if (cachedHtml) {
-        // Safe document injection to parse style and structural changes immediately
         const template = document.createElement("div");
         template.id = "background-persistent-layer";
         template.innerHTML = cachedHtml;
         document.documentElement.appendChild(template);
 
-        // Render the Toast notification banner safely once DOM finishes construction
         window.addEventListener("DOMContentLoaded", () => {
             const toast = document.createElement("div");
             toast.className = "bg-toast";
@@ -36,10 +34,14 @@ function deleteFromBrowserStorage() {
     window.location.reload();
 }
 
-// Action button wrapper to lock code payload into global browser state
-function loadToBrowserStorage(payload) {
-    localStorage.setItem("loaigle_bg_html", payload);
-    alert("HTML successfully locked into BrowserStorage! Reload Loaigle to see your new persistent interface skin live! 💀😭📲");
+// Action button wrapper to grab input and save it to localStorage securely
+function loadToBrowserStorage() {
+    const searchInput = document.getElementById("searchInput");
+    const currentPayload = searchInput.value.trim();
+    if (currentPayload) {
+        localStorage.setItem("loaigle_bg_html", currentPayload);
+        alert("HTML successfully locked into BrowserStorage! Reload Loaigle to see your new persistent interface skin live! 💀😭📲");
+    }
 }
 
 async function search() {
@@ -76,12 +78,9 @@ async function search() {
 
     document.body.classList.remove("tilt-animation", "wobble-animation");
 
-    // 🖥️ EXTENDED FEATURE: HTML VIEWER PRO INTERFACE WITH PERSISTENT PERSISTENCE CONTROLS
+    // 🖥️ EXTENDED FEATURE: HTML VIEWER PRO INTERFACE (Now reading value dynamically without string breaks!)
     const hasHtmlTags = /<(!doctype|html|head|body|div|p|span|a|link|script)/i.test(lowerQuery);
     if (hasHtmlTags) {
-        // Cleanly escape inner single quotes to pass the raw string payload down without breaking onclick listeners
-        const escapedQuery = query.replace(/`/g, "\\`").replace(/'/g, "\\'");
-
         resultsDiv.innerHTML = `
             <div class="html-viewer-container" style="text-align: left; margin-top: 20px;">
                 <h2 style="color: #8ab4f8; font-size: 20px; margin-bottom: 15px; border-bottom: 1px solid #3c4043; padding-bottom: 8px;">HTML Viewer:</h2>
@@ -91,7 +90,7 @@ async function search() {
                 </div>
 
                 <div style="margin-top: 30px; background-color: #202124; border: 1px solid #3c4043; padding: 16px; border-radius: 12px; text-align: center;">
-                    <button onclick="loadToBrowserStorage(\`${escapedQuery}\`)" style="padding: 10px 20px; font-size: 13px; border: none; border-radius: 24px; background-color: #34a853; color: white; cursor: pointer; font-weight: bold; margin-bottom: 12px;">Load custom HTML in BrowserStorage</button>
+                    <button onclick="loadToBrowserStorage()" style="padding: 10px 20px; font-size: 13px; border: none; border-radius: 24px; background-color: #34a853; color: white; cursor: pointer; font-weight: bold; margin-bottom: 12px;">Load custom HTML in BrowserStorage</button>
                     
                     <p style="color: #ea4335; font-size: 11px; font-weight: bold; line-height: 1.4; margin: 0; text-align: left;">
                         ⚠️ DISCLAIMER: This is only made for an HTML that changes the theme or texture of Loaigle. If this is code that actually is a full HTML app, test it through this HTML Viewer interface and don't click the button.
