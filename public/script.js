@@ -82,7 +82,7 @@ function triggerVoiceCapture() {
     };
 }
 
-// ⚙️ SETTINGS PANEL NAVIGATION CONTROLS
+// ⚙️ PANEL NAVIGATION CONTROLS
 function toggleSettingsMenu() {
     const modal = document.getElementById("loaigle-settings-modal");
     if (modal.style.display === "flex") {
@@ -231,16 +231,19 @@ function loadToBrowserStorage() {
     }
 }
 
+// 📱 FLUID SCROLL ALERT CONTROLLER (No more clipping limits!)
 function showCustomAlert(message, callback = null) {
     const alertId = "loaigle-custom-alert";
     const existing = document.getElementById(alertId);
     if (existing) existing.remove();
 
     const alertHtml = `
-        <div id="${alertId}" style="position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 50000; padding: 20px;">
-            <div style="background: #202124; border: 1px solid #3c4043; border-radius: 16px; max-width: 440px; width: 100%; padding: 24px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: sans-serif; box-sizing: border-box;">
-                <p style="color: #bdc1c6; font-size: 13px; line-height: 1.6; text-align: left; white-space: pre-line; margin: 0 0 20px 0;">${message}</p>
-                <button id="close-alert-btn" style="padding: 10px 30px; font-size: 14px; border: none; border-radius: 24px; background-color: #34a853; color: white; cursor: pointer; font-weight: bold; font-family: sans-serif;">OK</button>
+        <div id="${alertId}" style="position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 99999; padding: 20px;">
+            <div style="background: #202124; border: 1px solid #3c4043; border-radius: 16px; max-width: 440px; width: 100%; max-height: 80vh; padding: 24px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: sans-serif; box-sizing: border-box; display: flex; flex-direction: column;">
+                <div style="overflow-y: auto; flex: 1; margin-bottom: 20px;">
+                    <p style="color: #bdc1c6; font-size: 13px; line-height: 1.6; text-align: left; white-space: pre-wrap; margin: 0;">${message}</p>
+                </div>
+                <button id="close-alert-btn" style="padding: 10px 30px; font-size: 14px; border: none; border-radius: 24px; background-color: #34a853; color: white; cursor: pointer; font-weight: bold; flex-shrink: 0; font-family: sans-serif;">OK</button>
             </div>
         </div>
     `;
@@ -425,9 +428,9 @@ async function search() {
                 <div style="margin-top: 30px; background-color: #202124; border: 1px solid #3c4043; padding: 16px; border-radius: 12px; text-align: center;">
                     <button onclick="loadToBrowserStorage()" style="padding: 10px 20px; font-size: 13px; border: none; border-radius: 24px; background-color: #34a853; color: white; cursor: pointer; font-weight: bold; margin-bottom: 12px; font-family: sans-serif;">Load custom HTML in BrowserStorage</button>
                     
-                    <!-- 🛠️ OFFICIAL ACCIDENTAL HARDCODED LORE REGISTRY ACCESS -->
+                    <!-- 🛠️ OFFICIAL COMPILER BACKSTORY ACCESS MODULE -->
                     <div style="margin-bottom: 15px;">
-                        <span style="color: #8ab4f8; font-size: 12px; font-weight: bold; cursor: pointer; font-family: monospace; text-decoration: underline;" onclick="showCustomAlert('📜 Loaigle HTML Viewer Pro Lore: The HTML Viewer Pro feature was created accidentally during Loaigle's development. While testing the search system, the developer accidentally pasted the entire Loaigle index.html file into the search bar. Because Loaigle already had a system that detected HTML input and rendered markup, the browser interpreted the code as a live webpage instead of normal text. The result was unexpected: a complete copy of Loaigle appeared inside itself, including the login screen, styling, scripts, and interface elements. It looked like the search bar had transformed into a mini website simulator. Instead of deleting this behavior, the accidental discovery became the foundation of the HTML Viewer Pro system. The feature was redesigned into a controlled sandbox where users can test single-file HTML projects live. The viewer exists as a reminder that some of Loaigle's biggest features were not planned — they were discovered through accidental experiments. Even if the dedicated viewer interface changes, HTML handling remains connected to the search pipeline because Loaigle is built around HTML, CSS, and JavaScript.')">What is this?</span>
+                        <span style="color: #8ab4f8; font-size: 12px; font-weight: bold; cursor: pointer; font-family: monospace; text-decoration: underline;" onclick="showCustomAlert('🎮 Loaigle HTML Viewer Pro Lore\\n\\nThe HTML Viewer was not originally a planned feature. It was created accidentally during development.\\n\\nLoaigle has a Gibberish Roast Engine that detects nonsense input. During testing, the entire index.html of Loaigle was accidentally pasted into the search bar. Because the app detected HTML and rendered it using the existing HTML-rendering path, the browser parsed the markup instead of treating it as plain text.\\n\\nThe pasted page contained the full login screen, CSS, Firebase scripts, and other UI elements. As a result, Loaigle rendered a second copy of itself inside the current page, making it look like the search bar had become a live website simulator.\\n\\nInstead of removing the behavior completely, the idea was turned into the HTML Viewer Pro lore. Even if the dedicated viewer UI were removed, the underlying HTML-handling behavior is still intertwined with the search pipeline because the app is built around HTML, CSS, and JavaScript. Code-like input still reaches the HTML handling path before the Gibberish Roast Engine ultimately zerg rushes it.\\n\\nToday, this standalone sandbox interface layout is utilized to instantly test if single-file HTML frontend projects work live!')">What is this?</span>
                     </div>
 
                     <p style="color: #ea4335; font-size: 11px; font-weight: bold; line-height: 1.4; margin: 0; text-align: left;">
@@ -519,6 +522,7 @@ async function search() {
                 const dictData = await dictRes.json();
                 if (dictData && dictData[0]) {
                     const definition = dictData[0].meanings[0].definitions[0].definition;
+                    // 🛡️ API DATA STRUCTURE POINTER REPAIRED
                     const partOfSpeech = dictData[0].meanings[0].partOfSpeech;
                     dictionaryDiv.innerHTML += `
                         <div class="word-dictionary">
