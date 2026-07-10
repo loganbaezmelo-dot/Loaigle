@@ -36,18 +36,24 @@ async function search() {
 
     document.body.classList.remove("tilt-animation", "wobble-animation");
 
-    // 🕵️‍♂️ GIBBERISH DETECTION ENGINE
+    // 🕵️‍♂️ FIXED GIBBERISH DETECTION ENGINE
     function checkIsGibberish(str) {
         const words = str.split(" ");
-        // If it's multiple words, let's look closer at individual chunks
+        
+        // List of common short text shortcuts/words to completely ignore from the test
+        const passList = ["hello", "hi", "hey", "test", "nth", "bnd", "scrs", "txt", "bit"];
+        
         for (let word of words) {
-            if (word.length > 4) {
+            if (passList.includes(word)) continue;
+            
+            if (word.length >= 5) {
                 const vowels = (word.match(/[aeiouy]/gi) || []).length;
-                const consonants = word.length - vowels;
                 
-                // Real words rarely have 0 vowels or a 5+ consonant pileup
-                if (vowels === 0 && word.length > 3) return true;
-                if (/(?![aeiouy])[a-z]{5,}/i.test(word)) return true; 
+                // If it's long and has zero vowels, it's definitely a keyboard smash
+                if (vowels === 0) return true;
+                
+                // Only flag if there are 6 or more consonants in an unbroken row
+                if (/[bcdfghjklmnpqrstvwxz]{6,}/i.test(word)) return true;
             }
         }
         return false;
@@ -58,7 +64,7 @@ async function search() {
     // If it's absolute keyboard smash, deploy the automated Roast Engine
     if (isGibberish) {
         resultsDiv.innerHTML = `
-            <div class="result roast-box">
+            <div class="result result-roast" style="margin-top: 20px;">
                 <h2 style="color: #ea4335; font-size: 24px; margin-bottom: 8px;">"${query}" is gibberish! Learn English!</h2>
                 <p class="result-snippet" style="color: #9aa0a6; font-style: italic; font-size: 13px; margin-top: 15px;">
                     Disclaimer: If you didn't type gibberish, you might have triggered another error.
@@ -112,7 +118,7 @@ async function search() {
         console.log("Route 1 dropped.");
     }
 
-    // --- ROUTE 2: Backup Proxy (Fixes sentence hang-ups) ---
+    // --- ROUTE 2: Backup Proxy ---
     if (articles.length === 0) {
         try {
             const allOriginsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(newsUrl)}`)}&_cb=${timestamp}`;
@@ -258,8 +264,8 @@ function triggerZergRush() {
     const resultsDiv = document.getElementById("results");
     
     activeZergRush = setInterval(() => {
-        // Target whatever blocks exist (normal results OR the new roast container)
-        const currentResults = document.querySelectorAll(".result");
+        // Targets whatever is in the results block (results OR roast box)
+        const currentResults = document.querySelectorAll(".result, .result-roast");
         
         if (currentResults.length > 0) {
             const targetIndex = Math.floor(Math.random() * currentResults.length);
