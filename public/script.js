@@ -27,8 +27,6 @@ async function search() {
     ];
     const tiltPhrases = ["askew", "tilt", "67", "wobble"];
     const zergPhrases = ["zerg rush", "destroy my page", "virus"];
-    
-    // 🕵️‍♂️ Brand-new Google Trigger List
     const googlePhrases = ["google", "alphabet", "sundar pichai", "google.com", "googl"];
 
     const isBarrelRoll = barrelRollPhrases.includes(lowerQuery);
@@ -61,22 +59,43 @@ async function search() {
         }
     }
 
-    // 📰 2. News Search
-    try {
-        const newsUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-US&gl=US&ceid=US:en`;
-        const timestamp = new Date().getTime();
-        const rss2json = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(newsUrl)}&_cb=${timestamp}`;
-        
-        const res = await fetch(rss2json);
-        if (!res.ok) throw new Error("Network response failed");
-        
-        const data = await res.json();
-        resultsDiv.innerHTML = "";
+    // 📰 2. News Search with Auto-Retry Protection Matrix
+    const newsUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-US&gl=US&ceid=US:en`;
+    let attempts = 0;
+    const maxAttempts = 3;
+    let data = null;
 
-        // 🏷️ Set the tag name based on the query
+    while (attempts < maxAttempts) {
+        try {
+            const timestamp = new Date().getTime();
+            const rss2json = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(newsUrl)}&_cb=${timestamp}`;
+            
+            const res = await fetch(rss2json);
+            if (!res.ok) throw new Error("API rate limit or connection drop");
+            
+            data = await res.json();
+            if (data && data.items) {
+                break; // Network call succeeded, break out of the retry loop!
+            }
+        } catch (err) {
+            attempts++;
+            console.log(`Loaigle Network Attempt ${attempts} failed. Retrying...`);
+            if (attempts >= maxAttempts) {
+                console.error("All auto-retries exhausted.");
+            } else {
+                // Wait 500ms before triggering the automatic silent click
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+        }
+    }
+
+    // Clear loading indicator
+    resultsDiv.innerHTML = "";
+
+    // Render results if data was recovered successfully
+    if (data && data.items && data.items.length > 0) {
         const sourceTag = isGoogleSearch ? "Toogle News" : "Google News";
 
-        // 🎁 Inject the Fake Easter Egg Result first if they searched for Google
         if (isGoogleSearch) {
             const fakeDiv = document.createElement("div");
             fakeDiv.className = "result";
@@ -91,53 +110,48 @@ async function search() {
             resultsDiv.appendChild(fakeDiv);
         }
 
-        if (data.items && data.items.length > 0) {
-            const articles = data.items.slice(0, 10);
+        const articles = data.items.slice(0, 10);
+        
+        articles.forEach((item) => {
+            const div = document.createElement("div");
+            div.className = "result";
             
-            articles.forEach((item) => {
-                const div = document.createElement("div");
-                div.className = "result";
-                
-                const tempDiv = document.createElement("div");
-                tempDiv.innerHTML = item.description || "";
-                const cleanSnippet = tempDiv.innerText.split("...")[0] + "..."; 
+            const tempDiv = document.createElement("div");
+            tempDiv.innerHTML = item.description || "";
+            const cleanSnippet = tempDiv.innerText.split("...")[0] + "..."; 
 
-                div.dataset.originalTitle = item.title;
-                div.dataset.originalLink = item.link;
-                div.dataset.originalSnippet = cleanSnippet;
+            div.dataset.originalTitle = item.title;
+            div.dataset.originalLink = item.link;
+            div.dataset.originalSnippet = cleanSnippet;
 
-                div.innerHTML = `
-                    <span class="source-tag">${sourceTag}</span>
-                    <a href="${item.link}" class="result-link" target="_blank">${item.title}</a>
-                    <p class="result-snippet">${cleanSnippet}</p>
-                `;
-                resultsDiv.appendChild(div);
-            });
+            div.innerHTML = `
+                <span class="source-tag">${sourceTag}</span>
+                <a href="${item.link}" class="result-link" target="_blank">${item.title}</a>
+                <p class="result-snippet">${cleanSnippet}</p>
+            `;
+            resultsDiv.appendChild(div);
+        });
 
-            if (isBarrelRoll) {
-                triggerChaosAnimation();
-            } else if (isTilt) {
-                if (lowerQuery === "67" || lowerQuery === "wobble") {
-                    document.body.classList.add("wobble-animation");
-                } else {
-                    document.body.classList.add("tilt-animation");
-                }
-            } else if (isZergRush) {
-                triggerZergRush();
+        if (isBarrelRoll) {
+            triggerChaosAnimation();
+        } else if (isTilt) {
+            if (lowerQuery === "67" || lowerQuery === "wobble") {
+                document.body.classList.add("wobble-animation");
+            } else {
+                document.body.classList.add("tilt-animation");
             }
-
-        } else {
-            resultsDiv.innerHTML = "<p style='color: #bdc1c6;'>No results found on Loaigle.</p>";
+        } else if (isZergRush) {
+            triggerZergRush();
         }
-    } catch (err) {
-        console.error(err);
-        resultsDiv.innerHTML = "<p style='color: #bdc1c6;'>Error fetching results. Try clicking search again.</p>";
+
+    } else {
+        resultsDiv.innerHTML = "<p style='color: #bdc1c6;'>No results found on Loaigle.</p>";
     }
 }
 
 // 📖 The Secret Backstory Popup Box
 function showToogleLore(event) {
-    event.preventDefault(); // Stop it from jumping or loading a new page
+    event.preventDefault();
     alert(
         "📜 THE LORE OF TOOGLE:\n\n" +
         "This was not an intentional tech feature. While the lead engineer was rapidly deploying code from a tiny, chaotic mobile interface, their thumb struck the 'T' key instead of the 'G' key.\n\n" +
