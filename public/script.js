@@ -106,7 +106,6 @@ function updateThemeButtonsUI() {
         const template = document.createElement("div");
         template.id = "background-persistent-layer";
         template.innerHTML = cachedHtml;
-        document.documentElement.appendChild(template);
     }
 
     applyThemeLayer();
@@ -572,9 +571,11 @@ function triggerZergRush() {
         const googleProvider = new firebase.auth.GoogleAuthProvider();
         const githubProvider = new firebase.auth.GithubAuthProvider();
 
-        let currentUserInstance = null;
+        // 🔐 LOCAL STATE PERSISTENCE: Forces session driver to remain active through redirects
+        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
+            console.log("LocalStorage session framework active.");
+        }).catch((e) => { console.error("Persistence issue:", e); });
 
-        // 🛠️ DIRECT PROPERTY MODIFIER STYLE SYSTEM: Changes values without node re-render crashes
         window.forceSyncButtonsUI = function() {
             const syncStatusP = document.getElementById('settings-sync-indicator');
             const btnGoogle = document.getElementById('settings-btn-google');
@@ -632,13 +633,12 @@ function triggerZergRush() {
 
         auth.getRedirectResult().then(async (result) => {
             if (result && result.user) { 
-                console.log("Redirect handshake secured.");
+                console.log("Redirect token processing verified.");
                 window.forceSyncButtonsUI();
             }
         }).catch((e) => { showCustomAlert("⚠️ Auth Redirect Failed: " + e.message); });
 
         auth.onAuthStateChanged(async (user) => {
-          currentUserInstance = user;
           window.forceSyncButtonsUI();
           
           if (user && user.providerData) {
@@ -673,7 +673,6 @@ function triggerZergRush() {
           }
         });
 
-        // ⚡ REMOVED WINDOW LISTENER: Elements register instantly on evaluation loop pass!
         const btnGoogle = document.getElementById('settings-btn-google');
         const btnGithub = document.getElementById('settings-btn-github');
         const btnSaveCloud = document.getElementById('settings-btn-save');
