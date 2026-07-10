@@ -31,7 +31,6 @@ async function search() {
 
     const isBarrelRoll = barrelRollPhrases.includes(lowerQuery);
     const isTilt = tiltPhrases.includes(lowerQuery);
-    const isZergRush = zergPhrases.includes(lowerQuery);
     const isGoogleSearch = googlePhrases.some(phrase => lowerQuery.includes(phrase));
 
     document.body.classList.remove("tilt-animation", "wobble-animation");
@@ -39,10 +38,10 @@ async function search() {
     // 🕵️‍♂️ ULTRA-STRICT GIBBERISH DETECTION ENGINE
     function checkIsGibberish(str) {
         const words = str.split(" ");
-        const passList = ["hello", "hi", "hey", "test", "nth", "bnd", "scrs", "txt", "bit", "zergy"];
+        const passList = ["hello", "hi", "hey", "test", "nth", "bnd", "scrs", "txt", "bit"];
         
         for (let word of words) {
-            if (passList.includes(word)) continue;
+            if (passList.includes(word) || word.startsWith("zerg") || word.startsWith("rush")) continue;
             
             // Check 1: Check for repeated patterns/spam laughing (3 identical characters in a row like aaa)
             if (/(.)\1\1/.test(word)) return true; 
@@ -78,6 +77,36 @@ async function search() {
         return; 
     }
 
+    // 🧠 SILENT SPELL-CHECK MATRIX WITH WILDCARD SCANNING
+    function autoCorrectQuery(str) {
+        let words = str.split(" ");
+        let hasZerg = false;
+        let hasRush = false;
+
+        // Smart-scan tokens for any partial root keywords
+        words = words.map(word => {
+            if (word.startsWith("zerg")) { hasZerg = true; return "zerg"; }
+            if (word.startsWith("rush")) { hasRush = true; return "rush"; }
+            
+            const typoMap = {
+                "googl": "google",
+                "toogle": "google",
+                "searchh": "search",
+                "helloo": "hello"
+            };
+            return typoMap[word] || word;
+        });
+
+        // If they typed any variation of zerg + rush together, explicitly force clean results
+        if (hasZerg && hasRush) {
+            return "zerg rush";
+        }
+        return words.join(" ");
+    }
+
+    const serverQuery = autoCorrectQuery(lowerQuery);
+    const isZergRush = zergPhrases.includes(lowerQuery) || serverQuery === "zerg rush";
+
     // 📖 1. Dictionary Lookup (Only for clean single words)
     const isSingleWord = query.split(" ").length === 1;
     if (isSingleWord && !isZergRush) {
@@ -100,28 +129,6 @@ async function search() {
             console.log("No dictionary entry found.");
         }
     }
-
-    // 🧠 SILENT SILENT SPELL-CHECK MATRIX
-    // This cleans up common typos like "zergy rushu" -> "zerg rush" before hitting the server
-    function autoCorrectQuery(str) {
-        let corrected = str;
-        const typoMap = {
-            "zergy": "zerg",
-            "rushu": "rush",
-            "googl": "google",
-            "toogle": "google",
-            "searchh": "search",
-            "helloo": "hello"
-        };
-        
-        Object.keys(typoMap).forEach(typo => {
-            const regex = new RegExp(`\\b${typo}\\b`, "gi");
-            corrected = corrected.replace(regex, typoMap[typo]);
-        });
-        return corrected;
-    }
-
-    const serverQuery = autoCorrectQuery(lowerQuery);
 
     // 📰 2. News Search 
     const newsUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(serverQuery)}&hl=en-US&gl=US&ceid=US:en`;
@@ -219,7 +226,7 @@ async function search() {
         } else {
             document.body.classList.add("tilt-animation");
         }
-    } else if (isZergRush || serverQuery.includes("zerg rush")) {
+    } else if (isZergRush) {
         triggerZergRush();
     }
 }
