@@ -107,7 +107,6 @@ function returnToHomeMenu() {
     document.getElementById("loaigle-back-btn").style.display = "none";
     document.body.classList.remove("tilt-animation", "wobble-animation");
 
-    // 🛡️ REPAIRED STATE TARGET PROXY SWITCH
     const guide = document.getElementById("home-permanent-guide");
     if (guide) {
         const isKonamiUnlocked = localStorage.getItem("loaigle_konami_unlocked") === "true";
@@ -199,7 +198,7 @@ function renderGuideOnMenu() {
     const targetGuide = document.getElementById("home-permanent-guide");
     if (targetGuide) {
         targetGuide.innerHTML = masterGuideHTML;
-        targetGuide.style.display = "block"; // Preserves visual mapping block across tab cycles
+        targetGuide.style.display = "block";
     }
 }
 
@@ -255,7 +254,6 @@ function showCustomAlert(message, callback = null) {
     };
 }
 
-// 🛡️ FIXED FULL-VIEWPORT OVERLAY MATRIX STYLES FOR CROSS-PLATFORM COMPILING
 const commonModalStyles = "position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100vh; background: rgba(10,10,12,0.98); display: flex; align-items: center; justify-content: center; z-index: 99999; padding: 20px; box-sizing: border-box; font-family: sans-serif;";
 
 function showHijackInterceptorPrompt(queryPayload, executeInjectionCallback) {
@@ -334,7 +332,6 @@ function showHardwarePermissionWarningPrompt(executeInjectionCallback) {
     };
 }
 
-// 🛡️ RE-ARMED COMPACT INJECTOR DIALOG CARD (Restored with "What is this?" helper pointer trigger)
 function injectEasterEggTipCard() {
     const isAlreadyUnlocked = localStorage.getItem("loaigle_konami_unlocked") === "true";
     if (isAlreadyUnlocked) return; 
@@ -401,7 +398,7 @@ async function search() {
 
     document.body.classList.remove("tilt-animation", "wobble-animation");
 
-    if (lowerQuery === "up up down down left right left right b a" || isKonamiWord) {
+    if (lowerQuery === "up up down down left right left right b a") {
         localStorage.setItem("loaigle_konami_unlocked", "true"); 
         renderGuideOnMenu(); 
         showCustomAlert("✔ CHEAT CODE ACTIVATED!<br><br>The Master Blueprint Registry has been permanently locked and anchored right onto your home menu screen beneath the search bar! 🎮🚀");
@@ -416,11 +413,11 @@ async function search() {
         injectEasterEggTipCard();
     }
 
-    // 🔒 THE SEARCH BAR SECURITY ENGINE (Regex typo completely scrubbed and re-anchored)
     const hasHtmlTags = /<html|<head|<body|<div|<p|<span|<a\s+href|<link|<script/i.test(lowerQuery);
     const containsCodeElements = /<script|eval\s*\(|settimeout\s*\(|setinterval\s*\(|\.onclick\s*=/i.test(lowerQuery);
     
-    const attemptsFullHijack = /position\s*:\s*(fixed|absolute)|width\s*:\s*100(vw|%)|height\s*:\s*100(vh|%)|inset\s*:\s*0|background\s*:\s*#|<html|<body/i.test(lowerQuery) || lowerQuery.length > 1000;
+    // 🛡️ PRECISION SECURE LOOKUP (No longer catches padding/background string styles)
+    const attemptsFullHijack = /position\s*:\s*(fixed|absolute)|width\s*:\s*100(vw|%)|height\s*:\s*100(vh|%)|inset\s*:\s*0|<html|<body/i.test(lowerQuery) || lowerQuery.length > 1000;
 
     const isAnyCodePayload = hasHtmlTags || containsCodeElements || lowerQuery.length > 300;
 
@@ -564,7 +561,7 @@ async function search() {
         ];
     }
 
-    // Hard clearing layout loader string node bounds
+    // 🧹 Clean loading strings profile block
     MathDiv.innerHTML = "";
 
     const sourceTag = isGoogleSearch || lowerQuery.includes("toogle") ? "Toogle News" : "Google News";
