@@ -143,6 +143,7 @@ function applyThemeLayer() {
     }
 }
 
+// UI configuration modifiers
 function updateThemeButtonsUI() {
     const currentMode = localStorage.getItem('loaigle_theme') || 'auto';
     const btnDark = document.getElementById('theme-btn-dark');
@@ -427,9 +428,7 @@ function checkIsGibberish(str) {
     const passList = ["hello", "hi", "hey", "test", "nth", "bnd", "scrs", "txt", "bit", "html", "css", "js", "json", "retro", "1998", "classic"];
     
     for (let word of words) {
-        // 🚀 CRITICAL UPDATE: If the word is purely numbers or numerical strings, it passes safely!
         if (/^\d+$/.test(word)) continue;
-        
         if (passList.includes(word) || word.startsWith("zerg") || word.startsWith("rush")) continue;
         if (/(.)\1\1/.test(word)) return true; 
         if (word.length >= 6 && (word.match(/[bcdfghjklmnpqrstvwxz]/gi) || []).length > word.length * 0.7) {
@@ -509,7 +508,9 @@ async function search() {
 
     const hasHtmlTags = /<html|<head|<body|<div|<p|<span|<a\s+href|<link|<script/i.test(lowerQuery);
     const containsCodeElements = /<script|eval\s*\(|settimeout\s*\(|setinterval\s*\(|\.onclick\s*=/i.test(lowerQuery);
-    const attemptsFullHijack = /position\s*:\s*(fixed|absolute)|width\s*:\s*100(vw|%)|height\s*:\s*100(vh|%)|inset\s*:\s*0|<html|<body/i.test(lowerQuery) || lowerQuery.length > 1000;
+    
+    // 🛠️ REMOVED '<html' AND '<body' FROM THE REGEX TRAP INSIDE THE INTERCEPT LOGIC FOREVER
+    const attemptsFullHijack = /position\s*:\s*(fixed|absolute)|width\s*:\s*100(vw|%)|height\s*:\s*100(vh|%)|inset\s*:\s*0/i.test(lowerQuery) || lowerQuery.length > 15000;
     const isAnyCodePayload = hasHtmlTags || containsCodeElements || lowerQuery.length > 300;
 
     const renderHtmlViewerLayout = () => {
@@ -777,7 +778,6 @@ function triggerGoogleLogin() {
     auth.signInWithRedirect(googleProvider);
 }
 
-// 🛡️ FIREBASE AUTH REPAIRED HOOKS
 function triggerGithubLogin() {
     localStorage.setItem('loaigle_validated_auth', 'true');
     auth.signInWithRedirect(githubProvider);
