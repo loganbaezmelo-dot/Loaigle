@@ -23,6 +23,7 @@ const masterGuideHTML = `
             <p>• <strong>"do a barrel roll"</strong> - Forces full 360-degree CSS viewport rotation alongside text scrambling.</p>
             <p>• <strong>"tilt" / "askew"</strong> - Locks the core browser axis parameters onto a fixed 4.5-degree slant profile.</p>
             <p>• <strong>"67" / "wobble"</strong> - Initiates an infinite alternate keyframe vibration loop layout simulation.</p>
+            <p>• <strong>"retro" / "1998"</strong> - Strips modern style architecture to simulate a corrupted/classic layout.</p>
         </div>
 
         <div class="guide-section">
@@ -106,6 +107,8 @@ function returnToHomeMenu() {
     document.getElementById("results").innerHTML = "";
     document.getElementById("loaigle-back-btn").style.display = "none";
     document.body.classList.remove("tilt-animation", "wobble-animation");
+    
+    // Note: We deliberately DO NOT remove 'retro-mode-active' here so the easter egg persists across back clicks!
 
     const guide = document.getElementById("home-permanent-guide");
     if (guide) {
@@ -231,7 +234,7 @@ function loadToBrowserStorage() {
     }
 }
 
-// 📱 FLUID SCROLL ALERT CONTROLLER (No more clipping limits!)
+// 📱 FLUID SCROLL ALERT CONTROLLER
 function showCustomAlert(message, callback = null) {
     const alertId = "loaigle-custom-alert";
     const existing = document.getElementById(alertId);
@@ -352,6 +355,75 @@ function injectEasterEggTipCard() {
     `;
 }
 
+// 🏛️ RETRO STYLE INJECTION ENGINE LAYER
+function injectRetroStyles() {
+    if (document.getElementById("loaigle-retro-stylesheet")) return;
+    
+    const styleEl = document.createElement("style");
+    styleEl.id = "loaigle-retro-stylesheet";
+    styleEl.className = "retro-mode-active";
+    styleEl.innerHTML = `
+        /* Force asset breakdown and strip style values globally */
+        html, body, div, p, span, a, input, button {
+            background: #e0e0e0 !important;
+            color: #000000 !important;
+            font-family: "Times New Roman", Times, serif !important;
+            border-radius: 0px !important;
+            box-shadow: none !important;
+            text-shadow: none !important;
+            backdrop-filter: none !important;
+        }
+        body {
+            padding: 20px !important;
+        }
+        h1, h2, h3, .logo, #logo-container {
+            font-family: "Times New Roman", Times, serif !important;
+            color: #000000 !important;
+            background: transparent !important;
+        }
+        input[type="text"], #searchInput {
+            background: #ffffff !important;
+            border: 2px inset #ffffff !important;
+            color: #000000 !important;
+            padding: 4px !important;
+        }
+        button, input[type="submit"] {
+            background: #d4d0c8 !important;
+            border: 2px outset #ffffff !important;
+            color: #000000 !important;
+            padding: 4px 12px !important;
+            cursor: pointer !important;
+        }
+        button:active {
+            border: 2px inset #ffffff !important;
+        }
+        a, .result-link {
+            color: #0000ee !important;
+            text-decoration: underline !important;
+            background: transparent !important;
+        }
+        a:visited {
+            color: #551a8b !important;
+        }
+        .result, .word-dictionary, .html-viewer-container {
+            background: #e0e0e0 !important;
+            border: 1px dashed #666666 !important;
+            padding: 10px !important;
+            margin-bottom: 10px !important;
+        }
+        .source-tag, .disclaimer, p style*="color" {
+            color: #555555 !important;
+            font-size: 12px !important;
+            font-weight: normal !important;
+        }
+        #loaigle-back-btn {
+            display: inline-block !important;
+            margin-bottom: 15px !important;
+        }
+    `;
+    document.head.appendChild(styleEl);
+}
+
 async function search() {
     isUserSearchingRightNow = true;
 
@@ -389,12 +461,14 @@ async function search() {
     const zergPhrases = ["zerg rush", "destroy my page", "virus"];
     const googlePhrases = ["google", "alphabet", "sundar pichai", "google.com", "googl", "toogle"];
     const konamiVariations = ["konami", "konami code", "unlock guide", "show guide", "manifest"];
+    const retroPhrases = ["retro", "1998", "classic", "no theme"];
 
     const isBarrelRoll = barrelRollPhrases.includes(lowerQuery);
     const isTilt = tiltPhrases.includes(lowerQuery);
     const isZergRush = zergPhrases.includes(lowerQuery);
     const isGoogleSearch = googlePhrases.some(phrase => lowerQuery.includes(phrase));
     const isKonamiWord = konamiVariations.includes(lowerQuery);
+    const isRetroWord = retroPhrases.includes(lowerQuery);
 
     document.body.classList.remove("tilt-animation", "wobble-animation");
 
@@ -408,7 +482,7 @@ async function search() {
         return; 
     }
 
-    const isEasterEggQuery = isBarrelRoll || isTilt || isZergRush || isKonamiWord;
+    const isEasterEggQuery = isBarrelRoll || isTilt || isZergRush || isKonamiWord || isRetroWord;
     if (isEasterEggQuery || Math.random() < 0.15) {
         injectEasterEggTipCard();
     }
@@ -619,6 +693,8 @@ async function search() {
         }
     } else if (isActualZergRush) {
         triggerZergRush();
+    } else if (isRetroWord) {
+        injectRetroStyles();
     }
 }
 
