@@ -107,8 +107,6 @@ function returnToHomeMenu() {
     document.getElementById("results").innerHTML = "";
     document.getElementById("loaigle-back-btn").style.display = "none";
     document.body.classList.remove("tilt-animation", "wobble-animation");
-    
-    // Note: We deliberately DO NOT remove 'retro-mode-active' here so the easter egg persists across back clicks!
 
     const guide = document.getElementById("home-permanent-guide");
     if (guide) {
@@ -363,7 +361,6 @@ function injectRetroStyles() {
     styleEl.id = "loaigle-retro-stylesheet";
     styleEl.className = "retro-mode-active";
     styleEl.innerHTML = `
-        /* Force asset breakdown and strip style values globally */
         html, body, div, p, span, a, input, button {
             background: #e0e0e0 !important;
             color: #000000 !important;
@@ -411,7 +408,7 @@ function injectRetroStyles() {
             padding: 10px !important;
             margin-bottom: 10px !important;
         }
-        .source-tag, .disclaimer, p style*="color" {
+        .source-tag, .disclaimer {
             color: #555555 !important;
             font-size: 12px !important;
             font-weight: normal !important;
@@ -422,6 +419,29 @@ function injectRetroStyles() {
         }
     `;
     document.head.appendChild(styleEl);
+}
+
+// 🛡️ RE-ENGINEERED GIBBERISH DETECTOR (Numbers are protected forever)
+function checkIsGibberish(str) {
+    const words = str.split(" ");
+    const passList = ["hello", "hi", "hey", "test", "nth", "bnd", "scrs", "txt", "bit", "html", "css", "js", "json", "retro", "1998", "classic"];
+    
+    for (let word of words) {
+        // 🚀 CRITICAL UPDATE: If the word is purely numbers or numerical strings, it passes safely!
+        if (/^\d+$/.test(word)) continue;
+        
+        if (passList.includes(word) || word.startsWith("zerg") || word.startsWith("rush")) continue;
+        if (/(.)\1\1/.test(word)) return true; 
+        if (word.length >= 6 && (word.match(/[bcdfghjklmnpqrstvwxz]/gi) || []).length > word.length * 0.7) {
+            if (!/[aeiouy]{2,}/i.test(word) && /jw|wj|hx|q|z/i.test(word)) return true;
+        }
+        if (word.length >= 4) {
+            const vowels = (word.match(/[aeiouy]/gi) || []).length;
+            if (vowels === 0) return true;
+            if (/[bcdfghjklmnpqrstvwxz]{4,}/i.test(word)) return true;
+        }
+    }
+    return false;
 }
 
 async function search() {
@@ -489,9 +509,7 @@ async function search() {
 
     const hasHtmlTags = /<html|<head|<body|<div|<p|<span|<a\s+href|<link|<script/i.test(lowerQuery);
     const containsCodeElements = /<script|eval\s*\(|settimeout\s*\(|setinterval\s*\(|\.onclick\s*=/i.test(lowerQuery);
-    
     const attemptsFullHijack = /position\s*:\s*(fixed|absolute)|width\s*:\s*100(vw|%)|height\s*:\s*100(vh|%)|inset\s*:\s*0|<html|<body/i.test(lowerQuery) || lowerQuery.length > 1000;
-
     const isAnyCodePayload = hasHtmlTags || containsCodeElements || lowerQuery.length > 300;
 
     const renderHtmlViewerLayout = () => {
@@ -539,26 +557,24 @@ async function search() {
         return; 
     }
 
-    isUserSearchingRightNow = false; 
-
-    function checkIsGibberish(str) {
-        const words = str.split(" ");
-        const passList = ["hello", "hi", "hey", "test", "nth", "bnd", "scrs", "txt", "bit", "html", "css", "js", "json"];
-        for (let word of words) {
-            if (passList.includes(word) || word.startsWith("zerg") || word.startsWith("rush")) continue;
-            if (/(.)\1\1/.test(word)) return true; 
-            if (word.length >= 6 && (word.match(/[bcdfghjklmnpqrstvwxz]/gi) || []).length > word.length * 0.7) {
-                if (!/[aeiouy]{2,}/i.test(word) && /jw|wj|hx|q|z/i.test(word)) return true;
-            }
-            if (word.length >= 4) {
-                const vowels = (word.match(/[aeiouy]/gi) || []).length;
-                if (vowels === 0) return true;
-                if (/[bcdfghjklmnpqrstvwxz]{4,}/i.test(word)) return true;
-            }
+    // Run active animation triggers
+    if (isBarrelRoll || serverQuery.includes("barrel roll")) {
+        triggerChaosAnimation();
+    } else if (isTilt) {
+        if (lowerQuery === "67" || lowerQuery === "wobble") {
+            document.body.classList.add("wobble-animation");
+        } else {
+            document.body.classList.add("tilt-animation");
         }
-        return false;
+    } else if (isActualZergRush) {
+        triggerZergRush();
+        isUserSearchingRightNow = false;
+        return; 
+    } else if (isRetroWord) {
+        injectRetroStyles();
     }
 
+    // 🛡️ GIBBERISH ENGINE INTERCEPT GATEWAY
     if (checkIsGibberish(lowerQuery)) {
         MathDiv.innerHTML = `
             <div class="result result-roast" style="margin-top: 20px;">
@@ -568,8 +584,11 @@ async function search() {
         `;
         document.getElementById("roast-text").innerText = `"${query}" is gibberish! Learn English!`;
         triggerZergRush();
+        isUserSearchingRightNow = false;
         return; 
     }
+
+    isUserSearchingRightNow = false; 
 
     function autoCorrectQuery(str) {
         let words = str.split(" ");
@@ -586,7 +605,6 @@ async function search() {
     }
 
     const serverQuery = autoCorrectQuery(lowerQuery);
-    const isActualZergRush = zergPhrases.includes(lowerQuery) || serverQuery === "zerg rush";
 
     if (query.split(" ").length === 1 && !isActualZergRush) {
         try {
@@ -682,20 +700,6 @@ async function search() {
         `;
         MathDiv.appendChild(div);
     });
-
-    if (isBarrelRoll || serverQuery.includes("barrel roll")) {
-        triggerChaosAnimation();
-    } else if (isTilt) {
-        if (lowerQuery === "67" || lowerQuery === "wobble") {
-            document.body.classList.add("wobble-animation");
-        } else {
-            document.body.classList.add("tilt-animation");
-        }
-    } else if (isActualZergRush) {
-        triggerZergRush();
-    } else if (isRetroWord) {
-        injectRetroStyles();
-    }
 }
 
 function showToogleLore(event) {
@@ -773,6 +777,7 @@ function triggerGoogleLogin() {
     auth.signInWithRedirect(googleProvider);
 }
 
+// 🛡️ FIREBASE AUTH REPAIRED HOOKS
 function triggerGithubLogin() {
     localStorage.setItem('loaigle_validated_auth', 'true');
     auth.signInWithRedirect(githubProvider);
